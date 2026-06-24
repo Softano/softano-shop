@@ -1,0 +1,1 @@
+# softano-shop
