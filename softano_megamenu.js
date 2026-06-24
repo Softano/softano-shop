@@ -51,10 +51,17 @@
   }
   // liefert href (string) für existierende Kategorie, sonst null (=geplant/NEU)
   function hrefFor(node){
-    var lab=norm(tx(node));
-    if (byLabel[lab]) return byLabel[lab];
     var sg = SLUG_OVERRIDE[node.en] || slugify(node.en);
+    var lab = norm(tx(node));
+    // 1) Harvest (am genauesten, falls vorhanden)
+    if (byLabel[lab]) return byLabel[lab];
     if (bySlug[sg]) return bySlug[sg];
+    // 2) Bestehende Kategorie (nicht NEU): URL aus bestaetigtem Muster bauen
+    if (node.st !== "NEU"){
+      var L = lang();
+      return location.origin + (L==="en" ? "" : "/"+L) + "/products/" + sg;
+    }
+    // 3) NEU/geplant: noch keine Seite -> nicht klickbar
     return null;
   }
 
