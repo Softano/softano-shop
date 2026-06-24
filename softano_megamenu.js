@@ -121,23 +121,46 @@
     if (!headerTile) return;
     headerTile.classList.add("sof-header");
 
-    // Host fürs Panel
+    // Host fürs Panel — an BODY (kein Clipping durch Header-overflow)
     var host=document.createElement("div");
     host.className="sof-host"; host.id="sof-host";
-    headerTile.appendChild(host);
+    document.body.appendChild(host);
 
     harvest(menu);
+    hideNative(menu);
+
+    // Natives Flyout robust ausblenden (klassen-unabhängig):
+    // jedes Element in einem menu-link, das NICHT der Top-Link ist und
+    // weitere Links enthält, wird hart versteckt.
+    function hideNative(scope){
+      var links=scope.querySelectorAll(".ins-header__menu-link");
+      for(var i=0;i<links.length;i++){
+        var kids=links[i].children;
+        for(var j=0;j<kids.length;j++){
+          var k=kids[j];
+          if(k.matches && k.matches("a.ins-header__menu-link-title")) continue;
+          if(k.querySelector && k.querySelector("a[href]")){
+            k.style.setProperty("display","none","important");
+            k.style.setProperty("visibility","hidden","important");
+            k.style.setProperty("pointer-events","none","important");
+          }
+        }
+      }
+    }
 
     var openIdx=-1, timer=null;
     function open(idx){
       if(!desk()) return;
       if(idx===openIdx && host.firstChild) return;
       openIdx=idx;
-      // Panel-Breite an Header-Container ausrichten
+      // Panel-Breite an Header-Container ausrichten + fix unter den Header setzen
       var inner=document.querySelector(".ins-header__inner")||document.querySelector(".ins-header__wrap")||headerTile;
-      var w=Math.round(inner.getBoundingClientRect().width);
+      var ir=inner.getBoundingClientRect();
+      var hr=headerTile.getBoundingClientRect();
+      host.style.top=Math.round(hr.bottom)+"px";
       host.innerHTML=panelHTML(idx);
-      var mega=host.firstChild; if(mega){ mega.style.maxWidth=w+"px"; }
+      var mega=host.firstChild;
+      if(mega){ mega.style.maxWidth=Math.round(ir.width)+"px"; mega.style.marginLeft="auto"; mega.style.marginRight="auto"; }
       host.classList.add("sof-show");
       for(var i=0;i<items.length;i++){ items[i].classList.toggle("sof-active", i===idx); }
     }
