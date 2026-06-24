@@ -88,3 +88,10 @@
 
 /* ---- Sicherheit: Panel nur Desktop ---- */
 @media (max-width:920px){ .sof-host{ display:none!important; } }
+
+/* ---- Einheitliche Linkfarbe: auch nach Besuch kein Ecwid-Blau (:visited) ---- */
+.sof-lnk:link, .sof-lnk:visited{ color:var(--sof-muted) !important; }
+.sof-lnk:hover, .sof-lnk:focus{ color:var(--sof-teal) !important; }
+.sof-col h4 .sof-h:link, .sof-col h4 .sof-h:visited{ color:var(--sof-navy) !important; }
+.sof-col h4 .sof-h:hover{ color:var(--sof-teal) !important; }
+.sof-tile:link, .sof-tile:visited{ color:var(--sof-navy) !important; }

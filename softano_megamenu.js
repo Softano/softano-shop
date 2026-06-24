@@ -31,6 +31,7 @@
     return "en";
   }
   function tx(o){ var L=lang(); return o[L]||o.en; }
+  function nwLabel(){ var m={de:"BALD",en:"SOON",el:"\u03A3\u03A5\u039D\u03A4\u039F\u039C\u0391"}; return m[lang()]||m.en; }
   function norm(s){ return (s||"").replace(/\u00a0/g," ").replace(/\s+/g," ").trim().toLowerCase(); }
   function slugify(s){
     return (s||"").toLowerCase().replace(/&/g," ").replace(/[^a-z0-9]+/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
@@ -69,7 +70,7 @@
   function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   function linkEl(node, cls){
     var label=esc(tx(node)), href=hrefFor(node);
-    var nw = node.st==="NEU" ? ' <span class="sof-nw">NEU</span>' : "";
+    var nw = node.st==="NEU" ? ' <span class="sof-nw">'+nwLabel()+'</span>' : "";
     if (href) return '<a class="'+cls+'" href="'+href+'">'+label+nw+'</a>';
     return '<span class="'+cls+' sof-soon" title="bald verfügbar">'+label+nw+'</span>';
   }
@@ -85,11 +86,11 @@
     });
     var head = hrefFor(l2)? '<a class="sof-h" href="'+hrefFor(l2)+'">'+esc(tx(l2))+'</a>'
                           : '<span class="sof-h sof-soon">'+esc(tx(l2))+'</span>';
-    var nw = l2.st==="NEU" ? ' <span class="sof-nw">NEU</span>' : "";
+    var nw = l2.st==="NEU" ? ' <span class="sof-nw">'+nwLabel()+'</span>' : "";
     return '<div class="sof-col"><h4>'+head+nw+'</h4><ul>'+inner+'</ul></div>';
   }
   function tileHTML(l2){
-    var href=hrefFor(l2), nw=l2.st==="NEU"?' <span class="sof-nw">NEU</span>':"";
+    var href=hrefFor(l2), nw=l2.st==="NEU"?' <span class="sof-nw">'+nwLabel()+'</span>':"";
     var body='<span>'+esc(tx(l2))+nw+'</span><span class="sof-ar">&#8594;</span>';
     if (href) return '<a class="sof-tile" href="'+href+'">'+body+'</a>';
     return '<span class="sof-tile sof-soon">'+body+'</span>';
