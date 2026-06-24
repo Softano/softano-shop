@@ -95,3 +95,7 @@
 .sof-col h4 .sof-h:link, .sof-col h4 .sof-h:visited{ color:var(--sof-navy) !important; }
 .sof-col h4 .sof-h:hover{ color:var(--sof-teal) !important; }
 .sof-tile:link, .sof-tile:visited{ color:var(--sof-navy) !important; }
+
+/* ---- Featured-Karte: Schrift immer weiss (auch nach Besuch / :visited) ---- */
+.sof-feat:link, .sof-feat:visited, .sof-feat:hover,
+.sof-feat .sof-ft, .sof-feat .sof-fs, .sof-feat .sof-ftag{ color:#fff !important; }
