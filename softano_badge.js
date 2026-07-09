@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v4 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v5 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -7,10 +7,11 @@
    v2: haengt sich in .grid-product__label statt frei ueber die Karte.
    v3: blendet auf der Produktseite die Attributzeile "Lizenzform" aus
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
-       legt den Wert als data-sof-lizenzform auf <html> + window.SOF_LIZENZFORM ab.
-   v4: Wert wird NUR bei echtem Seitenwechsel geleert. Ein Leerdurchlauf des
-       MutationObservers (Ecwid/Vue rendert die Attributzeile kurz neu) darf
-       den Wert nicht loeschen -- genau daran ist v3 gescheitert.
+       (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
+   v5: KEIN globaler Cache mehr. v3/v4 haben den Wert in <html> bzw. window
+       gespeichert und wurden stale: OnPageSwitch feuert vor dem Re-Render,
+       also schrieb der naechste Scan den alten Wert zurueck. Der Wert steht
+       ohnehin im DOM -> window.sofLizenzform() liest ihn live aus.
    ===================================================================== */
 (function () {
   "use strict";
@@ -56,27 +57,30 @@
     box.appendChild(el);                                  // unter das Ribbon
   }
 
-  /* Produktseite: Attributzeile "Lizenzform" verstecken + Wert exportieren */
-  function resetAttr() {
-    window.SOF_LIZENZFORM = null;
-    document.documentElement.removeAttribute("data-sof-lizenzform");
-  }
-
-  function syncAttr() {
+  /* Produktseite: Lizenzform live aus dem DOM lesen. Nie cachen. */
+  function readLizenzform() {
     var rows = document.querySelectorAll(".details-product-attribute");
     for (var i = 0; i < rows.length; i++) {
       var t = rows[i].querySelector(".details-product-attribute__title");
       var v = rows[i].querySelector(".details-product-attribute__value");
       if (!t || !v) continue;                       // Zeile gerade im Re-Render
       if (!/^\s*Lizenzform\s*:/.test(t.textContent || "")) continue;
-      rows[i].classList.add("sof-attr");            // idempotent
-      var val = (v.textContent || "").trim();
-      if (!val) continue;
-      window.SOF_LIZENZFORM = val;
-      document.documentElement.setAttribute("data-sof-lizenzform", val);
+      return { row: rows[i], value: (v.textContent || "").trim() };
     }
-    /* Bewusst KEIN Loeschen im Leerfall -- siehe v4-Notiz oben. */
+    return null;
   }
+
+  /* Attributzeile ausblenden (Brand bleibt sichtbar) */
+  function syncAttr() {
+    var hit = readLizenzform();
+    if (hit) hit.row.classList.add("sof-attr");     // idempotent
+  }
+
+  /* Datenquelle fuer Phase 2 (CI-Panel): immer aktuell, nie stale. */
+  window.sofLizenzform = function () {
+    var hit = readLizenzform();
+    return hit ? hit.value : null;
+  };
 
   function scan() {
     var cards = document.querySelectorAll(".grid-product");
@@ -95,10 +99,7 @@
     scan();
     new MutationObserver(sched).observe(document.body, { childList: true, subtree: true });
     if (window.Ecwid && Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(sched);
-    if (window.Ecwid && Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(function () {
-      resetAttr();                                  // nur hier ist Leeren korrekt
-      sched();
-    });
+    if (window.Ecwid && Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(sched);
   }
 
   if (document.body) boot();
