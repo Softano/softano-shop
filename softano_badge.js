@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v3 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v4 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -7,7 +7,10 @@
    v2: haengt sich in .grid-product__label statt frei ueber die Karte.
    v3: blendet auf der Produktseite die Attributzeile "Lizenzform" aus
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
-       legt den Wert als data-sof-lizenzform auf <html> ab (Quelle Phase 2).
+       legt den Wert als data-sof-lizenzform auf <html> + window.SOF_LIZENZFORM ab.
+   v4: Wert wird NUR bei echtem Seitenwechsel geleert. Ein Leerdurchlauf des
+       MutationObservers (Ecwid/Vue rendert die Attributzeile kurz neu) darf
+       den Wert nicht loeschen -- genau daran ist v3 gescheitert.
    ===================================================================== */
 (function () {
   "use strict";
@@ -54,20 +57,25 @@
   }
 
   /* Produktseite: Attributzeile "Lizenzform" verstecken + Wert exportieren */
+  function resetAttr() {
+    window.SOF_LIZENZFORM = null;
+    document.documentElement.removeAttribute("data-sof-lizenzform");
+  }
+
   function syncAttr() {
     var rows = document.querySelectorAll(".details-product-attribute");
-    var found = null;
     for (var i = 0; i < rows.length; i++) {
       var t = rows[i].querySelector(".details-product-attribute__title");
       var v = rows[i].querySelector(".details-product-attribute__value");
-      if (!t || !v) continue;
+      if (!t || !v) continue;                       // Zeile gerade im Re-Render
       if (!/^\s*Lizenzform\s*:/.test(t.textContent || "")) continue;
       rows[i].classList.add("sof-attr");            // idempotent
-      found = (v.textContent || "").trim();
+      var val = (v.textContent || "").trim();
+      if (!val) continue;
+      window.SOF_LIZENZFORM = val;
+      document.documentElement.setAttribute("data-sof-lizenzform", val);
     }
-    var h = document.documentElement;
-    if (found) h.setAttribute("data-sof-lizenzform", found);
-    else h.removeAttribute("data-sof-lizenzform");  // Produktwechsel (SPA)
+    /* Bewusst KEIN Loeschen im Leerfall -- siehe v4-Notiz oben. */
   }
 
   function scan() {
@@ -87,7 +95,10 @@
     scan();
     new MutationObserver(sched).observe(document.body, { childList: true, subtree: true });
     if (window.Ecwid && Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(sched);
-    if (window.Ecwid && Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(sched);
+    if (window.Ecwid && Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(function () {
+      resetAttr();                                  // nur hier ist Leeren korrekt
+      sched();
+    });
   }
 
   if (document.body) boot();
