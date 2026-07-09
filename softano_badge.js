@@ -1,10 +1,13 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v2 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v3 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
    Greift NICHT ins Homepage-Karussell (dort steht keine SKU im DOM).
    v2: haengt sich in .grid-product__label statt frei ueber die Karte.
+   v3: blendet auf der Produktseite die Attributzeile "Lizenzform" aus
+       (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
+       legt den Wert als data-sof-lizenzform auf <html> ab (Quelle Phase 2).
    ===================================================================== */
 (function () {
   "use strict";
@@ -50,9 +53,27 @@
     box.appendChild(el);                                  // unter das Ribbon
   }
 
+  /* Produktseite: Attributzeile "Lizenzform" verstecken + Wert exportieren */
+  function syncAttr() {
+    var rows = document.querySelectorAll(".details-product-attribute");
+    var found = null;
+    for (var i = 0; i < rows.length; i++) {
+      var t = rows[i].querySelector(".details-product-attribute__title");
+      var v = rows[i].querySelector(".details-product-attribute__value");
+      if (!t || !v) continue;
+      if (!/^\s*Lizenzform\s*:/.test(t.textContent || "")) continue;
+      rows[i].classList.add("sof-attr");            // idempotent
+      found = (v.textContent || "").trim();
+    }
+    var h = document.documentElement;
+    if (found) h.setAttribute("data-sof-lizenzform", found);
+    else h.removeAttribute("data-sof-lizenzform");  // Produktwechsel (SPA)
+  }
+
   function scan() {
     var cards = document.querySelectorAll(".grid-product");
     for (var i = 0; i < cards.length; i++) mark(cards[i]);
+    syncAttr();
   }
 
   var pending = false;
