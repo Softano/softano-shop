@@ -1,8 +1,10 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v1 (Phase 1: nur Volumen-Server, 33 SKUs)
-   Setzt "Pre-Owned" oben rechts auf Produktkarten in Kategorie-Listen.
+   SOFTANO.EU — ZUSTAND-BADGE v2 (Phase 1: nur Volumen-Server, 33 SKUs)
+   Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
+   auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
    Greift NICHT ins Homepage-Karussell (dort steht keine SKU im DOM).
+   v2: haengt sich in .grid-product__label statt frei ueber die Karte.
    ===================================================================== */
 (function () {
   "use strict";
@@ -28,12 +30,24 @@
     if (card.querySelector(".sof-cond")) return;          // idempotent
     var sku = skuOf(card);
     if (!sku || !PREOWNED[sku]) return;
-    var host = card.querySelector(".grid-product__wrap-inner") || card;
-    host.classList.add("sof-cond-host");
-    var b = document.createElement("span");
-    b.className = "sof-cond";
-    b.textContent = LABEL;
-    host.appendChild(b);
+
+    var box = card.querySelector(".grid-product__label");
+    if (!box) {                                           // Karte ohne Ribbon: Container anlegen
+      var wrap = card.querySelector(".grid-product__image-wrap");
+      if (!wrap) return;
+      box = document.createElement("div");
+      box.className = "grid-product__label";
+      wrap.appendChild(box);
+    }
+    box.classList.add("sof-cond-box");
+
+    var el = document.createElement("div");
+    el.className = "ec-label label--custom sof-cond";     // erbt Ecwids Label-Geometrie
+    var txt = document.createElement("div");
+    txt.className = "label_text";
+    txt.textContent = LABEL;
+    el.appendChild(txt);
+    box.appendChild(el);                                  // unter das Ribbon
   }
 
   function scan() {
