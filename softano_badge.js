@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v6 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v7 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -9,6 +9,7 @@
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
    v5: KEIN globaler Cache mehr (Stale-Bug behoben, live aus DOM lesen).
+   v7: Panel-Kopf an Prototyp-Optik angeglichen (bdg/tchips-Klassen).
    v6: CI-PANEL Etappe 1 (Kopf). Versteckt alle Panel-Attributzeilen ausser
        Hersteller, rendert Eyebrow/Titel-Split + Zustand-Badge + Lizenzform-
        Chip + statische Chips oberhalb des Preises. Attribute aus dem DOM.
@@ -111,8 +112,6 @@
     }
   }
 
-  function chip(txt, cls){ return '<span class="sof-p-chip'+(cls?" "+cls:"")+'">'+esc(txt)+'</span>'; }
-
   function buildHead() {
     var side = document.querySelector(".product-details__sidebar");
     if (!side) return;
@@ -124,19 +123,20 @@
     var info = lf && LF[lf] ? LF[lf] : null;
     var isPO = info && info.zustand === "Pre-Owned";
 
-    var chips = chip(pick(T.bits)) + chip(pick(T.mult)) + chip(pick(T.perp));
+    var tchips = [pick(T.bits), pick(T.mult), pick(T.perp)]
+      .map(function (x) { return '<span>'+esc(x)+'</span>'; }).join("");
     var badge = info
-      ? '<span class="sof-p-badge '+(isPO?"po":"new")+'">'+esc(isPO?pick(T.poB):pick(T.newB))+'</span>'
+      ? '<span class="sof-bdg '+(isPO?"pre":"new")+'">'+esc(isPO?pick(T.poB):pick(T.newB))+'</span>'
       : "";
-    var lfchip = info ? chip(pick(info.chip), "lf") : "";
+    var lfchip = info ? '<span class="sof-bdg ch">'+esc(pick(info.chip))+'</span>' : "";
 
     var head = document.createElement("div");
     head.className = "sof-panel-head";
     head.innerHTML =
-      (eyebrow ? '<div class="sof-p-eyebrow">'+esc(eyebrow)+'</div>' : "") +
-      (titel   ? '<div class="sof-p-title">'+esc(titel)+'</div>'   : "") +
-      '<div class="sof-p-chips">'+chips+'</div>' +
-      '<div class="sof-p-badges">'+badge+lfchip+'</div>';
+      (eyebrow ? '<div class="sof-eyebrow">'+esc(eyebrow)+'</div>' : "") +
+      (titel   ? '<div class="sof-title">'+esc(titel)+'</div>'   : "") +
+      '<div class="sof-tchips">'+tchips+'</div>' +
+      '<div class="sof-badges">'+badge+lfchip+'</div>';
 
     var h1 = side.querySelector(".product-details__product-title");
     var sku = side.querySelector(".product-details__product-sku");
