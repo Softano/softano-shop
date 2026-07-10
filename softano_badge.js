@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v7 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v8 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -9,6 +9,7 @@
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
    v5: KEIN globaler Cache mehr (Stale-Bug behoben, live aus DOM lesen).
+   v8: Titel-Auto-Fit (kein Zeilenumbruch) + Etappe 2 Facts-Grid unter der Kaufbox.
    v7: Panel-Kopf an Prototyp-Optik angeglichen (bdg/tchips-Klassen).
    v6: CI-PANEL Etappe 1 (Kopf). Versteckt alle Panel-Attributzeilen ausser
        Hersteller, rendert Eyebrow/Titel-Split + Zustand-Badge + Lizenzform-
@@ -44,17 +45,29 @@
 
   /* ---- Ableitung Lizenzform -> Zustand + Chip ---- */
   var LF = {
-    Retail:  { zustand: "Neu",       chip: { de: "Retail · Vollversion",   en: "Retail · full version",   el: "Retail · πλήρης έκδοση" } },
-    CSP:     { zustand: "Neu",       chip: { de: "Volumenlizenz · CSP",    en: "Volume licence · CSP",    el: "Άδεια Volume · CSP" } },
-    OEM:     { zustand: "Neu",       chip: { de: "OEM · System Builder",   en: "OEM · System Builder",    el: "OEM · System Builder" } },
-    Volumen: { zustand: "Pre-Owned", chip: { de: "Volumenlizenz · MAK",    en: "Volume licence · MAK",    el: "Άδεια Volume · MAK" } }
+    Retail:  { zustand: "Neu",       akt: "Online",     chip: { de: "Retail · Vollversion",   en: "Retail · full version",   el: "Retail · πλήρης έκδοση" },
+               ltyp: { de: "Retail",           en: "Retail",           el: "Retail" } },
+    CSP:     { zustand: "Neu",       akt: "Admin Center", chip: { de: "Volumenlizenz · CSP",  en: "Volume licence · CSP",    el: "Άδεια Volume · CSP" },
+               ltyp: { de: "Volumen (CSP)",    en: "Volume (CSP)",     el: "Volume (CSP)" } },
+    OEM:     { zustand: "Neu",       akt: "Online",     chip: { de: "OEM · System Builder",   en: "OEM · System Builder",    el: "OEM · System Builder" },
+               ltyp: { de: "OEM (System Builder)", en: "OEM (System Builder)", el: "OEM (System Builder)" } },
+    Volumen: { zustand: "Pre-Owned", akt: "MAK / KMS",  chip: { de: "Volumenlizenz · MAK",    en: "Volume licence · MAK",    el: "Άδεια Volume · MAK" },
+               ltyp: { de: "Volumen (Pre-Owned)", en: "Volume (pre-owned)", el: "Volume (Pre-Owned)" } }
   };
   var T = {
     perp: { de: "Dauerlizenz",  en: "Perpetual licence", el: "Μόνιμη άδεια" },
     mult: { de: "Mehrsprachig", en: "Multilingual",      el: "Πολύγλωσσο" },
     bits: { de: "64-Bit",       en: "64-bit",            el: "64-bit" },
     newB: { de: "Neu",          en: "New",               el: "Νέα" },
-    poB:  { de: "Pre-Owned",    en: "Pre-Owned",         el: "Pre-Owned" }
+    poB:  { de: "Pre-Owned",    en: "Pre-Owned",         el: "Pre-Owned" },
+    perm2:{ de: "Dauerhaft",    en: "Permanent",         el: "Μόνιμη" },
+    kEd:  { de: "Edition",      en: "Edition",           el: "Έκδοση" },
+    kCo:  { de: "Kerne",        en: "Cores",             el: "Πυρήνες" },
+    kLt:  { de: "Lizenztyp",    en: "Licence type",      el: "Τύπος άδειας" },
+    kLa:  { de: "Sprache",      en: "Language",          el: "Γλώσσα" },
+    kAk:  { de: "Aktivierung",  en: "Activation",        el: "Ενεργοποίηση" },
+    kLz:  { de: "Lizenz",       en: "Licence",           el: "Άδεια" },
+    kLm:  { de: "Limits",       en: "Limits",            el: "Όρια" }
   };
 
   function skuOf(card) {
@@ -144,6 +157,46 @@
     if (ref && ref.parentNode) ref.parentNode.insertBefore(head, ref.nextSibling);
     else side.insertBefore(head, side.firstChild);
     side.classList.add("sof-panel-on");                     // CSS versteckt nativen h1
+    fitTitle(head.querySelector(".sof-title"));
+    buildFacts(side, info);
+  }
+
+  /* Titel schrittweise verkleinern, bis er in EINE Zeile passt (kein Umbruch) */
+  function fitTitle(el) {
+    if (!el) return;
+    var sizes = [27, 25, 23, 21, 19];
+    for (var i = 0; i < sizes.length; i++) {
+      el.style.setProperty("font-size", sizes[i] + "px", "important");
+      el.style.setProperty("white-space", "nowrap", "important");
+      if (el.scrollWidth <= el.clientWidth) return;         // passt
+    }
+    el.style.setProperty("white-space", "normal", "important"); // Notfall: doch umbrechen
+  }
+
+  /* ---- Etappe 2: Facts-Grid unter der Kaufbox ---- */
+  function fact(k, v) {
+    return '<div class="sof-f"><div class="sof-fk">'+esc(k)+'</div><div class="sof-fv">'+esc(v)+'</div></div>';
+  }
+  function buildFacts(side, info) {
+    var host = side.querySelector(".details-product-purchase") ||
+               side.querySelector(".product-details-module:last-of-type") || side;
+    if (!host || host.parentNode.querySelector(".sof-facts")) return;   // idempotent
+
+    var ed = attr("Edition"), co = attr("Kerne"), lm = attr("Limits");
+    var rows = "";
+    if (ed) rows += fact(pick(T.kEd), ed);
+    if (co) rows += fact(pick(T.kCo), co);
+    if (info) rows += fact(pick(T.kLt), pick(info.ltyp));
+    rows += fact(pick(T.kLa), pick(T.mult));               // Sprache: konstant Mehrsprachig
+    if (info) rows += fact(pick(T.kAk), info.akt);
+    rows += fact(pick(T.kLz), pick(T.perm2));              // Lizenz: konstant Dauerhaft
+    if (lm) rows += fact(pick(T.kLm), lm);
+    if (!rows) return;
+
+    var box = document.createElement("div");
+    box.className = "sof-facts";
+    box.innerHTML = rows;
+    host.parentNode.insertBefore(box, host.nextSibling);   // direkt unter die Kaufbox
   }
 
   /* Produktseite: Lizenzform live aus dem DOM lesen. Nie cachen. */
