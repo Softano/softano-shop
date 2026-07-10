@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v5 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v6 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -8,10 +8,10 @@
    v3: blendet auf der Produktseite die Attributzeile "Lizenzform" aus
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
-   v5: KEIN globaler Cache mehr. v3/v4 haben den Wert in <html> bzw. window
-       gespeichert und wurden stale: OnPageSwitch feuert vor dem Re-Render,
-       also schrieb der naechste Scan den alten Wert zurueck. Der Wert steht
-       ohnehin im DOM -> window.sofLizenzform() liest ihn live aus.
+   v5: KEIN globaler Cache mehr (Stale-Bug behoben, live aus DOM lesen).
+   v6: CI-PANEL Etappe 1 (Kopf). Versteckt alle Panel-Attributzeilen ausser
+       Hersteller, rendert Eyebrow/Titel-Split + Zustand-Badge + Lizenzform-
+       Chip + statische Chips oberhalb des Preises. Attribute aus dem DOM.
    ===================================================================== */
 (function () {
   "use strict";
@@ -25,6 +25,36 @@
     "33220","33230","33240","33250","33260","33270","33280","33410","33420","33430",
     "33440","33450","33460"
   ].forEach(function (s) { PREOWNED[s] = 1; });
+
+  /* ---- Sprache aus dem Pfad (wie Megamenu) ---- */
+  function lang() {
+    var p = location.pathname;
+    if (/^\/de(\/|$)/.test(p)) return "de";
+    if (/^\/el(\/|$)/.test(p)) return "el";
+    var h = (document.documentElement.lang || "").toLowerCase();
+    if (h.indexOf("de") === 0) return "de";
+    if (h.indexOf("el") === 0) return "el";
+    return "en";
+  }
+  function pick(o) { return o[lang()] || o.en; }
+
+  /* ---- Attribut-Titel, die als Kundentext NIE sichtbar sein duerfen ---- */
+  var HIDE_ATTR = /^\s*(Lizenzform|Eyebrow|Titel|Edition|Kerne|Limits)\s*:/;
+
+  /* ---- Ableitung Lizenzform -> Zustand + Chip ---- */
+  var LF = {
+    Retail:  { zustand: "Neu",       chip: { de: "Retail · Vollversion",   en: "Retail · full version",   el: "Retail · πλήρης έκδοση" } },
+    CSP:     { zustand: "Neu",       chip: { de: "Volumenlizenz · CSP",    en: "Volume licence · CSP",    el: "Άδεια Volume · CSP" } },
+    OEM:     { zustand: "Neu",       chip: { de: "OEM · System Builder",   en: "OEM · System Builder",    el: "OEM · System Builder" } },
+    Volumen: { zustand: "Pre-Owned", chip: { de: "Volumenlizenz · MAK",    en: "Volume licence · MAK",    el: "Άδεια Volume · MAK" } }
+  };
+  var T = {
+    perp: { de: "Dauerlizenz",  en: "Perpetual licence", el: "Μόνιμη άδεια" },
+    mult: { de: "Mehrsprachig", en: "Multilingual",      el: "Πολύγλωσσο" },
+    bits: { de: "64-Bit",       en: "64-bit",            el: "64-bit" },
+    newB: { de: "Neu",          en: "New",               el: "Νέα" },
+    poB:  { de: "Pre-Owned",    en: "Pre-Owned",         el: "Pre-Owned" }
+  };
 
   function skuOf(card) {
     var el = card.querySelector(".grid-product__sku");
@@ -57,6 +87,65 @@
     box.appendChild(el);                                  // unter das Ribbon
   }
 
+  /* ---- Panel-Bausteine ---- */
+  function esc(x){ return (x==null?"":String(x)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  /* liest ein Panel-Attribut ("Titel", "Eyebrow", ...) live aus dem DOM */
+  function attr(name) {
+    var re = new RegExp("^\\s*" + name + "\\s*:");
+    var rows = document.querySelectorAll(".details-product-attribute");
+    for (var i = 0; i < rows.length; i++) {
+      var t = rows[i].querySelector(".details-product-attribute__title");
+      var v = rows[i].querySelector(".details-product-attribute__value");
+      if (t && v && re.test(t.textContent || "")) return (v.textContent || "").trim();
+    }
+    return null;
+  }
+
+  /* alle Panel-Attributzeilen ausblenden (Hersteller bleibt sichtbar) */
+  function hideAttrRows() {
+    var rows = document.querySelectorAll(".details-product-attribute");
+    for (var i = 0; i < rows.length; i++) {
+      var t = rows[i].querySelector(".details-product-attribute__title");
+      if (t && HIDE_ATTR.test(t.textContent || "")) rows[i].classList.add("sof-attr");
+    }
+  }
+
+  function chip(txt, cls){ return '<span class="sof-p-chip'+(cls?" "+cls:"")+'">'+esc(txt)+'</span>'; }
+
+  function buildHead() {
+    var side = document.querySelector(".product-details__sidebar");
+    if (!side) return;
+    if (side.querySelector(".sof-panel-head")) return;      // idempotent
+    var eyebrow = attr("Eyebrow"), titel = attr("Titel");
+    if (!eyebrow && !titel) return;                          // kein Panel-Produkt
+
+    var lf = window.sofLizenzform();
+    var info = lf && LF[lf] ? LF[lf] : null;
+    var isPO = info && info.zustand === "Pre-Owned";
+
+    var chips = chip(pick(T.bits)) + chip(pick(T.mult)) + chip(pick(T.perp));
+    var badge = info
+      ? '<span class="sof-p-badge '+(isPO?"po":"new")+'">'+esc(isPO?pick(T.poB):pick(T.newB))+'</span>'
+      : "";
+    var lfchip = info ? chip(pick(info.chip), "lf") : "";
+
+    var head = document.createElement("div");
+    head.className = "sof-panel-head";
+    head.innerHTML =
+      (eyebrow ? '<div class="sof-p-eyebrow">'+esc(eyebrow)+'</div>' : "") +
+      (titel   ? '<div class="sof-p-title">'+esc(titel)+'</div>'   : "") +
+      '<div class="sof-p-chips">'+chips+'</div>' +
+      '<div class="sof-p-badges">'+badge+lfchip+'</div>';
+
+    var h1 = side.querySelector(".product-details__product-title");
+    var sku = side.querySelector(".product-details__product-sku");
+    var ref = sku || h1;
+    if (ref && ref.parentNode) ref.parentNode.insertBefore(head, ref.nextSibling);
+    else side.insertBefore(head, side.firstChild);
+    side.classList.add("sof-panel-on");                     // CSS versteckt nativen h1
+  }
+
   /* Produktseite: Lizenzform live aus dem DOM lesen. Nie cachen. */
   function readLizenzform() {
     var rows = document.querySelectorAll(".details-product-attribute");
@@ -70,12 +159,6 @@
     return null;
   }
 
-  /* Attributzeile ausblenden (Brand bleibt sichtbar) */
-  function syncAttr() {
-    var hit = readLizenzform();
-    if (hit) hit.row.classList.add("sof-attr");     // idempotent
-  }
-
   /* Datenquelle fuer Phase 2 (CI-Panel): immer aktuell, nie stale. */
   window.sofLizenzform = function () {
     var hit = readLizenzform();
@@ -85,7 +168,8 @@
   function scan() {
     var cards = document.querySelectorAll(".grid-product");
     for (var i = 0; i < cards.length; i++) mark(cards[i]);
-    syncAttr();
+    hideAttrRows();
+    buildHead();
   }
 
   var pending = false;
