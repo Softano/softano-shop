@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v9 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v10 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -9,6 +9,8 @@
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
    v5: KEIN globaler Cache mehr (Stale-Bug behoben, live aus DOM lesen).
+   v10: Mittelpunkt "\u00b7" NUR im Titel entfernen (Standard 16-Core); in
+   Chips/Facts bleibt er als CI-Trenner.
    v9: Facts-Grid unter den KOPF statt unter die Kaufbox (Info oben gebuendelt).
    v8: Titel-Auto-Fit (kein Zeilenumbruch) + Etappe 2 Facts-Grid.
    v7: Panel-Kopf an Prototyp-Optik angeglichen (bdg/tchips-Klassen).
@@ -132,6 +134,7 @@
     if (side.querySelector(".sof-panel-head")) return;      // idempotent
     var eyebrow = attr("Eyebrow"), titel = attr("Titel");
     if (!eyebrow && !titel) return;                          // kein Panel-Produkt
+    if (titel) titel = titel.replace(/\s*\u00b7\s*/g, " ").trim();  // "Standard · 16-Core" -> "Standard 16-Core"
 
     var lf = window.sofLizenzform();
     var info = lf && LF[lf] ? LF[lf] : null;
