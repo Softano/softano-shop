@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — ZUSTAND-BADGE v8 (Phase 1: nur Volumen-Server, 33 SKUs)
+   SOFTANO.EU — ZUSTAND-BADGE v9 (Phase 1: nur Volumen-Server, 33 SKUs)
    Setzt "Pre-Owned" als zweites Label unter das "Live Delivery"-Ribbon
    auf Produktkarten in Kategorie-Listen.
    Quelle: generierte SKU-Liste (Klassifizierung v3, Zustand=Pre-Owned).
@@ -9,7 +9,8 @@
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig) und
        (Ecwid rendert keine pro-Attribut-Klasse -> Textmatch noetig).
    v5: KEIN globaler Cache mehr (Stale-Bug behoben, live aus DOM lesen).
-   v8: Titel-Auto-Fit (kein Zeilenumbruch) + Etappe 2 Facts-Grid unter der Kaufbox.
+   v9: Facts-Grid unter den KOPF statt unter die Kaufbox (Info oben gebuendelt).
+   v8: Titel-Auto-Fit (kein Zeilenumbruch) + Etappe 2 Facts-Grid.
    v7: Panel-Kopf an Prototyp-Optik angeglichen (bdg/tchips-Klassen).
    v6: CI-PANEL Etappe 1 (Kopf). Versteckt alle Panel-Attributzeilen ausser
        Hersteller, rendert Eyebrow/Titel-Split + Zustand-Badge + Lizenzform-
@@ -178,9 +179,8 @@
     return '<div class="sof-f"><div class="sof-fk">'+esc(k)+'</div><div class="sof-fv">'+esc(v)+'</div></div>';
   }
   function buildFacts(side, info) {
-    var host = side.querySelector(".details-product-purchase") ||
-               side.querySelector(".product-details-module:last-of-type") || side;
-    if (!host || host.parentNode.querySelector(".sof-facts")) return;   // idempotent
+    var head = side.querySelector(".sof-panel-head");
+    if (!head || head.querySelector(".sof-facts")) return;   // idempotent, im Kopf verankert
 
     var ed = attr("Edition"), co = attr("Kerne"), lm = attr("Limits");
     var rows = "";
@@ -196,7 +196,7 @@
     var box = document.createElement("div");
     box.className = "sof-facts";
     box.innerHTML = rows;
-    host.parentNode.insertBefore(box, host.nextSibling);   // direkt unter die Kaufbox
+    head.appendChild(box);                                 // ans Ende des Kopfes
   }
 
   /* Produktseite: Lizenzform live aus dem DOM lesen. Nie cachen. */
