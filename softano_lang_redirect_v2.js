@@ -25,7 +25,7 @@
 (function () {
   "use strict";
 
-  var TEST_MODE = true;   // <-- ERST testen. Auf false setzen zum Aktivieren.
+  var TEST_MODE = false;  // SCHARF: echte Weiterleitung aktiv (12.07.2026 verifiziert).
 
   var COOKIE = "sof_lang_done";
   var DEFAULT_LANG = "en";           // nackte Domain = EN
