@@ -87,7 +87,7 @@
     var head = hrefFor(l2)? '<a class="sof-h" href="'+hrefFor(l2)+'">'+esc(tx(l2))+'</a>'
                           : '<span class="sof-h sof-soon">'+esc(tx(l2))+'</span>';
     var nw = l2.st==="NEU" ? ' <span class="sof-nw">'+nwLabel()+'</span>' : "";
-    return '<div class="sof-col"><h4>'+head+nw+'</h4><ul>'+inner+'</ul></div>';
+    return '<div class="sof-col" style="min-width:0">'+'<h4>'+head+nw+'</h4><ul>'+inner+'</ul></div>';
   }
   function tileHTML(l2){
     var href=hrefFor(l2), nw=l2.st==="NEU"?' <span class="sof-nw">'+nwLabel()+'</span>':"";
@@ -137,6 +137,8 @@
     var host=document.createElement("div");
     host.className="sof-host"; host.id="sof-host";
     document.body.appendChild(host);
+    // Spalten an Inhaltsbreite ausrichten -> gleichmaessige Abstaende (fix: Windows-Spalte)
+    (function(){ var s=document.createElement("style"); s.textContent=".sof-mega .sof-col{min-width:0}"; (document.head||document.documentElement).appendChild(s); })();
 
     harvest(menu);
     hideNative(menu);
