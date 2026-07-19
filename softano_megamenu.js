@@ -98,10 +98,13 @@
   function featHTML(i){
     var f=FEAT[i]; if(!f) return "";
     var txt=f[lang()]||f.en, img=f.img;
-    var im = img? '<img class="sof-fimg" src="'+img+'" alt="">':"";
+    var imst = 'position:absolute;right:14px;top:50%;bottom:auto;transform:translateY(-50%);max-height:190px;max-width:42%;';
+    var im = img? '<img class="sof-fimg" src="'+img+'" alt="" style="'+imst+'">':"";
     var L=lang(), href = f.slug ? (location.origin+(L==="en"?"":"/"+L)+"/products/"+f.slug) : "#";
-    return '<a class="sof-feat'+(img?' sof-hasimg':'')+'" href="'+href+'">'+im
-      +'<div class="sof-ftext"><div class="sof-ftag">'+esc(tx(I18N.tag))+'</div>'
+    var cst = img? ' style="min-height:236px;padding-bottom:20px;"' : '';
+    var tst = img? ' style="max-width:58%;"' : '';
+    return '<a class="sof-feat'+(img?' sof-hasimg':'')+'" href="'+href+'"'+cst+'>'+im
+      +'<div class="sof-ftext"'+tst+'><div class="sof-ftag">'+esc(tx(I18N.tag))+'</div>'
       +'<div class="sof-ft">'+esc(txt[0])+'</div><div class="sof-fs">'+esc(txt[1])+'</div></div>'
       +'<span class="sof-fbtn">'+esc(tx(I18N.btn))+'</span></a>';
   }
@@ -137,8 +140,19 @@
 
     harvest(menu);
     hideNative(menu);
-    // Top-Labels der umbenannten Punkte anzeigen (nur Anzeige; native Links unveraendert)
-    (function(){ var RL={0:1,2:1}; for(var _i=0;_i<topLinks.length && _i<TREE.length;_i++){ if(RL[_i]) topLinks[_i].textContent = tx(TREE[_i]).toUpperCase(); } })();
+    // Top-Labels der umbenannten Punkte DAUERHAFT anzeigen (gegen Ecwid-Re-Render)
+    (function(){
+      var RL={0:1,2:1};
+      function applyLabels(){
+        var cur=(headerTile||document).querySelectorAll("a.ins-header__menu-link-title");
+        for(var k in RL){ var idx=parseInt(k,10), el=cur[idx]; if(!el) continue;
+          var want=tx(TREE[idx]).toUpperCase(); if(el.textContent!==want) el.textContent=want; }
+      }
+      applyLabels();
+      try{ var mo=new MutationObserver(applyLabels);
+           mo.observe(headerTile||document.body,{subtree:true,childList:true,characterData:true}); }catch(e){}
+      setTimeout(applyLabels,300); setTimeout(applyLabels,1200); setTimeout(applyLabels,3000);
+    })();
 
     // Natives Flyout robust ausblenden (klassen-unabhängig):
     // jedes Element in einem menu-link, das NICHT der Top-Link ist und
