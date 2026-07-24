@@ -158,10 +158,16 @@
     (function(){
       var RL={0:1,2:1};
       function noTon(s){ return s.replace(/\u0386/g,"\u0391").replace(/\u0388/g,"\u0395").replace(/\u0389/g,"\u0397").replace(/\u038a/g,"\u0399").replace(/\u038c/g,"\u039f").replace(/\u038e/g,"\u03a5").replace(/\u038f/g,"\u03a9").replace(/\u03aa/g,"\u0399").replace(/\u03ab/g,"\u03a5"); }
+      function setLbl(el,want){
+        var i,n;
+        for(i=0;i<el.childNodes.length;i++){ n=el.childNodes[i];
+          if(n.nodeType===3 && n.nodeValue.trim()){ if(n.nodeValue!==want) n.nodeValue=want; return; } }
+        el.insertBefore(document.createTextNode(want), el.firstChild);
+      }
       function applyLabels(){
         var cur=(headerTile||document).querySelectorAll("a.ins-header__menu-link-title");
         for(var k in RL){ var idx=parseInt(k,10), el=cur[idx]; if(!el) continue;
-          var want=noTon(tx(TREE[idx]).toUpperCase()); if(el.textContent!==want) el.textContent=want; }
+          var want=noTon(tx(TREE[idx]).toUpperCase()); setLbl(el,want); }
       }
       applyLabels();
       try{ var mo=new MutationObserver(applyLabels);
