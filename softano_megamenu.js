@@ -159,9 +159,11 @@
       var RL={0:1,2:1};
       function noTon(s){ return s.replace(/\u0386/g,"\u0391").replace(/\u0388/g,"\u0395").replace(/\u0389/g,"\u0397").replace(/\u038a/g,"\u0399").replace(/\u038c/g,"\u039f").replace(/\u038e/g,"\u03a5").replace(/\u038f/g,"\u03a9").replace(/\u03aa/g,"\u0399").replace(/\u03ab/g,"\u03a5"); }
       function setLbl(el,want){
-        var i,n;
+        var i,n,tail;
         for(i=0;i<el.childNodes.length;i++){ n=el.childNodes[i];
-          if(n.nodeType===3 && n.nodeValue.trim()){ if(n.nodeValue!==want) n.nodeValue=want; return; } }
+          if(n.nodeType===3 && n.nodeValue.trim()){
+            tail=(n.nodeValue.match(/\s+$/)||[""])[0];
+            if(n.nodeValue!==want+tail) n.nodeValue=want+tail; return; } }
         el.insertBefore(document.createTextNode(want), el.firstChild);
       }
       function applyLabels(){
