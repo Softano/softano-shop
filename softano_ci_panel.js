@@ -1,41 +1,33 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v13 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v14 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
-   Auslieferung wie v12: ueber eine Custom App mit Scope
-   customize_storefront. Ecwid laedt das Script im Storefront-Lifecycle
-   (via app.ecwid.com/script.js?ID), nicht daneben — der router-sichere
-   Weg. KEIN DOM-Eingriff ausserhalb der Sidebar.
+   Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
+   customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
 
-   Gegenueber v12 geaendert:
-   - MERKMALSNAMEN: v12 suchte nach "Eyebrow", "Titel", "Kerne", "Limits".
-     Diese Anzeigenamen gibt es nicht mehr. Neu wird nach allen drei
-     Sprachfassungen gesucht, damit das Panel unabhaengig davon
-     funktioniert, in welcher Sprache die Seite laeuft.
-   - ECHTE WERTE STATT ANNAHMEN: v12 verdrahtete Sprache ("Mehrsprachig"),
-     Lizenz ("Dauerhaft"), Architektur ("64-Bit") und die Aktivierung
-     ueber eine Tabelle je Lizenzform fest. Alle vier stehen inzwischen
-     als gepflegte Merkmale am Produkt und werden jetzt ausgelesen. Damit
-     stimmt das Panel auch bei Abonnements (Proxmox) und bei Produkten
-     ohne Lizenzform.
-   - ZUSTAND: kommt jetzt aus dem Merkmal "Zustand" statt aus der
-     Lizenzform abgeleitet zu werden. Wirkt dadurch auch bei den 77
-     Produkten ohne Lizenzform.
-   - "64-Bit" als Chip entfaellt ersatzlos: dafuer gibt es kein Merkmal,
-     die Angabe waere eine unbelegte Behauptung.
+   Gegenueber v13 geaendert:
+   1. CHIP "Lizenzmodell" ENTFAELLT im Panel. Grund: Der Wert
+      ("Dauerlizenz") stand wortgleich in der Chip-Leiste unter der
+      Beschreibung, nur wenige Zentimeter darunter — zwei fast gleiche
+      Chip-Reihen sahen nach einem Darstellungsfehler aus. Das Merkmal
+      bleibt in HIDE_KEYS, wird also weiterhin aus der Rohliste
+      ausgeblendet: die Angabe steht bereits zweimal im
+      Beschreibungstext, eine dritte Stelle waere zu viel.
+      Uebrig im Panel: Plattform und Sprachversion.
+   2. ZERTIFIKAT-HINWEIS bei Pre-Owned. Direkt unter den Badges,
+      oberhalb des Preises. Erscheint nur, wenn das Merkmal "Zustand"
+      auf Pre-Owned/Refurbished steht — bei Neuware gar nicht.
+   3. Sonst unveraendert gegenueber v13.
 
    AUFTEILUNG (in ATTR/PANEL unten in einer Zeile aenderbar):
      Kopf   : Produktlinie, Variante
      Badges : Zustand, Lizenzform
-     Chips  : Plattform, Sprachversion, Lizenzmodell
+     Hinweis: Loeschungszertifikat (nur Pre-Owned)
+     Chips  : Plattform, Sprachversion
      Facts  : Edition, Lizenzumfang, Lizenzform, Aktivierung,
               Downgrade-Rechte, Nutzungsdauer
-   Alles davon wird aus der nativen Attributliste ausgeblendet, damit
-   nichts doppelt auf der Seite steht. Was NICHT im Panel landet, bleibt
-   als Datenblatt unter der Beschreibung stehen: Hersteller,
-   Produktfamilie, Version, Lizenzierung, Lieferart, Lieferumfang,
-   Support & Updates.
 
-   CSS: unveraendert v5.13 / v5.14b / v5.15 im Ecwid-Custom-CSS-Feld.
+   CSS: v5.13 / v5.14b / v5.15 unveraendert, NEU v5.24 (Merkmalsliste,
+   Zertifikat-Hinweis, Schatten) im Ecwid-Custom-CSS-Feld.
    ===================================================================== */
 (function () {
   "use strict";
@@ -58,11 +50,7 @@
   }
   function pick(o) { return o[lang()] || o.en; }
 
-  /* ---- Die Anzeigenamen der Merkmale in allen drei Sprachen.
-     Gesucht wird immer gegen ALLE Fassungen, nicht nur gegen die der
-     aktuellen Sprache — so bleibt das Panel stabil, falls die
-     Spracherkennung und der tatsaechlich gerenderte Name auseinander-
-     laufen (z. B. auf praefixlosen Seiten). ---- */
+  /* ---- Die Anzeigenamen der Merkmale in allen drei Sprachen. ---- */
   var ATTR = {
     line:      ["Product line", "Produktlinie", "Σειρά προϊόντος"],
     variant:   ["Variant", "Variante", "Παραλλαγή"],
@@ -80,7 +68,9 @@
     term:      ["Licence term", "Nutzungsdauer", "Διάρκεια χρήσης"]
   };
 
-  /* Alles, was das Panel selbst zeigt, wird aus der Rohliste entfernt. */
+  /* Alles, was das Panel selbst zeigt ODER bewusst unterdrueckt, wird aus
+     der Rohliste entfernt. "model" steht hier weiterhin drin, obwohl es
+     seit v14 keinen Chip mehr gibt — siehe Kopfkommentar Punkt 1. */
   var HIDE_KEYS = ["line", "variant", "condition", "channel", "edition",
                    "quantity", "platform", "language", "model",
                    "activation", "downgrade", "term"];
@@ -93,6 +83,13 @@
     kAk: { de: "Aktivierung",      en: "Activation",       el: "Ενεργοποίηση" },
     kDg: { de: "Downgrade-Rechte", en: "Downgrade rights", el: "Δικαιώματα downgrade" },
     kTe: { de: "Nutzungsdauer",    en: "Licence term",     el: "Διάρκεια χρήσης" }
+  };
+
+  /* ---- Zertifikat-Hinweis, nur bei Pre-Owned (v14) ---- */
+  var CERT = {
+    de: "Inklusive Lizenz- und Löschungszertifikat des Vorbesitzers",
+    en: "Includes the previous owner's licence and deletion certificate",
+    el: "Περιλαμβάνεται πιστοποιητικό άδειας και διαγραφής του προηγούμενου κατόχου"
   };
 
   /* ---- Zustand: welcher Wert bedeutet gebraucht? ---- */
@@ -153,8 +150,8 @@
     var zustand = attr("condition");
     var isPO = zustand ? PRE_OWNED.test(zustand) : false;
 
-    /* Chips: nur echte Werte, keine Annahmen. Leere fallen weg. */
-    var tchips = [attr("platform"), attr("language"), attr("model")]
+    /* v14: nur noch Plattform und Sprachversion. Leere fallen weg. */
+    var tchips = [attr("platform"), attr("language")]
       .filter(function (x) { return !!x; })
       .map(function (x) { return "<span>" + esc(x) + "</span>"; })
       .join("");
@@ -169,6 +166,16 @@
       ? '<span class="sof-bdg ch">' + esc(kanal) + "</span>"
       : "";
 
+    /* v14: Zertifikat-Hinweis, ausschliesslich bei Pre-Owned */
+    var cert = isPO
+      ? '<div class="sof-cert"><span class="sof-cert-ic" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" ' +
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round"><path d="M9 12l2 2 4-4"/>' +
+        '<circle cx="12" cy="12" r="9"/></svg></span>' +
+        '<span class="sof-cert-tx">' + esc(pick(CERT)) + "</span></div>"
+      : "";
+
     var head = document.createElement("div");
     head.className = "sof-panel-head";
     head.innerHTML =
@@ -176,7 +183,8 @@
       (titel   ? '<div class="sof-title">'   + esc(titel)   + "</div>" : "") +
       (tchips  ? '<div class="sof-tchips">'  + tchips  + "</div>" : "") +
       (badge || lfchip
-        ? '<div class="sof-badges">' + badge + lfchip + "</div>" : "");
+        ? '<div class="sof-badges">' + badge + lfchip + "</div>" : "") +
+      cert;
 
     var h1  = side.querySelector(".product-details__product-title");
     var sku = side.querySelector(".product-details__product-sku");
