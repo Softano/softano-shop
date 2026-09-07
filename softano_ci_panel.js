@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v14 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v15 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -16,6 +16,10 @@
    2. ZERTIFIKAT-HINWEIS bei Pre-Owned. Direkt unter den Badges,
       oberhalb des Preises. Erscheint nur, wenn das Merkmal "Zustand"
       auf Pre-Owned/Refurbished steht — bei Neuware gar nicht.
+      v15 (07.09.): Text gekuerzt, damit er in der ~340px breiten
+      Seitenspalte in ALLEN drei Sprachen einzeilig bleibt, ohne die
+      Schrift verkleinern zu muessen. "des Vorbesitzers" entfaellt —
+      steht ausfuehrlich im Abschnitt "Rechtssichere Gebrauchtsoftware".
    3. Sonst unveraendert gegenueber v13.
 
    AUFTEILUNG (in ATTR/PANEL unten in einer Zeile aenderbar):
@@ -87,9 +91,9 @@
 
   /* ---- Zertifikat-Hinweis, nur bei Pre-Owned (v14) ---- */
   var CERT = {
-    de: "Inklusive Lizenz- und Löschungszertifikat des Vorbesitzers",
-    en: "Includes the previous owner's licence and deletion certificate",
-    el: "Περιλαμβάνεται πιστοποιητικό άδειας και διαγραφής του προηγούμενου κατόχου"
+    de: "Inkl. Lizenz- und Löschungszertifikat",
+    en: "Incl. licence and deletion certificate",
+    el: "Πιστοποιητικό άδειας & διαγραφής"
   };
 
   /* ---- Zustand: welcher Wert bedeutet gebraucht? ---- */
