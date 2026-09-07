@@ -1,0 +1,1317 @@
+/* ==========================================================
+   SOFTANO Custom CSS · v5.3
+   Stand: 17. Mai 2026
+   --------------------------------------------------------
+   Basis: v5.2 FINAL (15. Mai 2026) — vollständig unverändert übernommen
+   Ergänzungen v5.3 (am Ende dieser Datei):
+   - CONTACT US-Spalte visuell als erste Spalte (Grid order)
+   - Trust-Block-Anker von .ins-tile__contacts auf Grid-Container
+     verlagert, damit Logo+Trust trotz Reorder weiter rechts bleibt
+   ========================================================== */
+
+
+/* ==========================================================
+   ███████████████████  v5.2 BASIS  ███████████████████
+   ========================================================== */
+
+
+/* System page background color */
+.ins-tiles--system {
+  background-color: #f0f0f0 !important;
+}
+
+/* Announcement-Bar Hover-Underline */
+.ins-tile--announcement-bar .ins-tile__text p a:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: currentcolor;
+    transform: scaleX(0) scaleY(1.2);
+    transform-origin: right center;
+    transition: transform .4s cubic-bezier(.785, .135, .15, .86);
+}
+.ins-tile--announcement-bar .ins-tile__text p a:hover:after {
+    transform: scaleX(1) scaleY(1.2);
+    transform-origin: left center;
+}
+.ins-tile--announcement-bar .ins-tile__text p a {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0 1px 5px;
+    word-wrap: break-word;
+    position: relative;
+    cursor: pointer;
+}
+.ins-tile--announcement-bar .ins-tile__text a,
+.ins-tile--announcement-bar .ins-tile__text a:visited {
+    color: #E8F5F9;
+    opacity: 1;
+    border-bottom: none;
+}
+
+.ins-tiles { background-color: white; }
+
+#tile-contact-info-x2BY9c .set-bg-color-\[backing\] {
+    background-color: #E8F5F9;
+}
+
+/* Payment icons in footer */
+.ins-tile--footer .ins-tile__copyright:after {
+    content: "";
+    display: block;
+    background: url("https://i.imgur.com/VNiYhY6.png") no-repeat center;
+    height: 300px;
+    background-size: auto 32px;
+    margin-bottom: -120px;
+    margin-top: -110px;
+}
+
+@media (max-width: 599px) {
+    .ins-tile--footer .ins-tile__copyright:after {
+        content: "";
+        display: block;
+        background: url("https://i.imgur.com/VNiYhY6.png") no-repeat center;
+        height: 64px;
+        display: block;
+        transform: scale(1.1);
+        background-size: 100%;
+        margin-bottom: -10px;
+        margin-top: -1px;
+    }
+}
+
+/* Category-Collection Grid */
+@media (min-width: 768px) {
+    #tile-category-collection-NWbdRJ .ins-tile__category-collection {
+        grid-template-columns: repeat(auto-fit, 15%) !important;
+    }
+}
+@media (max-width: 768px) {
+    #tile-category-collection-NWbdRJ .ins-tile__category-collection {
+        grid-template-columns: repeat(auto-fit, 30%) !important;
+    }
+}
+
+/* 24-hour Service Center und IT Resellers Sektion-Höhen */
+#tile-call-to-action-tpkXoo { max-height: 550px !important; }
+.ins-tile--cta.ins-tile--story-left .ins-tile__wrap,
+.ins-tile--cta.ins-tile--story-left .section__content,
+.ins-tile--cta.ins-tile--story-left .grid-layout-with-bleed { margin-top: -30px !important; }
+#tile-call-to-action-ieY5uE { max-height: 400px !important; }
+.ins-tiles--900 .ins-tile--cta.ins-tile--story-right .ins-tile__wrap,
+.ins-tiles--900 .ins-tile--cta.ins-tile--story-right .section__content,
+.ins-tiles--900 .ins-tile--cta.ins-tile--story-right .grid-layout-with-bleed { margin-top: -110px !important; }
+
+@media (max-width: 900px) {
+    #tile-call-to-action-tpkXoo { max-height: none !important; }
+    .ins-tile--cta.ins-tile--story-left .ins-tile__wrap,
+.ins-tile--cta.ins-tile--story-left .section__content,
+.ins-tile--cta.ins-tile--story-left .grid-layout-with-bleed { margin-top: -50px !important; }
+    #tile-call-to-action-ieY5uE { max-height: none !important; }
+    #tile-call-to-action-ieY5uE .ins-tile__wrap,
+#tile-call-to-action-ieY5uE .section__content,
+#tile-call-to-action-ieY5uE .grid-layout-with-bleed { margin-top: -20vw !important; }
+    #tile-call-to-action-ieY5uE .ins-tile__body { margin-top: -20vw; }
+}
+
+@media (max-width: 580px) {
+    #w11-grid { grid-template-columns: 1fr !important; }
+}
+
+
+/* ==========================================================
+   PRODUKT-DETAIL-SEITE
+   ========================================================== */
+
+.product-details__product-description {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.product-details .product-details__description {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+
+.product-details__description {
+    margin-top: -60px !important;
+}
+
+.details-gallery__main-image-wrapper {
+    max-height: 485px !important;
+}
+.details-gallery__picture {
+    max-height: 485px !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+.product-details__product-title {
+    font-size: 22px !important;
+}
+
+.product-details-module__btn-more {
+    display: none !important;
+}
+.product-details__general-info .product-details-module__content {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.grid-product__price-label {
+    display: none !important;
+}
+
+/* VAT-Label pro Sprache */
+.details-product-price-tax__name {
+    font-size: 0 !important;
+}
+.details-product-price-tax__name::before {
+    font-size: 15px !important;
+}
+[lang="en"] .details-product-price-tax__name::before {
+    content: "VAT " !important;
+}
+[lang="de"] .details-product-price-tax__name::before {
+    content: "MwSt. " !important;
+}
+[lang="el"] .details-product-price-tax__name::before {
+    content: "ΦΠΑ " !important;
+}
+
+
+/* ==========================================================
+   HEADER & TRUST-ELEMENTE
+   ========================================================== */
+
+/* Suchfeld im Header — Hellblau angleichen */
+.ins-header__search-input,
+.ins-header__search input,
+.ec-header__search input,
+.ec-header__search-input,
+input[type="search"] {
+    background-color: #E8F5F9 !important;
+}
+
+/* "1. 2. 3."-Trust-Bullets — Hellblau angleichen */
+#tile-custom-KYmUWc .feature-card {
+    background-color: #E8F5F9 !important;
+}
+
+
+/* ==========================================================
+   SOFTANO Trust & Payment Block
+   ========================================================== */
+
+.softano-trust-block {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 20px;
+    font-family: 'Roboto', system-ui, sans-serif;
+    background: #FFFFFF;
+}
+
+.softano-row {
+    margin-bottom: 36px;
+}
+
+.softano-row:last-child {
+    margin-bottom: 0;
+}
+
+.softano-row-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin: 0 0 18px;
+}
+
+.softano-slots {
+    display: grid;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.softano-row:nth-child(1) .softano-slots { grid-template-columns: repeat(6, 1fr); }
+.softano-row:nth-child(2) .softano-slots { grid-template-columns: repeat(6, 1fr); }
+.softano-row:nth-child(3) .softano-slots { grid-template-columns: repeat(8, 1fr); }
+
+.softano-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #C5D9DF;
+    border-radius: 6px;
+    background: #FAFCFD;
+    color: #94A3B8;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.softano-slot:hover {
+    border-color: #40ADCC;
+    background: #FFFFFF;
+}
+
+.softano-slot-brand   { height: 60px; font-size: 11px; }
+.softano-slot-trust   { height: 60px; font-size: 11px; }
+.softano-slot-payment { height: 45px; font-size: 10px; }
+
+.softano-slot img {
+    max-width: 80%;
+    max-height: 70%;
+    object-fit: contain;
+}
+
+/* Sprach-Switch */
+.softano-trust-block .lang-en,
+.softano-trust-block .lang-de,
+.softano-trust-block .lang-el { display: none; }
+
+[lang="en"] .softano-trust-block .lang-en,
+[lang="de"] .softano-trust-block .lang-de,
+[lang="el"] .softano-trust-block .lang-el { display: inline; }
+
+html:not([lang]) .softano-trust-block .lang-en { display: inline; }
+
+@media (max-width: 768px) {
+    .softano-trust-block { padding: 32px 16px; }
+    .softano-row { margin-bottom: 28px; }
+    .softano-row:nth-child(1) .softano-slots,
+    .softano-row:nth-child(2) .softano-slots { grid-template-columns: repeat(3, 1fr); }
+    .softano-row:nth-child(3) .softano-slots { grid-template-columns: repeat(4, 1fr); }
+    .softano-slot-brand   { height: 50px; }
+    .softano-slot-trust   { height: 50px; }
+    .softano-slot-payment { height: 40px; }
+}
+
+@media (max-width: 480px) {
+    .softano-row:nth-child(1) .softano-slots,
+    .softano-row:nth-child(2) .softano-slots { grid-template-columns: repeat(2, 1fr); }
+    .softano-row:nth-child(3) .softano-slots { grid-template-columns: repeat(4, 1fr); }
+}
+
+
+/* ==========================================================
+   SOFTANO FOOTER — Präzise Overrides für Lightspeed-Tailwind
+   ========================================================== */
+
+/* === Outer Grid (Layer 3 im DOM): eigenes 4-Col-Grid statt Subgrid === */
+.ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 40px !important;
+    width: 100% !important;
+}
+
+/* === Jede Spalte (Layer 4): nimmt 1 Slot ein, eigenes Single-Col-Grid === */
+.ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid > div {
+    grid-column: span 1 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto 1fr !important;
+    gap: 18px 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* === Spalten-Titles (uppercase) sitzen in Row 1 === */
+.ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid > div > .uppercase {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    color: #94A3B8 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+}
+
+/* === Inner Links Container (Layer 5): platt machen zu Single-Col === */
+.ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid > div > div {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+/* === Mx-auto Outer Container: volle Breite statt w-fit === */
+.ins-tile--footer .ins-tile__main-part > .mx-auto,
+.ins-tile--footer .ins-tile__main-part > .grid.w-fit {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* === Padding Main-Part === */
+.ins-tile--footer .ins-tile__main-part {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+}
+
+/* === FOOTER LINKS: Color + Hover + Animated Underline === */
+.ins-tile--footer a.ins-tile__link,
+.ins-tile--footer .ins-tile__footer-menu a,
+.ins-tile--footer .ins-tile__contact-info a {
+    position: relative !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    color: #E8F5F9 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    padding-bottom: 2px !important;
+    transition: color 0.2s ease !important;
+    border-bottom: none !important;
+    max-width: 100% !important;
+}
+
+/* Hover Color */
+.ins-tile--footer a.ins-tile__link:hover,
+.ins-tile--footer .ins-tile__footer-menu a:hover,
+.ins-tile--footer .ins-tile__contact-info a:hover {
+    color: #0FB4A5 !important;
+}
+
+/* Animated Underline ::after */
+.ins-tile--footer a.ins-tile__link::after,
+.ins-tile--footer .ins-tile__footer-menu a::after,
+.ins-tile--footer .ins-tile__contact-info a::after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 1px !important;
+    background-color: currentcolor !important;
+    transform: scaleX(0) scaleY(1.2) !important;
+    transform-origin: right center !important;
+    transition: transform .4s cubic-bezier(.785, .135, .15, .86) !important;
+}
+
+.ins-tile--footer a.ins-tile__link:hover::after,
+.ins-tile--footer .ins-tile__footer-menu a:hover::after,
+.ins-tile--footer .ins-tile__contact-info a:hover::after {
+    transform: scaleX(1) scaleY(1.2) !important;
+    transform-origin: left center !important;
+}
+
+/* Contact-Info: Adress- und Telefon-Zeilen Styling */
+.ins-tile--footer .ins-tile__contact-info p,
+.ins-tile--footer .ins-tile__contact-info span,
+.ins-tile--footer .ins-tile__contact-info div:not(.uppercase) {
+    color: #E8F5F9 !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
+/* === Bottom-Bar: dunklerer Hintergrund === */
+.ins-tile--footer .ins-tile__copyright-wrap,
+.ins-tile--footer .ins-tile__bottom-bar,
+.ins-tile--footer .ins-tile__footer-menu {
+    background-color: #25292D !important;
+}
+
+/* === Bottom-Bar Legal-Links: HORIZONTAL === */
+.ins-tile--footer .ins-tile__footer-menu,
+.ins-tile--footer .ins-tile__footer-menu > div,
+.ins-tile--footer .ins-tile__footer-menu > nav {
+    display: block !important;
+    width: 100% !important;
+}
+
+.ins-tile--footer .ins-tile__footer-menu ul {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px 24px !important;
+    grid-template-columns: none !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: center !important;
+}
+
+.ins-tile--footer .ins-tile__footer-menu li {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+.ins-tile--footer .ins-tile__footer-menu a {
+    font-size: 13px !important;
+    color: #94A3B8 !important;
+}
+
+.ins-tile--footer .ins-tile__footer-menu a:hover {
+    color: #0FB4A5 !important;
+}
+
+/* === Bottom-Bar Copyright + Sprachschalter === */
+.ins-tile--footer .ins-tile__copyright {
+    color: #94A3B8 !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+}
+
+.ins-tile--footer .ins-tile__bottom-bar {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+/* === Lightspeed-Default-Logo unten ausblenden === */
+.ins-tile--footer .ins-tile__copyright-wrap img,
+.ins-tile--footer .ins-tile__copyright img,
+.ins-tile--footer .ins-tile__footer-logo,
+.ins-tile--footer [class*="footer-logo"],
+.ins-tile--footer .ins-tile__bottom-bar img {
+    display: none !important;
+}
+
+
+/* === Footer Mobile-Responsive === */
+@media (max-width: 900px) {
+    .ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 36px 28px !important;
+    }
+    .ins-tile--footer .ins-tile__main-part {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+}
+
+@media (max-width: 540px) {
+    .ins-tile--footer .ins-tile__main-part .col-span-full.grid.grid-cols-subgrid {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    .ins-tile--footer .ins-tile__footer-menu ul {
+        gap: 8px 16px !important;
+    }
+}
+
+/* === END · v4 BASIS === */
+
+
+/* ==========================================================
+   ███████████████  v5 ERGÄNZUNGEN (12. Mai 2026)  ███████████████
+   ========================================================== */
+
+
+/* ==========================================================
+   FEATURED SOFTWARE SOLUTIONS — Hover-Effekt
+   Teal-Border + Sanfter Zoom + Navy-Caption auf Hover
+   ========================================================== */
+
+body div.section__grid-item [class*="aspect-"] {
+    transition: box-shadow 300ms ease !important;
+    box-shadow: inset 0 0 0 0 transparent;
+}
+
+body div.section__grid-item .section__image {
+    transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+    will-change: transform;
+}
+
+body div.section__grid-item .section__caption {
+    transition: color 250ms ease !important;
+}
+
+@media (hover: hover) {
+    body div.section__grid-item:hover [class*="aspect-"] {
+        box-shadow: inset 0 0 0 2px #0FB4A5 !important;
+    }
+    body div.section__grid-item:hover .section__image {
+        transform: scale(1.04) !important;
+    }
+    body div.section__grid-item:hover .section__caption {
+        color: #0F2D87 !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body div.section__grid-item .section__image { transition: none !important; }
+    body div.section__grid-item:hover .section__image { transform: none !important; }
+}
+
+
+/* ==========================================================
+   FOOTER SYMMETRIE — CATEGORIES auf eine Spalte
+   Theme rendert CATEGORIES standardmäßig 2-3 Sub-Cols breit.
+   Wir zwingen es auf 1 Spalte für Symmetrie mit den anderen 3.
+   ========================================================== */
+
+body footer [class*="xl:col-span-2"][class*="2xl:col-span-3"] {
+    grid-column: span 1 / span 1 !important;
+}
+
+body footer .grid-cols-subgrid[class*="xl:col-span-2"][class*="2xl:col-span-3"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+
+/* ==========================================================
+   FOOTER BOTTOM-BAR — Legal-Links horizontal in 8-Spalten-Grid
+   7 Legal-Links Zeile 1, Copyright + Sprachen + Lightspeed Zeile 2,
+   Disclaimer Zeile 3 (volle Breite)
+   ========================================================== */
+
+body footer div.grid.grid-cols-subgrid:has(> button.ins-tile__link[aria-label*="Cookie"]),
+body footer div.grid.grid-cols-subgrid:has(> a.ins-tile__link[href*="/pages/terms"]) {
+    display: grid !important;
+    grid-template-columns: repeat(7, max-content) 1fr !important;
+    grid-auto-rows: auto !important;
+    column-gap: 18px !important;
+    row-gap: 14px !important;
+    align-items: center !important;
+}
+
+body footer div.grid.grid-cols-subgrid > a.ins-tile__link,
+body footer div.grid.grid-cols-subgrid > button.ins-tile__link {
+    white-space: nowrap !important;
+}
+
+/* Copyright: Zeile 2 links */
+body footer div.grid.grid-cols-subgrid > div.break-words {
+    grid-row: 2 !important;
+    grid-column: 1 / 5 !important;
+    justify-self: start !important;
+    margin-top: 6px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Sprachen + Lightspeed: Zeile 2 rechts */
+body footer div.grid.grid-cols-subgrid > div.flex.flex-wrap-reverse {
+    grid-row: 2 !important;
+    grid-column: 5 / -1 !important;
+    justify-self: end !important;
+    margin-top: 6px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Divider + Disclaimer: Zeile 3, volle Breite */
+body footer div.grid.grid-cols-subgrid > div.ins-tile__divider {
+    grid-row: 3 !important;
+    grid-column: 1 / -1 !important;
+    margin-top: 6px !important;
+}
+
+
+/* ==========================================================
+   FOOTER FINAL POLISH
+   ========================================================== */
+
+/* 1. Sprachen ↔ Lightspeed Abstand */
+body footer div.flex.flex-wrap-reverse.justify-between {
+    gap: 28px !important;
+}
+
+/* 2. Trennlinien aus Bottom-Bar entfernen (überschreibt obige border-top) */
+body footer div.grid.grid-cols-subgrid > div.break-words,
+body footer div.grid.grid-cols-subgrid > div.flex.flex-wrap-reverse {
+    border-top: none !important;
+    padding-top: 0 !important;
+}
+
+/* 3. Legal Disclaimer zentriert */
+body footer div.col-span-full.ins-tile__divider {
+    text-align: center !important;
+}
+
+/* 4. Schriftgrößen homogen */
+body footer .uppercase {
+    font-size: 14px !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1.5 !important;
+    margin-bottom: 6px !important;
+}
+
+body footer a.ins-tile__link[aria-label],
+body footer div.col-span-1 p,
+body footer div.col-span-1 > div:not([class*="grid"]) {
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+}
+
+/* v5.2 FIX (15. Mai 2026): Selektor durch .ins-tile__copyright-wrap eingeschränkt
+   — diese 13px-Regel matched jetzt NUR Bottom-Bar Legal-Links, nicht mehr die
+   ONLINESHOP-Spalte im Haupt-Footer. */
+body footer .ins-tile__copyright-wrap div.grid.grid-cols-subgrid > a.ins-tile__link,
+body footer .ins-tile__copyright-wrap div.grid.grid-cols-subgrid > button.ins-tile__link,
+body footer .ins-tile__copyright-wrap div.grid.grid-cols-subgrid > div.break-words,
+body footer .ins-tile__copyright-wrap div.grid.grid-cols-subgrid > div.flex.flex-wrap-reverse {
+    font-size: 13px !important;
+}
+
+body footer div.col-span-full.ins-tile__divider p {
+    font-size: 13px !important;
+    line-height: 1.7 !important;
+}
+
+/* === END · v5 ERGÄNZUNGEN === */
+
+
+/* ==========================================================
+   v5.1 PATCH — 12. Mai 2026
+   Punkt 4: Lightspeed-Baseline mit EN·DE·EL (vertikal zentriert)
+   Punkt 5: Contact-Us-Block per transform nach oben justiert
+   ========================================================== */
+
+/* Punkt 4: Sprachen + Lightspeed vertikal zentriert */
+body footer div.flex.flex-wrap-reverse.justify-between {
+    align-items: center !important;
+}
+
+/* Punkt 5: Kontakt-Block nach oben justieren — Justierwert: translateY(-10px)
+   Falls noch zu tief → Wert erhöhen (-15px, -20px)
+   Falls jetzt zu hoch → Wert verringern (-5px, -7px) */
+.ins-tile__contacts {
+    transform: translateY(-4px) !important;
+}
+
+/* === END · v5.1 PATCH === */
+
+
+/* ==========================================================
+   SOFTANO Trust-Block — absolut positioniert rechts vom Footer-Grid
+   Stand: 12. Mai 2026
+   ========================================================== */
+
+/* Anker-Element bekommt position: relative */
+.ins-tile--footer .ins-tile__contacts {
+    position: relative !important;
+}
+
+/* Trust-Block ::after wird absolut nach RECHTS aus der Spalte heraus positioniert */
+.ins-tile--footer .ins-tile__contacts::after {
+    display: block !important;
+    position: absolute !important;
+    top: -45px !important;
+    left: calc(100% + 60px) !important;
+    width: 417px !important;
+    padding-top: 60px !important;
+    background-image: url("https://d2gt4h1eeousrn.cloudfront.net/123703327/header-fcHJMd/GsGf8Ax-200x200.png") !important;
+    background-repeat: no-repeat !important;
+    background-position: 0 0 !important;
+    background-size: 160px auto !important;
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+    color: rgba(158, 158, 158, 100) !important;
+    text-align: justify !important;
+    hyphens: auto !important;
+    white-space: pre-line !important;
+    content: "Modern software expertise for businesses:\A\A Softano is one of the modern providers of professional software solutions and digital licensing in Europe. Our focus lies on original software from leading manufacturers — quickly available, reliably licensed, and backed by personal support. A clear online shop, attractive prices, and professional consulting help businesses, IT partners, and private customers find the right software solution easily and securely." !important;
+}
+
+/* Deutsch */
+html:lang(de) .ins-tile--footer .ins-tile__contacts::after {
+    content: "Modernes Software-Know-how für Unternehmen\A\A Softano zählt zu den modernen Anbietern für professionelle Softwarelösungen und digitale Lizenzierung in Europa. Unser Fokus liegt auf originaler Software führender Hersteller – schnell verfügbar, zuverlässig lizenziert und mit persönlichem Support. Ein übersichtlicher Onlineshop, attraktive Preise und professionelle Beratung helfen Unternehmen, IT-Partnern und Privatkunden dabei, die passende Softwarelösung einfach und sicher zu finden." !important;
+}
+
+/* Griechisch */
+html:lang(el) .ins-tile--footer .ins-tile__contacts::after {
+    content: "Σύγχρονη τεχνογνωσία λογισμικού για επιχειρήσεις\A\A Η Softano συγκαταλέγεται στους σύγχρονους παρόχους επαγγελματικών λύσεων λογισμικού και ψηφιακής αδειοδότησης στην Ευρώπη. Προσφέρουμε γνήσιο λογισμικό από κορυφαίους κατασκευαστές – άμεσα διαθέσιμο, αξιόπιστα αδειοδοτημένο και με προσωπική υποστήριξη, ώστε επιχειρήσεις, συνεργάτες IT και ιδιώτες να βρίσκουν εύκολα και με ασφάλεια τη σωστή λύση λογισμικού." !important;
+}
+
+/* Nur auf breiten Viewports sichtbar */
+@media (max-width: 1535px) {
+    .ins-tile--footer .ins-tile__contacts::after {
+        display: none !important;
+    }
+}
+
+
+/* ==========================================================
+   v5.2 FIX TEIL 2 — Kontaktinfos auf 14px
+   Ecwid setzt md:text-[12px] auf den Kontakt-Inhalt, das
+   überschreiben wir hier explizit.
+   ========================================================== */
+
+body footer.ins-tile--footer .md\:text-\[12px\] {
+    font-size: 14px !important;
+}
+
+
+/* ============================================================
+   Softano Server License Configurator — Hero Banner
+   ============================================================ */
+.softano-banner {
+  display: block;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  text-decoration: none;
+  position: relative;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px rgba(15, 23, 42, 0.05),
+    0 12px 40px -4px rgba(15, 23, 42, 0.1);
+  transition:
+    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.softano-banner:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 24px rgba(20, 184, 166, 0.1),
+    0 20px 56px -4px rgba(20, 184, 166, 0.22);
+}
+
+.softano-banner:focus-visible {
+  outline: 3px solid #14B8A6;
+  outline-offset: 4px;
+}
+
+.softano-banner svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* CTA button micro-interaction */
+.softano-banner__cta-rect,
+.softano-banner__cta-arrow {
+  transition: fill 200ms ease, transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.softano-banner:hover .softano-banner__cta-rect { fill: #0F766E; }
+.softano-banner:hover .softano-banner__cta-arrow { transform: translateX(6px); }
+
+/* Quote card subtle lift on hover */
+.softano-banner__quote-card {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.softano-banner:hover .softano-banner__quote-card {
+  transform: translate(0, -3px);
+}
+
+/* === END · v5.2 BASIS === */
+
+
+/* ==========================================================
+   ███████████████  v5.4.1 PATCH (17. Mai 2026)  ███████████████
+   CONTACT US-Spalte visuell als erste Spalte links
+   + Trust-Block (Logo+Titel+Text) bleibt rechts.
+   --------------------------------------------------------
+   Reorder per JS-Snippet (siehe Custom-JS-Feld).
+   CSS-only Reorder ging nicht (Lightspeed-Subgrid neutralisiert
+   `order` an dieser Stelle).
+
+   Trust-Block-Strategie:
+   Anker bleibt .ins-tile__contacts (wie ursprünglich v5.1).
+   Da Contacts jetzt in Spalte 1 (ganz links) sitzt, muss das
+   ::after-Pseudo weit nach rechts geschoben werden — über die
+   drei anderen Spalten + den ursprünglichen 60px Logo-Offset
+   hinweg.
+
+   Berechnung:
+   - 4-Spalten-Grid, gap=40px
+   - 1 Grid-Spaltenbreite = 100% von .ins-tile__contacts (= ein
+     Spaltenwrapper, der die ganze Spalte einnimmt)
+   - 3 weitere Spaltenbreiten + 3 Gaps rechts vom Contacts-
+     linken Rand: 100% + 3*100% + 3*40px = 400% + 120px
+   - Plus 60px Logo-Offset: 400% + 180px
+   ========================================================== */
+
+/* Stelle v5.1-Anker-Verhältnis wieder her (Override des v5.4-Reset) */
+.ins-tile--footer .ins-tile__contacts {
+    position: relative !important;
+}
+
+/* Trust-Block ::after: weit nach rechts über alle anderen Spalten */
+.ins-tile--footer .ins-tile__contacts::after {
+    left: calc(400% + 180px) !important;
+    right: auto !important;
+}
+
+/* === END · v5.4.1 PATCH === */
+
+/* === Softano · Instant-Site-Kopfmenü kompakter (17" und kleiner) === */
+/* 1) Schriftgröße der Menü-Titel – sicherer Direkt-Override */
+.ins-header__menu-link-title {
+  font-size: 16px !important;     /* Standard ist größer */
+  letter-spacing: 0 !important;
+}
+/* 2) Abstand zwischen den Menüpunkten enger */
+.ins-header__menu-inner { gap: 14px !important; }
+/* 3) Stufenweise enger ab Laptop-Breiten */
+@media (max-width: 1440px) {
+  .ins-header__menu-link-title { font-size: 15px !important; }
+  .ins-header__menu-inner { gap: 10px !important; }
+}
+@media (max-width: 1280px) {
+  .ins-header__menu-link-title { font-size: 14px !important; }
+  .ins-header__menu-inner { gap: 7px !important; }
+}
+
+
+/* === Softano v5.5 — CTA-Buttons global auf CI-Teal (ersetzt Schwarz/Outline) === */
+.ec-store .form-control--main .form-control__button {
+  background-color: #23B8A6 !important;
+  border-color:     #23B8A6 !important;
+  color: #fff !important;
+  transition: background-color .2s ease, border-color .2s ease !important;
+}
+.ec-store .form-control--main .form-control__button:hover {
+  background-color: #0f7d70 !important;   /* --teal-d */
+  border-color:     #0f7d70 !important;
+}
+/* Kategorie-Karten: "Jetzt kaufen" ist dort Outline → auf gefüllt Teal angleichen */
+.ec-store .grid-product__button .form-control__button {
+  background-color: #23B8A6 !important;
+  border-color:     #23B8A6 !important;
+  color: #fff !important;
+}
+.ec-store .grid-product__button .form-control__button:hover {
+  background-color: #0f7d70 !important;
+  border-color:     #0f7d70 !important;
+}
+
+
+
+
+/* === Softano v5.5b — Produktseite "In den Warenkorb" (echtes Ecwid-Storefront) === */
+.ec-store .details-product-purchase__add-to-bag .form-control__button {
+  background-color: #23B8A6 !important;
+  border-color:     #23B8A6 !important;
+  color: #fff !important;
+  transition: background-color .2s ease, border-color .2s ease !important;
+}
+.ec-store .details-product-purchase__add-to-bag .form-control__button:hover {
+  background-color: #0f7d70 !important;
+  border-color:     #0f7d70 !important;
+}
+
+/* === Softano v5.5c — Homepage-Karussell "Jetzt kaufen" (Instant-Site-Kachel) === */
+/* Farbe läuft über color→currentColor, deshalb color statt background setzen */
+.ins-tile__product-card .ins-control--solid .ins-control__button {
+  color: #23B8A6 !important;
+  transition: color .2s ease !important;
+}
+.ins-tile__product-card .ins-control--solid .ins-control__button:hover {
+  color: #0f7d70 !important;
+}
+.ins-tile__product-card .ins-control--solid .ins-control__button .ins-control__text {
+  color: #fff !important;   /* Text weiß, damit lesbar auf Teal */
+}
+
+
+
+/* === Softano v5.5d — Warenkorb "Weiter" (Checkout-Button) === */
+.ec-store .ec-cart__button--checkout .form-control__button {
+  background-color: #23B8A6 !important;
+  border-color:     #23B8A6 !important;
+  color: #fff !important;
+  transition: background-color .2s ease, border-color .2s ease !important;
+}
+.ec-store .ec-cart__button--checkout .form-control__button:hover {
+  background-color: #0f7d70 !important;
+  border-color:     #0f7d70 !important;
+}
+.ec-store .ec-cart__button--checkout .form-control__button-text {
+  color: #fff !important;
+}
+
+
+/* ---------------------------------------------------------------
+   HINWEIS (11.07.2026): v5.7 (Live-Delivery-Ribbon → Teal) + v5.7-fix
+   + v5.7-fix2 wurden ENTFERNT. Grund: Ribbon-Farben werden jetzt NATIV
+   pro Produkt gesteuert (Import): Pre-Owned = Navy #1E3A8A, Neu = Teal
+   #0f7d70. Die alte v5.7-Regel überfärbte ALLE Ribbons teal per
+   !important und hätte die native Navy/Teal-Trennung blockiert.
+   --------------------------------------------------------------- */
+
+
+/* === Softano v5.5e — ALLE Ecwid-Primary-Buttons (Checkout-Schritte: Continue, Place Order, …)
+   an der Wurzel auf CI-Teal. Ersetzt Ecwids #191919-Default. === */
+.ec-store .form-control--primary .form-control__button {
+  background-color: #23B8A6 !important;
+  border-color:     #23B8A6 !important;
+  color: #fff !important;
+  transition: background-color .2s ease, border-color .2s ease !important;
+}
+.ec-store .form-control--primary .form-control__button:hover {
+  background-color: #0f7d70 !important;
+  border-color:     #0f7d70 !important;
+}
+.ec-store .form-control--primary .form-control__button-text {
+  color: #fff !important;
+}
+
+
+
+/* === Softano v5.8 — Native Instant-Site-Solid-Buttons (Shop Now, u.ä.) → CI-Teal.
+   Gleicher currentColor-Mechanismus wie die Karussell-Buttons, aber außerhalb
+   der Produktkarten. Kein Filter → direkter color-Weg. === */
+.ins-control--solid.ins-control--button .ins-control__button {
+  color: #23B8A6 !important;
+  transition: color .2s ease !important;
+}
+.ins-control--solid.ins-control--button .ins-control__button:hover {
+  color: #0f7d70 !important;
+}
+.ins-control--solid.ins-control--button .ins-control__button .ins-control__text {
+  color: #fff !important;
+}
+
+
+/* === Softano v5.8-fix — Text in nativen Solid-Buttons sitzt in .ins-control__wrap
+   (nicht .ins-control__text) → dort weiß erzwingen === */
+.ins-control--solid.ins-control--button .ins-control__button .ins-control__wrap {
+  color: #fff !important;
+  --fg-accented-color: #fff !important;
+  --button-color: #fff !important;
+}
+
+
+/* === Softano v5.8-fix2 — Text in Video-Tile-Buttons (Shop Now): System-Selektor
+   mit voller Spezifität überschreiben. Farbe kommt aus --button-color / --fg-accented-color. === */
+.ins-tile--video.ins-tile--with-system-settings .ins-tile__button .ins-control__button,
+.ins-tile--video.ins-tile--with-system-settings .ins-tile__button .ins-control__button .ins-control__wrap,
+.ins-tile--video.ins-tile--with-system-settings .ins-tile__button .ins-control__button .ins-control__text {
+  --button-color: #fff !important;
+  --fg-accented-color: #fff !important;
+}
+
+
+/* === Softano v5.8-fix3 — Text in Instant-Site-Solid-Buttons (CTA- UND Video-Tiles):
+   Farbe kommt aus --button-color / --fg-accented-color. Beide Tile-Typen + Variablen. === */
+.ins-tile--with-system-settings .ins-tile__button .ins-control__button,
+.ins-tile--with-system-settings .ins-tile__button .ins-control__button .ins-control__text,
+.ins-tile--with-system-settings .ins-tile__button .ins-control__button .ins-control__wrap {
+  --button-color: #fff !important;
+  --fg-accented-color: #fff !important;
+}
+
+
+
+.ins-tile--cta.ins-tile--with-system-settings .ins-tile__button>.ins-control--solid .ins-control__text, 
+.ins-tile--cta.ins-tile--with-system-settings .ins-tile__button>.ins-control--outline:hover .ins-control__text,
+.ins-tile--video.ins-tile--with-system-settings .ins-tile__button>.ins-control--solid .ins-control__text, 
+.ins-tile--video.ins-tile--with-system-settings .ins-tile__button>.ins-control--outline:hover .ins-control__text,
+.ins-tile--slider.ins-tile--with-system-settings .ins-tile__button>.ins-control--solid .ins-control__text, 
+.ins-tile--slider.ins-tile--with-system-settings .ins-tile__button>.ins-control--outline:hover .ins-control__text,
+.ins-tile--with-system-settings .ins-tile__product-card .product-card-buy-button>.ins-control--solid .ins-control__text, 
+.ins-tile--with-system-settings .ins-tile__product-card .product-card-buy-button>.ins-control--outline:hover .ins-control__text {
+    filter: none
+}
+
+
+
+.ins-tile--cover.ins-tile--with-system-settings .ins-tile__button--primary>.ins-control--solid .ins-control__text, 
+.ins-tile--cover.ins-tile--with-system-settings .ins-tile__button--primary>.ins-control--outline:hover .ins-control__text {
+    filter: none
+}
+
+
+.ins-control__text {
+    font-weight: 900
+}
+
+
+
+
+/* === Softano v5.9 — Storefront-Textlinks Warenkorb/Checkout → CI-Teal
+   (Terms/Refund/Delivery/Privacy · „Change email" · „Redeem" · „Continue shopping").
+   Basis-Hook .ec-link + die realen Cart-Container aus dem DOM. === */
+.ec-store .ec-link,
+.ec-store .ec-link--muted,
+.ec-store .ec-cart__agreement a,
+.ec-store .ec-cart__credits-and-coupons a,
+.ec-store .ec-cart__email a,
+.ec-store .ec-cart__next a {
+  color: #0f7d70 !important;              /* --teal-d, kontraststark auf Weiß */
+  transition: color .2s ease !important;
+}
+.ec-store .ec-link:hover,
+.ec-store .ec-link--muted:hover,
+.ec-store .ec-cart__agreement a:hover,
+.ec-store .ec-cart__credits-and-coupons a:hover,
+.ec-store .ec-cart__email a:hover,
+.ec-store .ec-cart__next a:hover {
+  color: #0F5C50 !important;             /* --teal-dd, dunkler beim Hover */
+}
+
+
+
+/* === Softano v5.10 — Nativen „Produkt weiterempfehlen"-Block ausblenden
+   (B2B-Distributor-Ton; Social-Sharing auf Produktebene entfällt).
+   Container real aus DOM (Bild 10). === */
+.ec-store .product-details__product-share,
+.ec-store .details-product-share {
+  display: none !important;
+}
+
+
+
+/* === Softano v5.11 — Breadcrumb-Links + „Ordnen nach" → CI-Teal.
+   Nur klickbare Breadcrumb-Segmente; aktuelle Seite + Trenner bleiben neutral.
+   Klassen sind Ecwid-Standard, am Kategorie-DOM noch nicht verifiziert. === */
+
+/* Breadcrumb-Links (nicht das letzte/aktive Segment) */
+.ec-store .ec-breadcrumbs .ec-breadcrumbs__link,
+.ec-store .ec-breadcrumbs a {
+  color: #0f7d70 !important;
+  transition: color .2s ease !important;
+}
+.ec-store .ec-breadcrumbs .ec-breadcrumbs__link:hover,
+.ec-store .ec-breadcrumbs a:hover {
+  color: #0F5C50 !important;
+}
+/* Aktuelle Seite + Trennzeichen neutral halten */
+.ec-store .ec-breadcrumbs__url--current,
+.ec-store .ec-breadcrumbs__separator {
+  color: #62756f !important;
+}
+
+/* „Ordnen nach"-Dropdown-Trigger */
+.ec-store .grid__sort .grid-sort__button,
+.ec-store .grid-sort__button,
+.ec-store .grid__sort a {
+  color: #0f7d70 !important;
+  transition: color .2s ease !important;
+}
+.ec-store .grid__sort .grid-sort__button:hover,
+.ec-store .grid-sort__button:hover,
+.ec-store .grid__sort a:hover {
+  color: #0F5C50 !important;
+}
+
+
+
+/* === Softano v5.12b — (VERALTET) Zustand-Badge des ALTEN JS-Badge (.sof-cond).
+   Der JS-Badge wurde entfernt (Router-Bug); .sof-cond wird nicht mehr gerendert.
+   Regel bleibt vorerst wirkungslos stehen (schadet nicht). Ribbon-Farbe kommt
+   jetzt nativ per Import (Pre-Owned = Navy). === */
+.ec-store .grid-product__label.sof-cond-box {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.ec-store .grid-product__label .ec-label.label--custom.sof-cond {
+  background-color: #1E3A8A !important;
+  color: #1E3A8A !important;
+}
+.ec-store .grid-product__label .ec-label.label--custom.sof-cond .label_text {
+  color: #fff !important;
+}
+
+
+/* === Softano v5.13 — Attributzeile "Lizenzform" auf der Produktseite ausblenden.
+   Das Attribut ist bewusst sichtbar (DESCR), damit es im DOM landet und
+   Phase 2 (CI-Panel) es lesen kann. Die Klasse .sof-attr setzt das JS,
+   weil Ecwid keine pro-Attribut-Klasse rendert (Brand bleibt sichtbar). === */
+.ec-store .details-product-attribute.sof-attr {
+  display: none !important;
+}
+
+
+/* === Softano v5.14b — CI-Panel Etappe 1 (Kopf), randlos auf der Sidebar-Fläche.
+   Kein Rahmen/Schatten (Richtung B). Trennlinie trägt jetzt die Facts-Box. === */
+.ec-store .product-details__sidebar.sof-panel-on .product-details__product-title {
+  position: absolute !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important; clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+.ec-store .sof-panel-head {
+  font-family: Roboto, system-ui, sans-serif !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 2px 0 16px !important;
+  box-shadow: none !important;
+}
+.ec-store .sof-panel-head .sof-eyebrow {
+  font-size: 15px !important; font-weight: 500 !important;
+  letter-spacing: .04em !important; text-transform: uppercase !important;
+  color: #23B8A6 !important; margin: 0 0 3px !important;
+}
+.ec-store .sof-panel-head .sof-title {
+  font-size: 27px !important; font-weight: 700 !important;
+  line-height: 1.15 !important; color: #1E3A8A !important; margin: 0 !important;
+}
+.ec-store .sof-panel-head .sof-tchips {
+  display: flex !important; flex-wrap: wrap !important;
+  gap: 7px !important; margin: 13px 0 14px !important;
+}
+.ec-store .sof-panel-head .sof-tchips span {
+  font-size: 11.5px !important; color: #374151 !important;
+  background: #e8f6f9 !important; border: .5px solid #cfe9f0 !important;
+  border-radius: 6px !important; padding: 4px 10px !important;
+}
+.ec-store .sof-panel-head .sof-badges {
+  display: flex !important; flex-wrap: wrap !important; gap: 8px !important;
+}
+.ec-store .sof-panel-head .sof-bdg {
+  display: inline-flex !important; align-items: center !important; gap: 5px !important;
+  font-size: 12px !important; font-weight: 500 !important;
+  padding: 5px 12px !important; border-radius: 7px !important;
+}
+.ec-store .sof-panel-head .sof-bdg.pre { background: #1E3A8A !important; color: #fff !important; }
+.ec-store .sof-panel-head .sof-bdg.new { background: #23B8A6 !important; color: #fff !important; }
+.ec-store .sof-panel-head .sof-bdg.ch  {
+  background: #fff !important; color: #1E3A8A !important; border: 1px solid #1E3A8A !important;
+}
+
+
+/* === Softano v5.15 — CI-Panel Etappe 2: Facts-Grid, direkt unter dem Kopf.
+   Chip-Blau als Hintergrund, rechts bündig zur grauen Fläche. 2-Spalten. === */
+.ec-store .sof-panel-head .sof-facts {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 13px 22px !important;
+  margin: 14px 12px 2px 0 !important;   /* rechts 12px Luft zur grauen Kante */
+  padding: 15px 16px 5px !important;
+  background: #e8f6f9 !important;
+  border: .5px solid #cfe9f0 !important;
+  border-radius: 10px !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+}
+.ec-store .sof-panel-head .sof-facts .sof-f { min-width: 0 !important; }
+.ec-store .sof-panel-head .sof-facts .sof-fk {
+  font-size: 11.5px !important; color: #5b6b7a !important;
+  margin: 0 0 1px !important; line-height: 1.3 !important;
+}
+.ec-store .sof-panel-head .sof-facts .sof-fv {
+  font-size: 13px !important; color: #1f2937 !important;
+  font-weight: 500 !important; line-height: 1.35 !important;
+}
+.ec-store .sof-panel-head .sof-facts .sof-f:last-child:nth-child(odd) {
+  grid-column: 1 / -1 !important;
+}
+
+
+
+/* === Softano v5.16 — Alle grauen Flächen → CI-Hauch (#f4fafb).
+   Ersetzt die ProductPage-only-Fassung. Zwei Grau-Quellen:
+   (1) Ecwid-Storefront-Root .ecwid-productBrowser (#f9f9f9-Default) — greift
+       auf ALLEN Storefront-Seiten (Produkt/Kategorie/Warenkorb/Suche/Konto),
+       da die Basisklasse auf jedem Page-Typ sitzt.
+   (2) Instant-Site-System-Fläche .ins-tiles--system (#f0f0f0, aus v5.2) —
+       diese Regel überschreibt den Wert oben (später + !important gewinnt). === */
+.ecwid-productBrowser {
+  background-color: #f4fafb !important;
+}
+.ins-tiles--system {
+  background-color: #f4fafb !important;
+}
+
+
+/* === Softano v5.17 — Footer-Reorder CSS-only (ersetzt den entfernten JS-Reorder).
+   KONTAKT-Spalte (4. Grid-Kind, nacktes DIV mit .ins-tile__contacts) per order
+   nach vorn (links). Aeusserer Container ist echtes Grid (display:grid), daher
+   wirkt order auf die direkten Grid-Items. Kein DOM-Eingriff -> kein Router-Risiko
+   (anders als der alte body-Observer + prepend).
+   TEST: nur breiter Desktop (>1535px) — pruefen ob KONTAKT links UND Trust-Block
+   rechts korrekt erscheinen (::after haengt an .ins-tile__contacts). === */
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid {
+  display: grid !important;
+}
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid > * {
+  order: 1 !important;
+}
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid > div:has(.ins-tile__contacts),
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid > .ins-tile__contacts {
+  order: -1 !important;
+}
+
+
+
+/* === Softano v5.18 — Footer-Spaltenueberschriften nicht mehr abschneiden.
+   Ursache: Tailwind-Klasse "truncate" (overflow:hidden + nowrap + ellipsis) +
+   feste Box-Breite ~91px schnitt "CONTACT US" / "KONTAKT" / "ΕΠΙΚΟΙΝΩΝΙΑ" ab
+   (scrollW > clientW). Hier truncate-Verhalten aufheben: voll sichtbar, darf
+   bei Bedarf umbrechen. Gilt fuer alle 4 Spaltenueberschriften. === */
+.ins-tile--footer .uppercase.truncate,
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid > * .uppercase {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+
+/* === Softano v5.19 — Footer-Feinschliff (ergaenzt v5.18).
+   (a) Spaltenueberschriften: einzeilig, aber NICHT abschneiden (nowrap + sichtbar).
+       Behebt EN "CONTACT US"-Zweizeiler. Box darf so breit wie noetig werden.
+   (b) Footer-LINKS mit truncate-Klasse (z.B. langer EL-Text "Πακέτα Επιχειρηματικών
+       Λύσεων"): duerfen umbrechen statt abschneiden. === */
+
+/* (a) Ueberschriften: einzeilig, voll sichtbar */
+.ins-tile--footer .uppercase.truncate,
+.ins-tile--footer .col-span-full.grid.grid-cols-subgrid > * .uppercase {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* (b) Links: umbrechen statt abschneiden */
+.ins-tile--footer .ins-tile__link.truncate,
+.ins-tile--footer a.truncate {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  max-width: none !important;
+}
+
+
+/* === Softano v5.21 — Bottom-Bar responsive fix (Handy/schmale Screens ≤900px).
+   Container "col-span-full grid grid-cols-subgrid items-start" (3 Kinder:
+   Legal-Links / Copyright / Sprachen+Lightspeed) ist ein Subgrid, das auf
+   schmalen Screens ueberlappt. Fix: bei ≤900px zu Flex-Spalte stapeln.
+   Ueber 900px (Laptop/Desktop) bleibt die einzeilige Bottom-Bar unveraendert. === */
+@media (max-width: 900px) {
+  .ins-tile--footer .col-span-full.grid.grid-cols-subgrid.items-start {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    grid-template-columns: none !important;
+  }
+  .ins-tile--footer .col-span-full.grid.grid-cols-subgrid.items-start > * {
+    grid-column: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-self: start !important;
+    flex-wrap: wrap !important;
+  }
+  .ins-tile--footer .ins-tile__footer-menu ul {
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+  }
+}
+
+
+
+/* === Softano v5.23 — Homepage-Karussell-Ribbon: Schrift wieder fett.
+   Ersetzt nur den font-weight-Teil des entfernten v5.7-fix2. KEINE Farb-
+   Ueberschreibung (Farbe bleibt nativ/Instant-Site-teal). Betrifft nur das
+   Homepage-Karussell-Ribbon, nicht die Storefront-Karten. === */
+.ins-tile__product-label--ribbon,
+.ins-tile__product-label--ribbon .ins-tile__product-label-text,
+[class*="product-label"][class*="ribbon"] {
+  font-weight: 800 !important;
+}
+
