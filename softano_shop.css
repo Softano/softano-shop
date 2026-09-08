@@ -1315,3 +1315,231 @@ body footer.ins-tile--footer .md\:text-\[12px\] {
   font-weight: 800 !important;
 }
 
+
+/* ======================================================================
+   Softano v5.32 — CI-PANEL & DATENBLATT (konsolidiert, 08.09.2026)
+   ----------------------------------------------------------------------
+   ERSETZT die Abschnitte v5.24, v5.25, v5.26, v5.27, v5.28, v5.29,
+   v5.30 und v5.31 vollstaendig. Kein neues Verhalten: hier steht genau
+   das, was nach dem Zusammenspiel dieser acht Nachtraege wirksam war.
+   Was in den Nachtraegen spaeter wieder ueberschrieben wurde (Rahmen an
+   den Zellen, Punktlinie, rechtsbuendige Werte, Versalien in den
+   Beschriftungen, Akzentmarker, Hintergrund-als-Trennlinie), ist
+   entfallen.
+
+   NICHT ANFASSEN: v5.13 (blendet .sof-attr aus), v5.14b (Panelkopf),
+   v5.15 (Facts-Grid). Die bleiben unveraendert weiter oben stehen.
+
+   Inhalt:
+   (a) Zertifikat-Hinweis .sof-cert — nur bei Pre-Owned, einzeilig
+   (b) Schatten auf der Facts-Box des Panelkopfs
+   (c) Merkmalskarte "Technische Daten" unter der Produktbeschreibung
+   ====================================================================== */
+
+
+/* ======================================================================
+   (a) ZERTIFIKAT-HINWEIS (Pre-Owned)
+   Erzeugt vom Skript ab v15, direkt unter den Badges. Der Text ist dort
+   bewusst kurz gehalten, damit er in der ~340px breiten Seitenspalte in
+   allen drei Sprachen auf EINE Zeile passt.
+   ====================================================================== */
+
+.ec-store .sof-panel-head .sof-cert {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 12px 12px 0 0 !important;
+  padding: 8px 12px 8px 11px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbfc 100%) !important;
+  border: 1px solid #d3e9ef !important;
+  border-left: 3px solid #23B8A6 !important;
+  border-radius: 9px !important;
+  box-shadow: 0 2px 9px rgba(30, 58, 138, .07),
+              0 1px 2px rgba(30, 58, 138, .04) !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+}
+
+/* Haken im Teal-Kreis — feste Breite, faellt nie in die naechste Zeile */
+.ec-store .sof-panel-head .sof-cert .sof-cert-ic {
+  flex: 0 0 19px !important;
+  width: 19px !important;
+  height: 19px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: #23B8A6 !important;
+  color: #fff !important;
+}
+.ec-store .sof-panel-head .sof-cert .sof-cert-ic svg {
+  display: block !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.ec-store .sof-panel-head .sof-cert .sof-cert-tx {
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.25 !important;
+  letter-spacing: .005em !important;
+  color: #1E3A8A !important;
+}
+
+
+/* ======================================================================
+   (b) SCHATTEN AUF DER FACTS-BOX (ergaenzt v5.15)
+   ====================================================================== */
+
+.ec-store .sof-panel-head .sof-facts {
+  box-shadow: 0 2px 10px rgba(30, 58, 138, .07),
+              0 1px 2px rgba(30, 58, 138, .04) !important;
+}
+
+
+/* ======================================================================
+   (c) MERKMALSKARTE "TECHNISCHE DATEN"
+   Der Container hat in Ecwid keine eigene Klasse und wird deshalb ueber
+   sein direktes Kind angesprochen. Die per .sof-attr ausgeblendeten
+   Merkmale sind display:none und belegen im Raster keinen Platz.
+   ====================================================================== */
+
+.ec-store div:has(> .details-product-attribute) {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 !important;
+  margin: 12px 0 20px !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #e0ecf1 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;            /* beschneidet die Zeilenstriche */
+  box-shadow: 0 1px 8px rgba(30, 58, 138, .05) !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+}
+
+
+/* ---- Ueberschrift: erstes Rasterfeld ueber die volle Breite ---------- */
+/* Die tuerkise Linie ist ein 34px breites Hintergrundbild und betont nur
+   das Wort, statt die Karte zu teilen. */
+
+.ec-store div:has(> .details-product-attribute)::before {
+  content: "Technical data";
+  grid-column: 1 / -1 !important;
+  padding: 15px 18px 14px !important;
+  background-color: #ffffff !important;
+  background-image: linear-gradient(#23B8A6, #23B8A6) !important;
+  background-repeat: no-repeat !important;
+  background-position: 18px calc(100% - 8px) !important;
+  background-size: 34px 2px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+  color: #1E3A8A !important;
+}
+html:lang(de) .ec-store div:has(> .details-product-attribute)::before {
+  content: "Technische Daten";
+}
+html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
+  content: "Τεχνικά χαρακτηριστικά";
+}
+
+
+/* ---- Zeile: Beschriftung ueber dem Wert, beides linksbuendig --------- */
+
+.ec-store .details-product-attribute:not(.sof-attr) {
+  display: block !important;
+  position: relative !important;          /* Bezug fuer den Strich */
+  min-width: 0 !important;
+  padding: 10px 18px 11px !important;
+  background: #ffffff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: background .18s ease !important;
+}
+
+@media (hover: hover) {
+  .ec-store .details-product-attribute:not(.sof-attr):hover {
+    background: #fbfdfe !important;
+  }
+}
+
+/* Trennstrich: gehoert der ZEILE, nicht der Zelle. Er laeuft ueber die
+   volle Kartenbreite, damit er auch dort durchgeht, wo in einer Reihe
+   nur ein Merkmal steht und die zweite Haelfte leer bleibt. Der
+   Ueberstand wird vom overflow:hidden der Karte abgeschnitten. */
+.ec-store .details-product-attribute:not(.sof-attr)::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 300% !important;
+  height: 1px !important;
+  background: #edf3f6 !important;
+  pointer-events: none !important;
+}
+
+/* Beschriftung */
+.ec-store .details-product-attribute:not(.sof-attr)
+  .details-product-attribute__title {
+  display: block !important;
+  margin: 0 0 2px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  text-align: left !important;
+  white-space: normal !important;
+  color: #8494A6 !important;
+}
+
+/* Wert — getrennt wird nur zwischen Woertern, nie innerhalb */
+.ec-store .details-product-attribute:not(.sof-attr)
+  .details-product-attribute__value {
+  display: block !important;
+  margin-left: 0 !important;
+  max-width: none !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  color: #1E2B3D !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
+
+
+/* ---- Zeilen ueber die volle Kartenbreite ----------------------------- */
+/* Die letzten drei Merkmale sind bei den Microsoft-Produkten Lieferart,
+   Lieferumfang und Support & Updates. Sie stehen jeweils allein in ihrer
+   Reihe; die volle Breite haelt die Karte ruhig, weil der lange
+   Lieferumfang sonst die ganze Reihe auseinanderzieht.
+   PFLEGEHINWEIS: Angesprochen wird die POSITION, nicht der Merkmalsname.
+   Wenn bei der Hardware andere Merkmale ans Ende ruecken, wandert diese
+   Zuordnung ins Skript, wo sie am Namen haengt. */
+.ec-store .details-product-attribute:not(.sof-attr):nth-last-child(3),
+.ec-store .details-product-attribute:not(.sof-attr):nth-last-child(2),
+.ec-store .details-product-attribute:not(.sof-attr):last-child {
+  grid-column: 1 / -1 !important;
+}
+
+/* Ecwid-eigene Kennzeichnung fuer lange Werte, falls sie auftritt */
+.ec-store .details-product-attribute--long:not(.sof-attr) {
+  grid-column: 1 / -1 !important;
+}
+
+
+/* ---- Schmale Viewports: einspaltig ----------------------------------- */
+@media (max-width: 600px) {
+  .ec-store div:has(> .details-product-attribute) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* === END · Softano v5.32 ============================================== */
