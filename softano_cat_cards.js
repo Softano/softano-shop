@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v1 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v2 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -103,7 +103,14 @@
     if (V) V = V.replace(/\s*·\s*/g, " ").trim();
 
     var chips = data.chips
-      .map(function (c) { return '<span>' + esc(c) + "</span>"; })
+      .map(function (c) {
+        /* Die Lizenzform bekommt eine eigene Klasse: sie ist das
+           Unterscheidungsmerkmal zwischen sonst gleichen Produkten und
+           wird in der Kachel hervorgehoben. ALLE Auspraegungen gleich —
+           eine einzelne hervorzuheben waere Lenkung, nicht Information. */
+        var cls = c.channel ? ' class="sof-c-ch"' : "";
+        return "<span" + cls + ">" + esc(c.value) + "</span>";
+      })
       .join("");
 
     /* Der vollstaendige Name bleibt als title-Attribut erhalten, damit er
@@ -147,7 +154,11 @@
             var v = val(a, set[k]);
             /* Doppelte aussortieren: Licence channel und das Altmerkmal
                Lizenzform liefern denselben Wert. */
-            if (v && !seen[v]) { seen[v] = 1; chips.push(v); }
+            if (v && !seen[v]) {
+              seen[v] = 1;
+              /* Der dritte Eintrag in KEYS ist die Lizenzform. */
+              chips.push({ value: v, channel: (k === 2) });
+            }
           }
           paint(String(p.id), {
             line:    val(a, [LINE[lg],    LINE.en]),
