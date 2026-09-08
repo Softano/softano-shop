@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v6 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v7 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -86,6 +86,28 @@
   function esc(x) {
     return (x == null ? "" : String(x))
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  /* Steht der Wert schon im Titel? Dann waere der Chip eine reine
+     Wiederholung und faellt weg.
+
+     Zahl UND Einheit muessen zusammen passen. Die Zahl allein reicht
+     nicht: "5 Users" gegen "User-CAL 5-Pack" waere sonst eine
+     Uebereinstimmung, weil die 5 im Titel vorkommt — der Chip fiele
+     faelschlich weg. Geprueft wird deshalb Zahl + Wortstamm der
+     Einheit: "16 Cores" trifft "Standard 16-Core" (16-cor),
+     "5 Users" trifft "5-Pack" NICHT. */
+  function inTitle(value, titleLower) {
+    var probe = value.toLowerCase().replace(/\s+/g, " ").trim();
+    if (!probe) return false;
+    if (titleLower.indexOf(probe) !== -1) return true;      // wortgleich
+
+    var m = probe.match(/^(\d+)\s*(\S+)/);                  // "16 cores"
+    if (!m) return false;
+    var zahl = m[1], stamm = m[2].slice(0, 3);
+    if (stamm.length < 3) return false;
+    var re = new RegExp(zahl + "[\\s·\\-]*" + stamm);
+    return re.test(titleLower);
   }
 
   /* Wert eines Merkmals holen, erste passende Schreibweise gewinnt */
@@ -175,15 +197,18 @@
     /* Loeschzertifikat: nur bei Pre-Owned. Der Kunde soll schon in der
        Uebersicht sehen, dass die guenstige Variante belegt uebertragen
        wird — nicht erst auf der Produktseite. */
-    if (data.preOwned) {
-      var inner2 = wrap.querySelector(".grid-product__wrap-inner");
-      if (inner2 && !inner2.querySelector(".sof-c-cert")) {
-        var c2 = document.createElement("div");
-        c2.className = "sof-c-cert";
-        c2.innerHTML = '<span class="sof-c-cdot"></span>' +
-                       esc(CERT_TXT[lang()] || CERT_TXT.en);
-        inner2.appendChild(c2);
-      }
+    /* Die Zeile wird IMMER angelegt und bei Neuware nur unsichtbar
+       geschaltet. Sonst waere die Pre-Owned-Karte eine Zeile hoeher, und
+       weil der untere Block am Kartenrand verankert ist, saesse dort
+       alles darueber — auch die Artikelnummer — auf anderer Hoehe. */
+    var inner2 = wrap.querySelector(".grid-product__wrap-inner");
+    if (inner2 && !inner2.querySelector(".sof-c-cert")) {
+      var c2 = document.createElement("div");
+      c2.className = "sof-c-cert" + (data.preOwned ? "" : " sof-c-cert--leer");
+      c2.innerHTML = '<span class="sof-c-cdot"></span>' +
+                     esc(CERT_TXT[lang()] || CERT_TXT.en);
+      if (!data.preOwned) c2.setAttribute("aria-hidden", "true");
+      inner2.appendChild(c2);
     }
   }
 
@@ -226,11 +251,7 @@
                Die Lizenzform ist IMMER dabei: sie ist das Merkmal, das
                sonst gleiche Produkte im Preis trennt. */
             var isChannel = (k === 2);
-            if (!isChannel) {
-              var probe = v.toLowerCase().replace(/\s+/g, " ").trim();
-              var kern  = probe.replace(/\s*(cores?|kerne?|users?|devices?|πυρήνες)\s*$/i, "").trim();
-              if (vr.indexOf(probe) !== -1 || (kern && vr.indexOf(kern) !== -1)) continue;
-            }
+            if (!isChannel && inTitle(v, vr)) continue;
             chips.push({ value: v, channel: isChannel });
           }
           /* Streichpreis gegen tatsaechlichen Preis */
