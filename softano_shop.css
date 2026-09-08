@@ -1543,3 +1543,369 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
 }
 
 /* === END · Softano v5.32 ============================================== */
+/* ======================================================================
+   Softano v5.42 — KATEGORIE-KACHELN (konsolidiert, 08.09.2026)
+   ----------------------------------------------------------------------
+   ERSETZT v5.33 bis v5.41 vollstaendig. Kein neues Verhalten: hier steht
+   genau das, was nach dem Zusammenspiel dieser neun Nachtraege wirksam
+   war. Entfallen ist, was spaeter wieder aufgehoben wurde — die feste
+   Preishoehe aus v5.35, die Rasterspalten aus v5.33 (der Container ist
+   Flexbox), das Ribbon-Rechteck und die zwischenzeitlichen
+   Reihenfolgen.
+
+   Gehoert zum Skript softano_cat_cards.js (ab v7), eingebunden im Feld
+   Website -> Design -> JavaScript-Code.
+
+   AUFBAU EINER KARTE, von oben nach unten:
+     Bild · Produktlinie · Variante · Chips · Preis (mit Ersparnis) ·
+     Artikelnummer · Digitale Lieferung · Loeschzertifikat · Knopf
+
+   Die unteren vier Zeilen sind am Kartenboden verankert (margin-top:auto
+   an der Artikelnummer). Der freie Platz sammelt sich dadurch in der
+   Kartenmitte, wo er nicht auffaellt, statt sich zwischen die Elemente
+   zu verteilen. Nur so stehen die Knoepfe aller Karten auf einer Linie,
+   obwohl der Preisblock je nach Produkt zwei bis fuenf Zeilen hoch ist.
+   ====================================================================== */
+
+
+/* ======================================================================
+   RASTER — vier Karten pro Reihe
+   Der Container ist Flexbox, kein Raster. grid-template-columns wirkt
+   dort nicht; die Kachelbreite entscheidet, wie viele in eine Reihe
+   passen. Der Abstand wird INNEN genommen (padding), sonst passen bei
+   25% Breite plus Aussenabstand nur noch drei nebeneinander.
+   ====================================================================== */
+
+.ec-store .grid__products {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+}
+
+.ec-store .grid__products > .grid-product {
+  flex: 0 0 25% !important;
+  max-width: 25% !important;
+  box-sizing: border-box !important;
+  padding: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+@media (max-width: 1100px) {
+  .ec-store .grid__products > .grid-product {
+    flex-basis: 33.333% !important;
+    max-width: 33.333% !important;
+  }
+}
+@media (max-width: 800px) {
+  .ec-store .grid__products > .grid-product {
+    flex-basis: 50% !important;
+    max-width: 50% !important;
+  }
+}
+
+
+/* ======================================================================
+   KARTENKOERPER
+   ====================================================================== */
+
+.ec-store .grid-product__wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+}
+
+.ec-store .grid-product__wrap-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  padding: 14px 14px 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #e0ecf1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 8px rgba(30, 58, 138, .05) !important;
+  transition: box-shadow .2s ease, border-color .2s ease,
+              transform .2s ease !important;
+}
+
+@media (hover: hover) {
+  .ec-store .grid-product:hover .grid-product__wrap-inner {
+    border-color: #b9e3e8 !important;
+    box-shadow: 0 6px 20px rgba(30, 58, 138, .10) !important;
+    transform: translateY(-2px) !important;
+  }
+}
+
+
+/* ======================================================================
+   REIHENFOLGE innerhalb der Karte
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__image  { order: 1 !important; }
+.ec-store .grid-product__wrap.sof-card-on .grid-product__title  { order: 2 !important; }
+.ec-store .grid-product__wrap.sof-card-on .grid-product__price  { order: 3 !important; }
+.ec-store .grid-product__wrap.sof-card-on .grid-product__sku    { order: 4 !important; }
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del            { order: 5 !important; }
+.ec-store .grid-product__wrap.sof-card-on .sof-c-cert           { order: 5 !important; }
+.ec-store .grid-product__wrap.sof-card-on .grid-product__button { order: 6 !important; }
+
+
+/* ======================================================================
+   RIBBON — reine Schrift statt Rechteck
+   Die FARBE bleibt unangetastet: Ecwid setzt sie pro Produkt aus dem
+   Import (Neu = Teal, Pre-Owned = Navy). Wir erben sie, statt sie neu zu
+   definieren — damit bleibt der Katalog die einzige Quelle.
+   Gilt nur fuer Kategoriekacheln; das Startseiten-Karussell bleibt wie
+   es ist.
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__label {
+  top: 2px !important;
+  left: 2px !important;
+  right: auto !important;
+  z-index: 3 !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__label .ec-label {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  /* color kommt inline von Ecwid, pro Produkt — nicht ueberschreiben */
+}
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__label .label__text {
+  background: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  line-height: 1.3 !important;
+}
+
+/* Ecwid zeichnet bei manchen Ribbon-Formen eine Ecke per Pseudo-Element */
+.ec-store .grid-product__wrap.sof-card-on .grid-product__label .ec-label::before,
+.ec-store .grid-product__wrap.sof-card-on .grid-product__label .ec-label::after {
+  display: none !important;
+}
+
+
+/* ======================================================================
+   PRODUKTBILD
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__picture,
+.ec-store .grid-product__wrap.sof-card-on .grid-product__picture-additional {
+  transform: scale(1.22) !important;
+  transform-origin: center center !important;
+}
+.ec-store .grid-product__wrap.sof-card-on .grid-product__image-wrap {
+  overflow: hidden !important;
+}
+
+
+/* ======================================================================
+   KOPF — Produktlinie, Variante, Chips
+   Der vollstaendige Produktname bleibt im DOM erhalten (Browsersuche,
+   Vorlesegeraete, Aufklapptext) und wird nur optisch ausgeblendet. Im
+   Katalog ist er unveraendert — er traegt dort Suchmaschinen, Rechnungen
+   und Lizenzzertifikate.
+   ====================================================================== */
+
+.ec-store .grid-product__title-inner .sof-c-full {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+
+.ec-store .grid-product__title-inner .sof-c-head {
+  display: block !important;
+  text-align: left !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  padding: 0 2px !important;
+}
+
+.ec-store .sof-c-head .sof-c-line {
+  display: block !important;
+  margin: 0 0 2px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em !important;
+  text-transform: uppercase !important;
+  line-height: 1.3 !important;
+  color: #23B8A6 !important;
+}
+
+/* Mindesthoehe: ein Umbruch ("Standard 2-Core Add-On") darf die Karte
+   nicht gegen ihre Nachbarn verschieben. */
+.ec-store .sof-c-head .sof-c-var {
+  display: block !important;
+  margin: 0 0 8px !important;
+  min-height: 2.5em !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #1E3A8A !important;
+}
+
+.ec-store .sof-c-head .sof-c-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+}
+
+.ec-store .sof-c-head .sof-c-chips span {
+  padding: 3px 7px !important;
+  border-radius: 5px !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+  color: #374151 !important;
+  background: #e8f6f9 !important;
+  border: .5px solid #cfe9f0 !important;
+  white-space: nowrap !important;
+}
+
+/* Lizenzform hervorgehoben — sie ist das Merkmal, das sonst gleiche
+   Produkte im Preis trennt. ALLE Auspraegungen gleich: eine einzelne
+   staerker einzufaerben waere Lenkung statt Information. Die guenstigste
+   Variante hebt sich ohnehin ueber den Prozentwert hervor. */
+.ec-store .sof-c-head .sof-c-chips span.sof-c-ch {
+  background: #ffffff !important;
+  color: #1E3A8A !important;
+  border: 1px solid #1E3A8A !important;
+  font-weight: 600 !important;
+}
+
+
+/* ======================================================================
+   PREIS, ERSPARNIS, ARTIKELNUMMER
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__title,
+.ec-store .grid-product__wrap.sof-card-on .grid-product__sku,
+.ec-store .grid-product__wrap.sof-card-on .grid-product__price {
+  text-align: left !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__title {
+  margin-top: 12px !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__price {
+  margin-top: 10px !important;
+  min-height: 0 !important;
+}
+
+/* Ersparnis in Prozent. Die Zahl kommt aus dem Katalog (Streichpreis
+   gegen Verkaufspreis) und wird vom Skript berechnet. */
+.ec-store .sof-c-save {
+  display: inline-block !important;
+  float: right !important;
+  margin: 2px 0 0 8px !important;
+  padding: 3px 8px !important;
+  border-radius: 5px !important;
+  background: #1E3A8A !important;
+  color: #ffffff !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .01em !important;
+  white-space: nowrap !important;
+}
+
+/* Die Artikelnummer traegt den unteren Block: margin-top:auto schiebt
+   sie und alles danach an den Kartenboden. */
+.ec-store .grid-product__wrap.sof-card-on .grid-product__sku {
+  margin-top: auto !important;
+  margin-bottom: 8px !important;
+  padding-top: 12px !important;
+  font-size: 11px !important;
+  opacity: .75 !important;
+}
+
+
+/* ======================================================================
+   HINWEISZEILEN — Lieferung und Loeschzertifikat
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  margin: 0 0 6px !important;
+  padding-top: 0 !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  color: #0f7d70 !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del .sof-c-dot {
+  flex: 0 0 7px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #23B8A6 !important;
+  box-shadow: 0 0 0 3px rgba(35, 184, 166, .18) !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-cert {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 10px !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+  color: #1E3A8A !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-cert .sof-c-cdot {
+  flex: 0 0 7px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #1E3A8A !important;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, .15) !important;
+}
+
+/* Das Skript legt die Zertifikatszeile in JEDER Karte an. Bei Neuware
+   wird sie hier unsichtbar geschaltet, behaelt aber ihre Hoehe — sonst
+   waere die Pre-Owned-Karte eine Zeile hoeher, und weil der untere Block
+   am Kartenboden haengt, saessen Artikelnummer und Lieferzeile dort auf
+   anderer Hoehe als in den Nachbarkarten. */
+.ec-store .grid-product__wrap.sof-card-on .sof-c-cert--leer {
+  visibility: hidden !important;
+}
+
+
+/* ======================================================================
+   KAUFEN-KNOPF
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__button {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .grid-product__button
+  .form-control__button {
+  width: 100% !important;
+}
+
+/* === END · Softano v5.42 ============================================== */
