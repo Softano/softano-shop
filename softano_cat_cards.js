@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v2 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v3 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -61,6 +61,17 @@
   };
   var LINE    = { de: "Produktlinie", en: "Product line", el: "Σειρά" };
   var VARIANT = { de: "Variante",     en: "Variant",      el: "Παραλλαγή" };
+
+  /* Lieferart: entscheidet, ob der Sofortlieferung-Hinweis erscheint.
+     Bewusst am Merkmal festgemacht und nicht an der Kategorie — sobald
+     Hardware dazukommt, faellt der Hinweis dort automatisch weg. */
+  var DELIV     = { de: "Lieferart", en: "Delivery", el: "Τρόπος παράδοσης" };
+  var ELECTRO   = /^(elektronisch|electronic|ηλεκτρονικά)/i;
+  var DELIV_TXT = {
+    de: "Digitale Lieferung in Minuten",
+    en: "Digital delivery within minutes",
+    el: "Ψηφιακή παράδοση σε λεπτά"
+  };
 
   function esc(x) {
     return (x == null ? "" : String(x))
@@ -124,6 +135,32 @@
       "</span>" +
       '<span class="sof-c-full">' + esc(full) + "</span>";
     wrap.classList.add("sof-card-on");
+
+    /* Ersparnis in Prozent, direkt am Preis. Die Zahl kommt aus dem
+       Katalog (Streichpreis gegen Verkaufspreis) und wird nicht
+       geschaetzt. Dadurch hebt sich die guenstigste Variante von selbst
+       hervor, ohne dass eine Lizenzform bevorzugt eingefaerbt wird. */
+    if (data.save) {
+      var pr = wrap.querySelector(".grid-product__price");
+      if (pr && !pr.querySelector(".sof-c-save")) {
+        var b = document.createElement("span");
+        b.className = "sof-c-save";
+        b.textContent = "−" + data.save + " %";
+        pr.insertBefore(b, pr.firstChild);
+      }
+    }
+
+    /* Sofortlieferung: nur bei elektronischer Lieferart. */
+    if (data.electro) {
+      var inner = wrap.querySelector(".grid-product__wrap-inner");
+      if (inner && !inner.querySelector(".sof-c-del")) {
+        var d = document.createElement("div");
+        d.className = "sof-c-del";
+        d.innerHTML = '<span class="sof-c-dot"></span>' +
+                      esc(DELIV_TXT[lang()] || DELIV_TXT.en);
+        inner.appendChild(d);
+      }
+    }
   }
 
   /* Eine Abfrage fuer die ganze Seite */
@@ -160,10 +197,21 @@
               chips.push({ value: v, channel: (k === 2) });
             }
           }
+          /* Streichpreis gegen tatsaechlichen Preis */
+          var save = 0;
+          var cmp = p.compareToPrice, now = p.defaultDisplayedPrice;
+          if (cmp && now && cmp > now) {
+            save = Math.round((1 - now / cmp) * 100);
+            if (save < 1) save = 0;
+          }
+          var dl = val(a, [DELIV[lg], DELIV.en]);
+
           paint(String(p.id), {
             line:    val(a, [LINE[lg],    LINE.en]),
             variant: val(a, [VARIANT[lg], VARIANT.en]),
-            chips:   chips
+            chips:   chips,
+            save:    save,
+            electro: dl ? ELECTRO.test(dl.trim()) : false
           });
         }
       })
