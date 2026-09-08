@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v4 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v5 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -71,6 +71,16 @@
     de: "Digitale Lieferung",
     en: "Digital delivery",
     el: "Ψηφιακή παράδοση"
+  };
+
+  /* Zustand: steuert den Zertifikatshinweis. Gleiche Logik wie im Panel
+     auf der Produktseite, damit Kategorie und Produkt dasselbe sagen. */
+  var COND      = { de: "Zustand", en: "Condition", el: "Κατάσταση" };
+  var PRE_OWNED = /^(pre-?owned|refurbished)/i;
+  var CERT_TXT  = {
+    de: "Inkl. Löschzertifikat",
+    en: "Incl. deletion certificate",
+    el: "Με πιστοποιητικό διαγραφής"
   };
 
   function esc(x) {
@@ -161,6 +171,20 @@
         inner.appendChild(d);
       }
     }
+
+    /* Loeschzertifikat: nur bei Pre-Owned. Der Kunde soll schon in der
+       Uebersicht sehen, dass die guenstige Variante belegt uebertragen
+       wird — nicht erst auf der Produktseite. */
+    if (data.preOwned) {
+      var inner2 = wrap.querySelector(".grid-product__wrap-inner");
+      if (inner2 && !inner2.querySelector(".sof-c-cert")) {
+        var c2 = document.createElement("div");
+        c2.className = "sof-c-cert";
+        c2.innerHTML = '<span class="sof-c-cdot"></span>' +
+                       esc(CERT_TXT[lang()] || CERT_TXT.en);
+        inner2.appendChild(c2);
+      }
+    }
   }
 
   /* Eine Abfrage fuer die ganze Seite */
@@ -205,13 +229,15 @@
             if (save < 1) save = 0;
           }
           var dl = val(a, [DELIV[lg], DELIV.en]);
+          var cd = val(a, [COND[lg], COND.en]);
 
           paint(String(p.id), {
             line:    val(a, [LINE[lg],    LINE.en]),
             variant: val(a, [VARIANT[lg], VARIANT.en]),
             chips:   chips,
             save:    save,
-            electro: dl ? ELECTRO.test(dl.trim()) : false
+            electro:  dl ? ELECTRO.test(dl.trim()) : false,
+            preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
         }
       })
