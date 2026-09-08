@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v5 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v6 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -211,15 +211,27 @@
           var p = items[i], a = p.attributes || [];
           var chips = [], seen = {};
           var set = KEYS[lg] || KEYS.en;
+          var vr = (val(a, [VARIANT[lg], VARIANT.en]) || "").toLowerCase();
           for (var k = 0; k < set.length; k++) {
             var v = val(a, set[k]);
-            /* Doppelte aussortieren: Licence channel und das Altmerkmal
-               Lizenzform liefern denselben Wert. */
-            if (v && !seen[v]) {
-              seen[v] = 1;
-              /* Der dritte Eintrag in KEYS ist die Lizenzform. */
-              chips.push({ value: v, channel: (k === 2) });
+            if (!v || seen[v]) continue;   /* Licence channel == Lizenzform */
+            seen[v] = 1;
+
+            /* Chips, deren Wert bereits im Titel steht, weglassen. Bei
+               Windows Server steht "Standard" und "16 Cores" wortgleich
+               in der Variante darueber — die Wiederholung draengt den
+               einzigen unterscheidenden Wert in eine zweite Zeile.
+               Bei den Zugriffslizenzen ("User-CAL") traegt der
+               Lizenzumfang dagegen echte Information und bleibt.
+               Die Lizenzform ist IMMER dabei: sie ist das Merkmal, das
+               sonst gleiche Produkte im Preis trennt. */
+            var isChannel = (k === 2);
+            if (!isChannel) {
+              var probe = v.toLowerCase().replace(/\s+/g, " ").trim();
+              var kern  = probe.replace(/\s*(cores?|kerne?|users?|devices?|πυρήνες)\s*$/i, "").trim();
+              if (vr.indexOf(probe) !== -1 || (kern && vr.indexOf(kern) !== -1)) continue;
             }
+            chips.push({ value: v, channel: isChannel });
           }
           /* Streichpreis gegen tatsaechlichen Preis */
           var save = 0;
