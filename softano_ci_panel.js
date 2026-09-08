@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v15 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v16 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -20,7 +20,13 @@
       Seitenspalte in ALLEN drei Sprachen einzeilig bleibt, ohne die
       Schrift verkleinern zu muessen. "des Vorbesitzers" entfaellt —
       steht ausfuehrlich im Abschnitt "Rechtssichere Gebrauchtsoftware".
-   3. Sonst unveraendert gegenueber v13.
+   3. v16 (08.09.): Griechische Anzeigenamen korrigiert. Im Backend
+      heisst die Produktlinie "Σειρά" (nicht "Σειρά προϊόντος") und das
+      Lizenzmodell "Μοντέλο αδειοδότησης" (nicht "Μοντέλο άδειας").
+      Deshalb fehlte auf griechischen Seiten die Kopfzeile und das
+      Lizenzmodell blieb in der Rohliste sichtbar. Die alten
+      Schreibweisen bleiben als Rueckfalloption in der Liste stehen.
+   4. Sonst unveraendert gegenueber v13.
 
    AUFTEILUNG (in ATTR/PANEL unten in einer Zeile aenderbar):
      Kopf   : Produktlinie, Variante
@@ -56,7 +62,7 @@
 
   /* ---- Die Anzeigenamen der Merkmale in allen drei Sprachen. ---- */
   var ATTR = {
-    line:      ["Product line", "Produktlinie", "Σειρά προϊόντος"],
+    line:      ["Product line", "Produktlinie", "Σειρά", "Σειρά προϊόντος"],
     variant:   ["Variant", "Variante", "Παραλλαγή"],
     condition: ["Condition", "Zustand", "Κατάσταση"],
     channel:   ["Licence channel", "Lizenzform", "Κανάλι αδειοδότησης"],
@@ -65,7 +71,8 @@
                 "Ποσότητα άδειας"],
     platform:  ["Platform", "Plattform", "Πλατφόρμα"],
     language:  ["Interface language", "Sprachversion", "Γλώσσα διεπαφής"],
-    model:     ["Licence model", "Lizenzmodell", "Μοντέλο άδειας"],
+    model:     ["Licence model", "Lizenzmodell", "Μοντέλο αδειοδότησης",
+                "Μοντέλο άδειας"],
     activation:["Activation", "Aktivierung", "Ενεργοποίηση"],
     downgrade: ["Downgrade rights", "Downgrade-Rechte",
                 "Δικαιώματα downgrade"],
