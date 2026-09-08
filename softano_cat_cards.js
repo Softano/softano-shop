@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v3 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v4 (08.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -68,9 +68,9 @@
   var DELIV     = { de: "Lieferart", en: "Delivery", el: "Τρόπος παράδοσης" };
   var ELECTRO   = /^(elektronisch|electronic|ηλεκτρονικά)/i;
   var DELIV_TXT = {
-    de: "Digitale Lieferung in Minuten",
-    en: "Digital delivery within minutes",
-    el: "Ψηφιακή παράδοση σε λεπτά"
+    de: "Digitale Lieferung",
+    en: "Digital delivery",
+    el: "Ψηφιακή παράδοση"
   };
 
   function esc(x) {
