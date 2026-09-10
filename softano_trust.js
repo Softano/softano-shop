@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v4 (10.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v5 (10.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -308,14 +308,20 @@
   }
 
   function berater() {
-    var side = document.querySelector(".product-details__sidebar");
-    if (!side || side.querySelector(".sof-b-card")) return;
+    /* Unter dem Produktbild, ueber der Beschreibung — nicht in der
+       Seitenspalte. Dort ist die Flaeche breit und bisher leer, und die
+       Karte konkurriert nicht mit dem Kaufknopf, den sie nur ergaenzen
+       soll. */
+    var beschr = document.querySelector(".product-details__description");
+    var ziel = beschr && beschr.parentNode ? beschr.parentNode : null;
+    if (!ziel) return;
+    if (ziel.querySelector(".sof-b-card")) return;
 
     var leute = zustaendig();
     var card = document.createElement("div");
     card.className = "sof-b-card";
     card.innerHTML = beraterKarte(leute[0]);
-    side.appendChild(card);
+    ziel.insertBefore(card, beschr);
 
     /* Wechsel nur, wenn es wirklich mehrere gibt. Ein einzelner
        Ansprechpartner, der sich selbst ersetzt, waere sinnlose Unruhe. */
