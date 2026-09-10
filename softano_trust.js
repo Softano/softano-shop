@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN & FAKTEN-LEISTE v1 (08.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN & FAKTEN-LEISTE v2 (10.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -36,42 +36,98 @@
   var BILD_BASIS =
     "https://cdn.jsdelivr.net/gh/Softano/softano-shop@main/team/";
 
-  /* ---- Kontaktweg. Bewusst allgemein, keine Durchwahlen. ------------- */
-  var MAIL = "support@softano.eu";
-  var TEL  = { nummer: "0800 588 55 22", link: "tel:0080058855222" };
+  /* ---- Kontaktweg je Sprache. Bewusst allgemein, keine Durchwahlen. --
+     Deutsch: kostenfreie deutsche Nummer. Englisch und Griechisch: die
+     griechische Nummer, weil die 0800 nur aus Deutschland erreichbar
+     ist — ein Auslaender liefe dort ins Leere. */
+  var TEL = {
+    de: { nummer: "0800 588 55 22",  link: "tel:0080058855222",
+          hint: "kostenfrei aus dem deutschen Festnetz" },
+    en: { nummer: "+30 2311 181662", link: "tel:+302311181662",
+          hint: "Greek landline rates" },
+    el: { nummer: "2311 181662",     link: "tel:+302311181662",
+          hint: "χρέωση ελληνικού σταθερού" }
+  };
 
+  /* Zielseite des Knopfes, je Sprache */
+  var B2B = { de: "/de/b2b", en: "/b2b", el: "/el/b2b" };
+
+  /* ---- Texte. Die Fakten haengen am Sortiment, nicht am Shop:
+     Software, Hardware und Komplettsysteme verlangen andere Zusagen.
+     Erkannt wird das an der obersten Kategorie in der Brotkrumenleiste.
+     Die Hardware-Zusagen sind bewusst vorsichtig formuliert — solange
+     die Lieferanten nicht feststehen, versprechen wir weder Lagerware
+     noch Lieferfristen. ------------------------------------------------ */
   var T = {
     de: {
       auge: "Beratung",
       titel: "Unsere Expertise – Ihr Vorteil",
       text: "Sprechen Sie direkt mit einem Lizenzexperten – kostenlos und unverbindlich.",
-      knopf: "Beratung anfragen",
-      telHint: "kostenfrei aus dem deutschen Festnetz",
-      f1t: "Kostenlose Lizenzberatung", f1s: "Ausführlich und herstellerunabhängig",
-      f2t: "Digitale Lieferung",        f2s: "Lizenzschlüssel und Zertifikat per E-Mail",
-      f3t: "Geprüfte Lizenzen",         f3s: "Rechtssicher und auditkonform"
+      knopf: "Beratung anfragen"
     },
     en: {
       auge: "Consulting",
       titel: "Our expertise – your advantage",
       text: "Talk directly to a licensing expert – free of charge and without obligation.",
-      knopf: "Request advice",
-      telHint: "free from German landlines",
-      f1t: "Free licensing advice", f1s: "Thorough and vendor-independent",
-      f2t: "Digital delivery",      f2s: "Licence key and certificate by e-mail",
-      f3t: "Verified licences",     f3s: "Legally sound and audit-compliant"
+      knopf: "Request advice"
     },
     el: {
       auge: "Συμβουλευτική",
       titel: "Η τεχνογνωσία μας – το πλεονέκτημά σας",
       text: "Μιλήστε απευθείας με έναν ειδικό αδειοδότησης – δωρεάν και χωρίς δέσμευση.",
-      knopf: "Ζητήστε συμβουλή",
-      telHint: "χωρίς χρέωση από γερμανικό σταθερό",
-      f1t: "Δωρεάν συμβουλές αδειοδότησης", f1s: "Αναλυτικά και ανεξάρτητα από κατασκευαστή",
-      f2t: "Ψηφιακή παράδοση",              f2s: "Κλειδί άδειας και πιστοποιητικό με e-mail",
-      f3t: "Ελεγμένες άδειες",              f3s: "Νομικά ασφαλείς και συμβατές με έλεγχο"
+      knopf: "Ζητήστε συμβουλή"
     }
   };
+
+  var FAKTEN = {
+    software: {
+      de: [["Kostenlose Lizenzberatung", "Ausführlich und herstellerunabhängig"],
+           ["Digitale Lieferung",        "Lizenzschlüssel und Zertifikat per E-Mail"],
+           ["Geprüfte Lizenzen",         "Rechtssicher und auditkonform"]],
+      en: [["Free licensing advice", "Thorough and vendor-independent"],
+           ["Digital delivery",      "Licence key and certificate by e-mail"],
+           ["Verified licences",     "Legally sound and audit-compliant"]],
+      el: [["Δωρεάν συμβουλές αδειοδότησης", "Αναλυτικά και ανεξάρτητα"],
+           ["Ψηφιακή παράδοση",              "Κλειδί και πιστοποιητικό με e-mail"],
+           ["Ελεγμένες άδειες",              "Νομικά ασφαλείς και ελεγχόμενες"]]
+    },
+    hardware: {
+      de: [["Kostenlose Konfigurationsberatung", "Passend zu Ihrer Infrastruktur"],
+           ["Geprüfte Hardware",                 "Neuware und Refurbished"],
+           ["Lieferung mit Nachweis",            "Rechnung und Herstellerunterlagen"]],
+      en: [["Free configuration advice", "Matched to your infrastructure"],
+           ["Verified hardware",         "New and refurbished"],
+           ["Documented delivery",       "Invoice and manufacturer papers"]],
+      el: [["Δωρεάν συμβουλές διαμόρφωσης", "Προσαρμοσμένες στην υποδομή σας"],
+           ["Ελεγμένος εξοπλισμός",         "Καινούριος και refurbished"],
+           ["Παράδοση με τεκμηρίωση",       "Τιμολόγιο και έγγραφα κατασκευαστή"]]
+    },
+    system: {
+      de: [["Kostenlose Projektberatung", "Hardware und Lizenzen aus einer Hand"],
+           ["Abgestimmt konfiguriert",    "Passend zum geplanten Einsatzzweck"],
+           ["Rechtssichere Lizenzierung", "Auditkonform dokumentiert"]],
+      en: [["Free project advice",     "Hardware and licences from one source"],
+           ["Configured to purpose",   "Matched to the intended workload"],
+           ["Compliant licensing",     "Documented and audit-ready"]],
+      el: [["Δωρεάν συμβουλές έργου",   "Εξοπλισμός και άδειες από μία πηγή"],
+           ["Στοχευμένη διαμόρφωση",    "Προσαρμοσμένη στη χρήση"],
+           ["Συμβατή αδειοδότηση",      "Τεκμηριωμένη και έτοιμη για έλεγχο"]]
+    }
+  };
+
+  /* Welches Sortiment? Die oberste Kategorie steht in der
+     Brotkrumenleiste. Erkannt wird an Wortstaemmen, damit es in allen
+     drei Sprachen ohne eigene Liste funktioniert. */
+  var HARDWARE = /(hardware|infrastruktur|infrastructure|εξοπλισμ|υποδομ)/i;
+  var SYSTEM   = /(komplett|complete|solution|ολοκληρωμ|συστήματα)/i;
+
+  function sortiment() {
+    var b = document.querySelector(".ec-breadcrumbs");
+    var txt = b ? b.textContent : "";
+    if (SYSTEM.test(txt))   return "system";
+    if (HARDWARE.test(txt)) return "hardware";
+    return "software";
+  }
 
   function lang() {
     var p = location.pathname;
@@ -124,7 +180,7 @@
     if (!d || d.querySelector(".sof-t-box")) return;
     if (!d.querySelector(".grid__description-inner")) return;
 
-    var x = t();
+    var x = t(), tel = TEL[lang()] || TEL.en;
     var box = document.createElement("aside");
     box.className = "sof-t-box";
     box.innerHTML =
@@ -132,10 +188,10 @@
       '<div class="sof-t-titel">' + esc(x.titel) + "</div>" +
       '<p class="sof-t-text">' + esc(x.text) + "</p>" +
       '<div class="sof-t-avs">' + avatare() + "</div>" +
-      '<a class="sof-t-knopf" href="mailto:' + MAIL + '">' +
+      '<a class="sof-t-knopf" href="' + (B2B[lang()] || B2B.en) + '">' +
         esc(x.knopf) + '<span class="sof-t-pfeil">→</span></a>' +
-      '<div class="sof-t-tel"><a href="' + TEL.link + '">' +
-        esc(TEL.nummer) + "</a><span>" + esc(x.telHint) + "</span></div>";
+      '<div class="sof-t-tel"><a href="' + tel.link + '">' +
+        esc(tel.nummer) + "</a><span>" + esc(tel.hint) + "</span></div>";
     d.appendChild(box);
     d.classList.add("sof-t-on");
   }
@@ -160,12 +216,14 @@
     if (!g || !g.parentNode) return;
     if (g.parentNode.querySelector(".sof-f-bar")) return;
 
-    var x = t();
+    var satz = (FAKTEN[sortiment()] || FAKTEN.software);
+    var f = satz[lang()] || satz.en;
+    var reihe = [ICONS.beratung, ICONS.lieferung, ICONS.geprueft];
     var bar = document.createElement("div");
     bar.className = "sof-f-bar";
-    bar.innerHTML = fakt(ICONS.beratung,  x.f1t, x.f1s) +
-                    fakt(ICONS.lieferung, x.f2t, x.f2s) +
-                    fakt(ICONS.geprueft,  x.f3t, x.f3s);
+    bar.innerHTML = f.map(function (e, i) {
+      return fakt(reihe[i], e[0], e[1]);
+    }).join("");
     g.parentNode.insertBefore(bar, g);
   }
 
