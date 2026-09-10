@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN & FAKTEN-LEISTE v2 (10.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN & FAKTEN-LEISTE v3 (10.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -42,11 +42,11 @@
      ist — ein Auslaender liefe dort ins Leere. */
   var TEL = {
     de: { nummer: "0800 588 55 22",  link: "tel:0080058855222",
-          hint: "kostenfrei aus dem deutschen Festnetz" },
+          hint: "[kostenfrei aus dem deutschen Festnetz]" },
     en: { nummer: "+30 2311 181662", link: "tel:+302311181662",
-          hint: "Greek landline rates" },
+          hint: "[Greek landline rates]" },
     el: { nummer: "2311 181662",     link: "tel:+302311181662",
-          hint: "χρέωση ελληνικού σταθερού" }
+          hint: "[χρέωση ελληνικού σταθερού]" }
   };
 
   /* Zielseite des Knopfes, je Sprache */
@@ -211,10 +211,21 @@
              "<i>" + esc(sub) + "</i></span></div>";
   }
 
+  /* Die Leiste haengt unter dem Beschreibungstext, NICHT ueber den
+     Produkten. Zwei Gruende: Auf den Ueberkategorieseiten
+     (/products/office-productivity und die drei anderen) gibt es gar
+     keine Produktliste, sondern nur Unterkategorien — dort fehlte sie
+     sonst ganz. Und links unter dem Text stand eine leere Flaeche,
+     weil der Beratungskasten rechts hoeher ist als der Text. Die
+     Leiste fuellt sie. */
   function leiste() {
-    var g = document.querySelector(".grid__products");
-    if (!g || !g.parentNode) return;
-    if (g.parentNode.querySelector(".sof-f-bar")) return;
+    var ziel = document.querySelector(".grid__description-inner");
+    if (!ziel) {                       /* Kategorie ohne Beschreibung */
+      var g = document.querySelector(".grid__products");
+      if (!g || !g.parentNode) return;
+      if (g.parentNode.querySelector(".sof-f-bar")) return;
+      ziel = null;
+    } else if (ziel.querySelector(".sof-f-bar")) return;
 
     var satz = (FAKTEN[sortiment()] || FAKTEN.software);
     var f = satz[lang()] || satz.en;
@@ -224,7 +235,13 @@
     bar.innerHTML = f.map(function (e, i) {
       return fakt(reihe[i], e[0], e[1]);
     }).join("");
-    g.parentNode.insertBefore(bar, g);
+
+    if (ziel) {
+      ziel.appendChild(bar);
+    } else {
+      var g2 = document.querySelector(".grid__products");
+      if (g2 && g2.parentNode) g2.parentNode.insertBefore(bar, g2);
+    }
   }
 
   function scan() {
