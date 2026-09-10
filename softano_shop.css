@@ -1909,3 +1909,573 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
 }
 
 /* === END · Softano v5.42 ============================================== */
+/* ======================================================================
+   Softano v5.59 — PREISZEILE, BERATUNG & ANSPRECHPARTNER
+   (konsolidiert, 10.09.2026)
+   ----------------------------------------------------------------------
+   ERSETZT v5.43 bis v5.58 vollstaendig. Kein neues Verhalten: hier steht
+   genau das, was nach dem Zusammenspiel dieser sechzehn Nachtraege
+   wirksam war.
+
+   Entfallen ist, was spaeter wieder aufgehoben wurde: die Karte in der
+   Seitenspalte (v5.51), die volle Breite (v5.53), der Prozentwert fuer
+   die Kartenbreite (v5.55) und die vier Zwischenpositionen, ueber die
+   die Karte gewandert ist.
+
+   Gehoert zu softano_trust.js (ab v8), eingebunden im Feld
+   Website -> Design -> JavaScript-Code.
+
+   Inhalt:
+   (a) Preiszeile der Produktseite: Ersparnis als Plakette, Zustands-
+       Ribbon dort ausgeblendet
+   (b) Beratungskasten neben der Kategoriebeschreibung
+   (c) Fakten-Leiste unter dem Beschreibungstext
+   (d) Ansprechpartner-Karte unter dem Produktbild
+   ====================================================================== */
+
+
+/* ======================================================================
+   (a) PREISZEILE DER PRODUKTSEITE
+
+   Ecwid gibt die Ersparnis bereits aus — wir gestalten nur, was da ist.
+   Damit kann die Zahl nie von der Kategoriekachel abweichen, es ist
+   dieselbe Quelle. Der Streichpreis bleibt zurueckhaltend: Er ist die
+   Bezugsgroesse, nicht die Botschaft.
+
+   Das Zustands-Ribbon wird in dieser Zeile ausgeblendet. Es steht
+   bereits als Badge im Panelkopf und zerschnitt hier die Zeile zwischen
+   Preis und Streichpreis. NUR auf der Produktseite — in der
+   Kategoriekachel ist dasselbe Element die einzige Quelle fuer den
+   Zustand.
+   ====================================================================== */
+
+.ec-store .details-product-price-compare__container {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+}
+
+.ec-store .product-details__product-price-discount {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  background: #1E3A8A !important;
+  color: #ffffff !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .01em !important;
+  white-space: nowrap !important;
+}
+
+.ec-store .product-details__product-price-discount
+  .details-product-price-discount__text,
+.ec-store .product-details__product-price-discount
+  .details-product-price-discount__value {
+  color: #ffffff !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+}
+
+.ec-store .details-product-price-compare__container .grid-product__price-label,
+.ec-store .details-product-price-compare__container
+  [class*="details-product-price-compare"] {
+  font-size: 13px !important;
+  color: #8494A6 !important;
+}
+
+.ec-store .product-details .product-details__product-price-row
+  .grid-product__label,
+.ec-store .product-details .product-details__product-price-row
+  .ec-label {
+  display: none !important;
+}
+
+
+/* ======================================================================
+   (b) BERATUNGSKASTEN
+
+   Die Kategoriebeschreibung wird zur zweispaltigen Flaeche: Text links,
+   Kasten rechts. Beide Spalten sind gleich hoch, und in jeder wandert
+   der untere Teil an den Kartenboden — dadurch enden Fakten-Leiste und
+   Kasten IMMER auf derselben Linie, unabhaengig davon, wie lang der
+   Text einer Kategorie ist.
+   ====================================================================== */
+
+.ec-store .grid__description.sof-t-on {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 28px !important;
+}
+
+.ec-store .grid__description.sof-t-on .grid__description-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.ec-store .sof-t-box {
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: stretch !important;
+  flex: 0 0 280px !important;
+  box-sizing: border-box !important;
+  margin-top: -22px !important;
+  padding: 16px 18px 15px !important;
+  background: #ffffff !important;
+  border: 1px solid #e0ecf1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 14px rgba(30, 58, 138, .06) !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+}
+
+.ec-store .sof-t-box .sof-t-auge {
+  margin: 0 0 8px !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: #23B8A6 !important;
+}
+
+.ec-store .sof-t-box .sof-t-titel {
+  margin: 0 0 6px !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #1E3A8A !important;
+}
+
+.ec-store .sof-t-box .sof-t-text {
+  margin: 0 0 12px !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+  color: #64748B !important;
+}
+
+
+/* ---- Mitarbeiterkreise ------------------------------------------------ */
+/* Ueberlappend wie bei einer Gruppenaufnahme — das wirkt als Team, nicht
+   als Liste. margin-top:auto schiebt diesen Block und alles darunter an
+   den Kartenboden. Solange keine Portraits im Repo liegen, zeichnet das
+   Skript Silhouetten; sie werden ohne CSS-Aenderung durch die Fotos
+   ersetzt. */
+
+.ec-store .sof-t-box .sof-t-avs {
+  display: flex !important;
+  align-items: center !important;
+  margin: auto 0 12px !important;
+  padding: 11px 0 12px !important;
+  border-top: 1px solid #eef4f7 !important;
+  border-bottom: 1px solid #eef4f7 !important;
+}
+
+.ec-store .sof-t-box .sof-t-av {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin-right: -9px !important;       /* Ueberlappung */
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: #e8f6f9 !important;
+  box-shadow: 0 0 0 3px #ffffff !important;
+}
+
+.ec-store .sof-t-box .sof-t-av img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.ec-store .sof-t-box .sof-t-av svg {
+  width: 23px !important;
+  height: 23px !important;
+  fill: #9fc6d4 !important;
+}
+
+
+/* ---- Knopf und Telefon ----------------------------------------------- */
+
+.ec-store .sof-t-box .sof-t-knopf {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  background: #23B8A6 !important;
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: background .2s ease !important;
+}
+.ec-store .sof-t-box .sof-t-knopf:hover {
+  background: #0f7d70 !important;
+  color: #ffffff !important;
+}
+.ec-store .sof-t-box .sof-t-knopf .sof-t-pfeil {
+  transition: transform .2s ease !important;
+}
+.ec-store .sof-t-box .sof-t-knopf:hover .sof-t-pfeil {
+  transform: translateX(4px) !important;
+}
+
+.ec-store .sof-t-box .sof-t-tel {
+  margin-top: 10px !important;
+  text-align: center !important;
+}
+.ec-store .sof-t-box .sof-t-tel a {
+  display: block !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #1E3A8A !important;
+  text-decoration: none !important;
+}
+.ec-store .sof-t-box .sof-t-tel span {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 11px !important;
+  color: #8494A6 !important;
+}
+
+
+/* ---- Schmale Fenster: Kasten unter den Text -------------------------- */
+@media (max-width: 1000px) {
+  .ec-store .grid__description.sof-t-on,
+  .ec-store .grid__description.sof-t-on .grid__description-inner {
+    display: block !important;
+  }
+  .ec-store .sof-t-box {
+    margin-top: 20px !important;
+    max-width: 420px !important;
+  }
+  .ec-store .sof-t-box .sof-t-avs {
+    margin-top: 0 !important;
+  }
+}
+
+
+/* ======================================================================
+   (c) FAKTEN-LEISTE
+
+   Sitzt IN der Beschreibungsspalte, unter dem Text — nicht ueber den
+   Produkten. Zwei Gruende: Auf den vier Ueberkategorieseiten gibt es
+   gar keine Produktliste, dort fehlte sie sonst ganz. Und sie fuellt
+   die Flaeche, die entsteht, weil der Kasten rechts hoeher ist als der
+   Text links.
+
+   Die Trennlinien zwischen den Bloecken sind kein Schmuck: Bei
+   unterschiedlich langen Texten wirkte der Abstand nach einem kurzen
+   Eintrag wie eine Luecke. Mit Linie sieht derselbe Abstand gewollt aus.
+   ====================================================================== */
+
+.ec-store .sof-f-bar {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  margin: 8px 0 18px !important;
+  padding: 18px !important;
+  background: #ffffff !important;
+  border: 1px solid #e0ecf1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 8px rgba(30, 58, 138, .05) !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+}
+
+/* In der Beschreibungsspalte an den unteren Rand — das richtet die
+   Unterkante an der des Beratungskastens aus. */
+.ec-store .grid__description-inner .sof-f-bar {
+  margin: auto 0 0 !important;
+}
+
+.ec-store .sof-f-bar .sof-f-item {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  gap: 11px !important;
+  padding: 2px 16px !important;
+  min-width: 0 !important;
+}
+
+.ec-store .sof-f-bar .sof-f-item + .sof-f-item {
+  border-left: 1px solid #eef4f7 !important;
+}
+.ec-store .sof-f-bar .sof-f-item:first-child {
+  padding-left: 2px !important;
+}
+.ec-store .sof-f-bar .sof-f-item:last-child {
+  padding-right: 2px !important;
+}
+
+.ec-store .sof-f-bar .sof-f-ic {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 9px !important;
+  background: #e8f6f9 !important;
+  color: #1E3A8A !important;
+}
+.ec-store .sof-f-bar .sof-f-ic svg {
+  width: 19px !important;
+  height: 19px !important;
+  fill: currentColor !important;
+}
+
+.ec-store .sof-f-bar .sof-f-tx {
+  display: block !important;
+  min-width: 0 !important;
+}
+.ec-store .sof-f-bar .sof-f-tx b {
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  color: #1E2B3D !important;
+}
+.ec-store .sof-f-bar .sof-f-tx i {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 11.5px !important;
+  font-style: normal !important;
+  line-height: 1.35 !important;
+  color: #8494A6 !important;
+}
+
+/* Schmale Fenster: gestapelt, dort stoeren senkrechte Linien */
+@media (max-width: 1000px) {
+  .ec-store .grid__description-inner .sof-f-bar {
+    margin: 24px 0 0 !important;
+  }
+}
+@media (max-width: 900px) {
+  .ec-store .sof-f-bar {
+    flex-wrap: wrap !important;
+    gap: 12px 20px !important;
+  }
+  .ec-store .sof-f-bar .sof-f-item {
+    flex: 1 1 220px !important;
+    padding: 2px !important;
+  }
+  .ec-store .sof-f-bar .sof-f-item + .sof-f-item {
+    border-left: 0 !important;
+  }
+}
+
+
+/* ======================================================================
+   (d) ANSPRECHPARTNER-KARTE
+
+   Unter dem Produktbild, ueber der Beschreibung — nicht in der
+   Seitenspalte: Dort konkurrierte sie mit dem Kaufknopf, den sie nur
+   ergaenzen soll.
+
+   Der Aufbau ist fest vorgegeben (Raster statt freiem Fluss). Sonst
+   sehen die drei Sprachen unterschiedlich aus: Bei kurzen englischen
+   Texten passte frueher alles in eine Zeile, bei deutschen und
+   griechischen nicht.
+
+   Der untere Abstand von 96px gleicht den 60px-Versatz aus, mit dem
+   .product-details__description weiter oben nach oben gezogen wird —
+   sonst schoebe sich die Ueberschrift "Produktbeschreibung" unter die
+   Karte.
+   ====================================================================== */
+
+.ec-store .sof-b-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 14px 18px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fcfd 100%) !important;
+  border: 1px solid #e0ecf1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 8px rgba(30, 58, 138, .05) !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  opacity: 1 !important;
+  transition: opacity .26s ease !important;
+}
+
+/* Uebergang beim Wechsel zwischen mehreren Mitarbeitern */
+.ec-store .sof-b-card.sof-b-weg {
+  opacity: 0 !important;
+}
+
+.ec-store .product-details .sof-b-card {
+  grid-column: auto !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 560px !important;
+  margin: -88px 0 96px !important;
+}
+
+
+/* ---- Foto ------------------------------------------------------------- */
+
+.ec-store .sof-b-card .sof-b-foto {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 66px !important;
+  width: 66px !important;
+  height: 66px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: #e8f6f9 !important;
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 4px #e0ecf1 !important;
+}
+.ec-store .sof-b-card .sof-b-foto img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+.ec-store .sof-b-card .sof-b-foto svg {
+  width: 40px !important;
+  height: 40px !important;
+  fill: #9fc6d4 !important;
+}
+
+
+/* ---- Fester Aufbau: links Text und Knopf, rechts der Kontakt --------- */
+
+.ec-store .sof-b-card .sof-b-tx {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  column-gap: 26px !important;
+  row-gap: 6px !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.ec-store .sof-b-card .sof-b-auge,
+.ec-store .sof-b-card .sof-b-name,
+.ec-store .sof-b-card .sof-b-zeile,
+.ec-store .sof-b-card .sof-b-knopf {
+  grid-column: 1 !important;
+  justify-self: start !important;
+}
+
+.ec-store .sof-b-card .sof-b-auge {
+  margin: 0 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+  color: #23B8A6 !important;
+}
+
+.ec-store .sof-b-card .sof-b-name {
+  margin: 0 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: #1E3A8A !important;
+}
+
+.ec-store .sof-b-card .sof-b-zeile {
+  margin: 0 0 4px !important;
+  font-size: 12.5px !important;
+  line-height: 1.35 !important;
+  color: #64748B !important;
+}
+
+.ec-store .sof-b-card .sof-b-knopf {
+  display: inline-block !important;
+  margin: 0 !important;
+  padding: 9px 18px !important;
+  border-radius: 7px !important;
+  background: #ffffff !important;
+  border: 1px solid #23B8A6 !important;
+  color: #0f7d70 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: background .2s ease, color .2s ease !important;
+}
+.ec-store .sof-b-card .sof-b-knopf:hover {
+  background: #23B8A6 !important;
+  color: #ffffff !important;
+}
+
+
+/* ---- Kontaktblock rechts, ueber die volle Hoehe ---------------------- */
+
+.ec-store .sof-b-card .sof-b-telbox {
+  grid-column: 2 !important;
+  grid-row: 1 / -1 !important;
+  align-self: center !important;
+  margin: 0 !important;
+  text-align: right !important;
+}
+
+.ec-store .sof-b-card .sof-b-tel {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #1E3A8A !important;
+  text-decoration: none !important;
+}
+.ec-store .sof-b-card .sof-b-telic {
+  flex: 0 0 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  fill: #23B8A6 !important;
+}
+
+.ec-store .sof-b-card .sof-b-telhint {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 10.5px !important;
+  line-height: 1.3 !important;
+  color: #8494A6 !important;
+}
+
+/* Erreichbarkeit: Die Zeiten stehen sonst nur in der Ankuendigungsleiste
+   ganz oben und sind beim Scrollen weg. */
+.ec-store .sof-b-card .sof-b-zeit {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 11.5px !important;
+  line-height: 1.3 !important;
+  color: #64748B !important;
+}
+
+
+/* ---- Schmale Fenster: gestapelt --------------------------------------- */
+@media (max-width: 780px) {
+  .ec-store .sof-b-card {
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+  .ec-store .sof-b-card .sof-b-tx {
+    display: block !important;
+  }
+  .ec-store .sof-b-card .sof-b-telbox {
+    margin: 8px 0 !important;
+    text-align: left !important;
+  }
+  .ec-store .product-details .sof-b-card {
+    max-width: none !important;
+    margin: 8px 0 78px !important;
+  }
+}
+
+/* === END · Softano v5.59 ============================================== */
