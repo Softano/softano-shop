@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v5 (10.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v7 (10.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -50,11 +50,14 @@
      ist — ein Auslaender liefe dort ins Leere. */
   var TEL = {
     de: { nummer: "0800 588 55 22",  link: "tel:0080058855222",
-          hint: "[kostenfrei aus dem deutschen Festnetz]" },
+          hint: "[kostenfrei aus dem deutschen Festnetz]",
+          zeit: "Mo - Fr 9:00 - 17:00 Uhr" },
     en: { nummer: "+30 2311 181662", link: "tel:+302311181662",
-          hint: "[Greek landline rates]" },
+          hint: "[Greek landline rates]",
+          zeit: "Mon - Fri 10 a.m. - 6 p.m." },
     el: { nummer: "2311 181662",     link: "tel:+302311181662",
-          hint: "[χρέωση ελληνικού σταθερού]" }
+          hint: "[χρέωση ελληνικού σταθερού]",
+          zeit: "Δε - Πα 10:00 - 18:00" }
   };
 
   /* Zielseite des Knopfes, je Sprache */
@@ -300,8 +303,16 @@
              (m && m.name
                 ? '<div class="sof-b-name">' + esc(m.name) + "</div>" : "") +
              '<div class="sof-b-zeile">' + esc(x.zeile) + "</div>" +
-             '<a class="sof-b-tel" href="' + tel.link + '">' +
-               esc(tel.nummer) + "</a>" +
+             '<div class="sof-b-telbox">' +
+               '<a class="sof-b-tel" href="' + tel.link + '">' +
+                 esc(tel.nummer) + "</a>" +
+               '<span class="sof-b-telhint">' + esc(tel.hint) + "</span>" +
+               /* Erreichbarkeit: Die Zeiten stehen sonst nur in der
+                  Ankuendigungsleiste ganz oben und sind beim Scrollen
+                  weg. Wer abends auf die Nummer schaut, ruft sonst
+                  vergeblich an. */
+               '<span class="sof-b-zeit">' + esc(tel.zeit) + "</span>" +
+             "</div>" +
              '<a class="sof-b-knopf" href="' + (B2B[lang()] || B2B.en) + '">' +
                esc(x.knopf) + "</a>" +
            "</div>";
