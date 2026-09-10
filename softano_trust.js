@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN & FAKTEN-LEISTE v3 (10.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v4 (10.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -30,7 +30,15 @@
 (function () {
   "use strict";
 
-  /* ---- Mitarbeiter. Leer lassen, bis die Portraits im Repo liegen. --- */
+  /* ---- Mitarbeiter. Leer lassen, bis die Portraits im Repo liegen. ---
+     Jeder Eintrag: { name: "Anna", datei: "anna.jpg", bereich: /muster/ }
+     "bereich" ist optional und wird gegen die Brotkrumenleiste geprueft
+     — damit laesst sich spaeter je Kategorie ein anderer Ansprechpartner
+     zeigen. Ohne "bereich" ist der Eintrag fuer alle Kategorien
+     zustaendig. Beispiel:
+       { name: "Anna", datei: "anna.jpg", bereich: /hardware|infrastruktur/i }
+     Die Liste speist BEIDE Bausteine: die Kreise im Beratungskasten und
+     den Ansprechpartner auf der Produktseite. */
   var TEAM = [];                     /* siehe Kopfkommentar */
   var TEAM_SLOTS = 4;                /* so viele Kreise erscheinen */
   var BILD_BASIS =
@@ -77,6 +85,21 @@
       text: "Μιλήστε απευθείας με έναν ειδικό αδειοδότησης – δωρεάν και χωρίς δέσμευση.",
       knopf: "Ζητήστε συμβουλή"
     }
+  };
+
+  /* Ansprechpartner auf der Produktseite. Bewusst ohne Durchwahl und
+     ohne Nachnamen — Gesicht und Vorname schaffen Vertrauen, den Rest
+     klaert das Gespraech. */
+  var BERATER = {
+    de: { auge: "Ihr Ansprechpartner",
+          zeile: "Persönliche Beratung auf Deutsch",
+          knopf: "Beratung anfragen" },
+    en: { auge: "Your contact",
+          zeile: "Personal advice in English",
+          knopf: "Request advice" },
+    el: { auge: "Ο σύμβουλός σας",
+          zeile: "Προσωπική υποστήριξη στα ελληνικά",
+          knopf: "Ζητήστε συμβουλή" }
   };
 
   var FAKTEN = {
@@ -244,10 +267,80 @@
     }
   }
 
+  /* ---- 3. Ansprechpartner auf der Produktseite ----------------------- */
+  /* Zeigt einen Mitarbeiter unter dem Kaufbereich. Sind mehrere fuer die
+     Kategorie zustaendig, wechseln sie im Takt — daher der Wechselbanner.
+     Solange keine Portraits hinterlegt sind, erscheint ein Eintrag mit
+     Silhouette; der Baustein ist damit von Anfang an sichtbar und muss
+     spaeter nicht neu platziert werden. */
+  var wechsel = null;
+
+  function zustaendig() {
+    var b = document.querySelector(".ec-breadcrumbs");
+    var txt = b ? b.textContent : "";
+    var pass = TEAM.filter(function (m) {
+      return !m.bereich || m.bereich.test(txt);
+    });
+    return pass.length ? pass : [null];   /* null = Silhouette */
+  }
+
+  function beraterKarte(m) {
+    var x = BERATER[lang()] || BERATER.en;
+    var tel = TEL[lang()] || TEL.en;
+    var bild = (m && m.datei)
+      ? '<img src="' + BILD_BASIS + esc(m.datei) + '" alt="' +
+        esc(m.name || "") + '" loading="lazy" ' +
+        'onerror="this.parentNode.innerHTML=\'' +
+        silhouette().replace(/'/g, "&#39;") + '\'">'
+      : silhouette();
+
+    return '<div class="sof-b-foto">' + bild + "</div>" +
+           '<div class="sof-b-tx">' +
+             '<div class="sof-b-auge">' + esc(x.auge) + "</div>" +
+             (m && m.name
+                ? '<div class="sof-b-name">' + esc(m.name) + "</div>" : "") +
+             '<div class="sof-b-zeile">' + esc(x.zeile) + "</div>" +
+             '<a class="sof-b-tel" href="' + tel.link + '">' +
+               esc(tel.nummer) + "</a>" +
+             '<a class="sof-b-knopf" href="' + (B2B[lang()] || B2B.en) + '">' +
+               esc(x.knopf) + "</a>" +
+           "</div>";
+  }
+
+  function berater() {
+    var side = document.querySelector(".product-details__sidebar");
+    if (!side || side.querySelector(".sof-b-card")) return;
+
+    var leute = zustaendig();
+    var card = document.createElement("div");
+    card.className = "sof-b-card";
+    card.innerHTML = beraterKarte(leute[0]);
+    side.appendChild(card);
+
+    /* Wechsel nur, wenn es wirklich mehrere gibt. Ein einzelner
+       Ansprechpartner, der sich selbst ersetzt, waere sinnlose Unruhe. */
+    if (wechsel) { clearInterval(wechsel); wechsel = null; }
+    if (leute.length > 1) {
+      var i = 0;
+      wechsel = setInterval(function () {
+        if (!document.body.contains(card)) {
+          clearInterval(wechsel); wechsel = null; return;
+        }
+        i = (i + 1) % leute.length;
+        card.classList.add("sof-b-weg");
+        setTimeout(function () {
+          card.innerHTML = beraterKarte(leute[i]);
+          card.classList.remove("sof-b-weg");
+        }, 260);
+      }, 7000);
+    }
+  }
+
   function scan() {
     if (isBlockedPage()) return;
     kasten();
     leiste();
+    berater();
   }
 
   function burst() {
@@ -255,7 +348,7 @@
     var n = 0;
     (function step() {
       scan();
-      var fertig = document.querySelector(".sof-f-bar");
+      var fertig = document.querySelector(".sof-f-bar, .sof-b-card");
       if (fertig || ++n >= 25) return;
       setTimeout(step, 200);
     })();
