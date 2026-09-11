@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v7 (08.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v8 (11.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -66,6 +66,29 @@
      Bewusst am Merkmal festgemacht und nicht an der Kategorie — sobald
      Hardware dazukommt, faellt der Hinweis dort automatisch weg. */
   var DELIV     = { de: "Lieferart", en: "Delivery", el: "Τρόπος παράδοσης" };
+
+  /* Merkmal "Lieferzeit" (angelegt 11.09.). Es ersetzt den frueheren
+     festen Text "Digitale Lieferung": Der stimmte nur bei Software und
+     waere bei Hardware schlicht falsch gewesen. */
+  var LZEIT = { de: "Lieferzeit", en: "Delivery time", el: "Χρόνος παράδοσης" };
+
+  /* Fuer die Kachel wird der Wert gekuerzt — die vollen Saetze sind
+     dort zu lang. Abgeschnitten wird an zwei Stellen: am Trennpunkt
+     (dahinter steht der optionale Datentraeger) und vor der
+     Bestellzeit-Bedingung. Die vollstaendige Angabe bleibt auf der
+     Produktseite und in den AGB. */
+  /* Ohne \b beim griechischen Ausdruck: Die Wortgrenze in JavaScript
+     kennt nur lateinische Buchstaben, bei "για παραγγελίες" greift sie
+     nicht und die Bestellzeit bliebe in der Kachel stehen. */
+  var KAPPEN = /\s*(·|\bbei Bestellung\b|\bfor orders\b|για παραγγελίες)/;
+  function kurz(v) {
+    return String(v).split(KAPPEN)[0].replace(/[\s,;·-]+$/, "").trim();
+  }
+
+  /* Orange statt gruen, wenn die Lieferzeit erst auf Anfrage feststeht.
+     Geprueft wird die GEKUERZTE Fassung — sonst wuerde "Datenträger auf
+     Wunsch" im Wert 3 faelschlich als Anfrage gelesen. */
+  var ANFRAGE = /(auf Anfrage|on request|κατόπιν αιτήματος)/i;
   var ELECTRO   = /^(elektronisch|electronic|ηλεκτρονικά)/i;
   var DELIV_TXT = {
     de: "Digitale Lieferung",
@@ -182,14 +205,18 @@
       }
     }
 
-    /* Sofortlieferung: nur bei elektronischer Lieferart. */
-    if (data.electro) {
+    /* Lieferzeit. Steht das Merkmal am Produkt, gewinnt es; sonst
+       faellt die Kachel auf den alten Text zurueck, solange die
+       Lieferzeit noch nicht ueberall gepflegt ist. */
+    var lz = data.lieferzeit ? kurz(data.lieferzeit) : null;
+    var txt = lz || (data.electro ? (DELIV_TXT[lang()] || DELIV_TXT.en) : null);
+    if (txt) {
       var inner = wrap.querySelector(".grid-product__wrap-inner");
       if (inner && !inner.querySelector(".sof-c-del")) {
         var d = document.createElement("div");
-        d.className = "sof-c-del";
-        d.innerHTML = '<span class="sof-c-dot"></span>' +
-                      esc(DELIV_TXT[lang()] || DELIV_TXT.en);
+        d.className = "sof-c-del" + (ANFRAGE.test(txt) ? " sof-c-del--anfrage" : "");
+        d.setAttribute("title", data.lieferzeit || txt);   /* voller Wert */
+        d.innerHTML = '<span class="sof-c-dot"></span>' + esc(txt);
         inner.appendChild(d);
       }
     }
@@ -270,6 +297,7 @@
             chips:   chips,
             save:    save,
             electro:  dl ? ELECTRO.test(dl.trim()) : false,
+            lieferzeit: val(a, [LZEIT[lg], LZEIT.en]),
             preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
         }
