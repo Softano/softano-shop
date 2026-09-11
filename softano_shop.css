@@ -2479,3 +2479,185 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
 }
 
 /* === END · Softano v5.59 ============================================== */
+
+
+/* === Softano v5.60 — Lieferzeit auf Anfrage in Orange (11.09.2026) =====
+   Ans ENDE des Custom-CSS-Felds, UNTER v5.59.
+   Setzt softano_cat_cards.js ab v8 voraus (.sof-c-del--anfrage).
+
+   Die Kachel zeigt jetzt den echten Wert des Merkmals "Lieferzeit"
+   statt des frueheren festen Textes "Digitale Lieferung". Der war nur
+   bei Software richtig und waere bei Hardware falsch gewesen.
+
+   Punkt und Schrift bleiben gruen, solange eine feste Lieferzeit
+   zugesagt ist. Steht sie erst auf Anfrage fest — bei konfigurierbaren
+   Servern —, wird beides orange. Das ist keine Warnung, sondern ein
+   ehrlicher Unterschied: Der Kunde sieht sofort, dass er hier nicht
+   sofort bestellen und liefern lassen kann.
+   ====================================================================== */
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del--anfrage {
+  color: #B45309 !important;
+}
+
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del--anfrage .sof-c-dot {
+  background: #F59E0B !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, .18) !important;
+}
+
+/* Laengere Lieferzeiten duerfen umbrechen statt abgeschnitten zu werden.
+   "Versand aus EU-Lagern, 1-4 Werktage" passt in der schmalen Kachel
+   sonst nicht. */
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del {
+  white-space: normal !important;
+  align-items: flex-start !important;
+}
+.ec-store .grid-product__wrap.sof-card-on .sof-c-del .sof-c-dot {
+  margin-top: 4px !important;
+}
+
+/* === END · Softano v5.60 =============================================== */
+
+
+/* === Softano v5.61 — Lieferzeit neben "Auf Lager" (11.09.2026) =========
+   Ans ENDE des Custom-CSS-Felds, UNTER v5.60.
+   Setzt softano_ci_panel.js ab v17 voraus (.sof-lz).
+
+   Die Lieferzeit steht in derselben Zeile wie die Verfuegbarkeit —
+   dort, wo der Blick ohnehin haengenbleibt, bevor er zum Kaufknopf
+   geht. Im Datenblatt weiter unten bleibt sie zusaetzlich stehen.
+
+   Gruen bei fester Zusage, orange wenn sie erst auf Anfrage feststeht
+   (konfigurierbare Server). Das ist keine Warnung, sondern ein
+   ehrlicher Unterschied: Der Kunde sieht sofort, dass er hier nicht
+   ohne Ruecksprache bestellen kann.
+
+   Bei den OEM-Serverlizenzen ist der Wert lang (zwei Angaben, durch
+   einen Punkt getrennt). Er darf deshalb umbrechen und ruecke dann
+   unter die Verfuegbarkeit — abgeschnitten wird nichts, denn der
+   Datentraeger-Hinweis ist genau die Information, die der Kunde hier
+   braucht.
+   ====================================================================== */
+
+.ec-store .details-product-purchase__place {
+  display: flex !important;
+  align-items: baseline !important;
+  flex-wrap: wrap !important;
+  gap: 4px 14px !important;
+}
+
+.ec-store .sof-lz {
+  display: inline-flex !important;
+  align-items: flex-start !important;
+  gap: 7px !important;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: #0f7d70 !important;
+}
+
+.ec-store .sof-lz .sof-lz-dot {
+  flex: 0 0 7px !important;
+  width: 7px !important;
+  height: 7px !important;
+  margin-top: 5px !important;
+  border-radius: 50% !important;
+  background: #23B8A6 !important;
+  box-shadow: 0 0 0 3px rgba(35, 184, 166, .18) !important;
+}
+
+.ec-store .sof-lz .sof-lz-tx {
+  min-width: 0 !important;
+}
+
+/* Auf Anfrage — orange statt gruen */
+.ec-store .sof-lz--anfrage {
+  color: #B45309 !important;
+}
+.ec-store .sof-lz--anfrage .sof-lz-dot {
+  background: #F59E0B !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, .18) !important;
+}
+
+/* === END · Softano v5.61 =============================================== */
+
+
+/* === Softano v5.62 — Lieferzeit unter "Auf Lager" (11.09.2026) =========
+   Ans ENDE des Custom-CSS-Felds, UNTER v5.61.
+
+   Korrektur zu v5.61: Dort stand die Lieferzeit NEBEN der
+   Verfuegbarkeit. Bei Serverhero funktioniert das, weil die Werte dort
+   kurz sind ("1-2 Werktage"). Unsere Werte sind ganze Saetze — neben
+   "Auf Lager" blieb nur eine schmale Restbreite, deshalb der gequetschte
+   Umbruch und der Punkt, der neben der zweiten statt der ersten Zeile
+   sass.
+
+   Jetzt steht sie in einer eigenen Zeile darunter, ueber die volle
+   Breite der Spalte. Der Punkt sitzt auf Hoehe der ersten Textzeile.
+   ====================================================================== */
+
+.ec-store .details-product-purchase__place {
+  display: block !important;           /* war flex nebeneinander */
+}
+
+.ec-store .sof-lz {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  margin-top: 7px !important;
+  width: 100% !important;
+}
+
+/* Der Punkt sitzt auf der Grundlinie der ersten Zeile, nicht mittig
+   zum gesamten Block — sonst rutscht er bei zweizeiligen Werten nach
+   unten. */
+.ec-store .sof-lz .sof-lz-dot {
+  margin-top: 5px !important;
+}
+
+.ec-store .sof-lz .sof-lz-tx {
+  flex: 1 1 auto !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+}
+
+/* "Auf Lager" behaelt seine Ueberschriftform, die Lieferzeit darunter
+   bleibt normale Schrift — sie ist die Angabe, nicht die Ueberschrift. */
+.ec-store .details-product-purchase__place .sof-lz {
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+/* === END · Softano v5.62 =============================================== */
+
+/* === Softano v5.63 — Lieferzeit einzeilig halten (11.09.2026) ==========
+   Ans ENDE des Custom-CSS-Felds, UNTER v5.62.
+
+   "Digitale Lieferung am selben Werktag bei Bestellung bis 15:00 Uhr"
+   war um wenige Pixel zu lang — nur das Wort "Uhr" rutschte in die
+   zweite Zeile, was besonders unruhig wirkt.
+
+   Die Schrift geht deshalb von 12,5 auf 11,5 Pixel zurueck. Das bringt
+   rund acht Prozent Breite und reicht aus, ohne dass die Angabe an
+   Lesbarkeit verliert. Die Alternative waere gewesen, die Uhrzeit in
+   allen 208 Produkten zu kuerzen — eine Datenaenderung fuer ein
+   Darstellungsproblem.
+
+   Die Kategoriekachel ist nicht betroffen: Dort wird der Wert ohnehin
+   frueher gekappt.
+   ====================================================================== */
+
+.ec-store .sof-lz .sof-lz-tx {
+  font-size: 11.5px !important;
+  line-height: 1.4 !important;
+}
+
+.ec-store .sof-lz .sof-lz-dot {
+  margin-top: 4px !important;          /* folgt der kleineren Zeile */
+}
+
+/* === END · Softano v5.63 =============================================== */
