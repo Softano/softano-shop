@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v17 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v18 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -115,6 +115,17 @@
      Wunsch" bei den OEM-Lizenzen faelschlich als Anfrage gelesen. */
   var ANFRAGE = /^(Lieferzeit auf Anfrage|Delivery time on request|Χρόνος παράδοσης κατόπιν αιτήματος)/i;
 
+  /* Neben der Verfuegbarkeit wird nur der Teil VOR dem Trennpunkt
+     gezeigt — genau wie in der Kategoriekachel. Bei den OEM-Lizenzen
+     stuende sonst der optionale Datentraeger mit in der Zeile, und der
+     Block braeche auf zwei Zeilen um. An dieser Stelle zaehlt eine
+     Frage: wann habe ich die Lizenz. Der vollstaendige Wert bleibt im
+     Datenblatt unter "Technische Daten" und als Titel beim
+     Darueberfahren erhalten. */
+  function kurzLz(v) {
+    return String(v).split("·")[0].replace(/[\s,;·-]+$/, "").trim();
+  }
+
   /* ---- Zustand: welcher Wert bedeutet gebraucht? ---- */
   var PRE_OWNED = /^(pre-?owned|refurbished)/i;
 
@@ -168,10 +179,12 @@
     var v = attr("lzeit");
     if (!v) return;
 
+    var kurz = kurzLz(v);
     var box = document.createElement("span");
-    box.className = "sof-lz" + (ANFRAGE.test(v) ? " sof-lz--anfrage" : "");
+    box.className = "sof-lz" + (ANFRAGE.test(kurz) ? " sof-lz--anfrage" : "");
+    box.setAttribute("title", v);                 /* voller Wert */
     box.innerHTML = '<span class="sof-lz-dot"></span>' +
-                    '<span class="sof-lz-tx">' + esc(v) + "</span>";
+                    '<span class="sof-lz-tx">' + esc(kurz) + "</span>";
     ort.appendChild(box);
   }
 
