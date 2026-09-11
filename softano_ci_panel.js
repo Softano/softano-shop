@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v16 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v17 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -76,7 +76,8 @@
     activation:["Activation", "Aktivierung", "Ενεργοποίηση"],
     downgrade: ["Downgrade rights", "Downgrade-Rechte",
                 "Δικαιώματα downgrade"],
-    term:      ["Licence term", "Nutzungsdauer", "Διάρκεια χρήσης"]
+    term:      ["Licence term", "Nutzungsdauer", "Διάρκεια χρήσης"],
+    lzeit:     ["Delivery time", "Lieferzeit", "Χρόνος παράδοσης"]
   };
 
   /* Alles, was das Panel selbst zeigt ODER bewusst unterdrueckt, wird aus
@@ -102,6 +103,17 @@
     en: "Incl. licence and deletion certificate",
     el: "Πιστοποιητικό άδειας & διαγραφής"
   };
+
+  /* Lieferzeit erscheint neben "Auf Lager", NICHT im Facts-Grid — dort
+     waere sie eine von sechs gleichrangigen Angaben. Neben der
+     Verfuegbarkeit steht sie da, wo der Blick ohnehin haengenbleibt,
+     bevor er zum Kaufknopf geht. Sie bleibt deshalb aus HIDE_KEYS
+     heraus und ist zusaetzlich im Datenblatt sichtbar.
+
+     Orange statt gruen, wenn die Lieferzeit erst auf Anfrage feststeht.
+     Geprueft wird nur der Textanfang, sonst wuerde "Datenträger auf
+     Wunsch" bei den OEM-Lizenzen faelschlich als Anfrage gelesen. */
+  var ANFRAGE = /^(Lieferzeit auf Anfrage|Delivery time on request|Χρόνος παράδοσης κατόπιν αιτήματος)/i;
 
   /* ---- Zustand: welcher Wert bedeutet gebraucht? ---- */
   var PRE_OWNED = /^(pre-?owned|refurbished)/i;
@@ -147,6 +159,20 @@
         }
       }
     }
+  }
+
+  /* ---- Lieferzeit neben "Auf Lager" ---- */
+  function buildLieferzeit() {
+    var ort = document.querySelector(".details-product-purchase__place");
+    if (!ort || ort.querySelector(".sof-lz")) return;
+    var v = attr("lzeit");
+    if (!v) return;
+
+    var box = document.createElement("span");
+    box.className = "sof-lz" + (ANFRAGE.test(v) ? " sof-lz--anfrage" : "");
+    box.innerHTML = '<span class="sof-lz-dot"></span>' +
+                    '<span class="sof-lz-tx">' + esc(v) + "</span>";
+    ort.appendChild(box);
   }
 
   function buildHead() {
@@ -257,6 +283,7 @@
     if (isBlockedPage()) return;
     hideAttrRows();
     buildHead();
+    buildLieferzeit();
   }
 
   /* Nach einem Page-Event kann das DOM noch nachladen. Statt Dauer-Observer:
