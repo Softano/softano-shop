@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v19 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v20 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -189,6 +189,66 @@
     ort.appendChild(box);
   }
 
+  /* ---- Verweis auf die Gegenstueck-Variante ----
+     Der Block steht als Platzhalter in der Beschreibung und traegt in
+     data-sof-ziel, ob Neuanschaffung oder Verlaengerung gesucht wird.
+     Die Adresse wird NICHT im Text hinterlegt, sondern hier gesucht —
+     sonst braeche sie, sobald ein Produkt umbenannt wird und Ecwid
+     eine neue Adresse vergibt. Wird kein Gegenstueck gefunden, bleibt
+     der Block verborgen statt einen toten Verweis zu zeigen. */
+  var VERL_ART = /^(Laufzeitverl|Renewal|Ανανέωση)/i;
+
+  function buildSwitch() {
+    var box = document.querySelector(".sof-switch[hidden]");
+    if (!box) return;
+    var a = box.querySelector("a");
+    if (!a) return;
+
+    var linie = attr("line"), edition = box.getAttribute("data-sof-edition");
+    var suchtVerl = box.getAttribute("data-sof-ziel") === "verl";
+    if (!linie || !edition) return;
+
+    var token;
+    try { token = Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch (e) { return; }
+    if (!token) return;
+
+    var lg = lang();
+    var u = "https://app.ecwid.com/api/v3/123703327/products?keyword=" +
+            encodeURIComponent(linie + " " + edition) +
+            "&lang=" + lg + "&limit=50&token=" + token;
+
+    fetch(u).then(function (r) { return r.json(); }).then(function (d) {
+      var items = (d && d.items) || [];
+      for (var i = 0; i < items.length; i++) {
+        var at = items[i].attributes || [], line = null, vari = null, off = null;
+        for (var k = 0; k < at.length; k++) {
+          if (matchesName(at[k].name, "line"))    line = at[k].value;
+          if (matchesName(at[k].name, "variant")) vari = at[k].value;
+          if (matchesName(at[k].name, "offer"))   off  = at[k].value;
+        }
+        if (line !== linie || vari !== edition || !off) continue;
+        if (VERL_ART.test(off) !== suchtVerl) continue;
+
+        /* Ecwid liefert die Adresse ohne Sprachpraefix — hier ergaenzen,
+           damit der Kunde in seiner Sprache bleibt. */
+        var pfad;
+        try { pfad = new URL(items[i].url).pathname; } catch (e) { pfad = items[i].url; }
+        a.setAttribute("href", (lg === "en" ? "" : "/" + lg) + pfad);
+        box.removeAttribute("hidden");
+        return;
+      }
+    }).catch(function () { /* still: Block bleibt verborgen */ });
+  }
+
+  /* Wie matches(), aber fuer Merkmalsnamen aus der Schnittstelle —
+     dort steht der Name ohne Doppelpunkt. */
+  function matchesName(name, key) {
+    var t = (name || "").replace(/\s*:\s*$/, "").trim();
+    var names = ATTR[key] || [];
+    for (var i = 0; i < names.length; i++) if (t === names[i]) return true;
+    return false;
+  }
+
   function buildHead() {
     var side = document.querySelector(".product-details__sidebar");
     if (!side) return;
@@ -308,6 +368,7 @@
     hideAttrRows();
     buildHead();
     buildLieferzeit();
+    buildSwitch();
   }
 
   /* Nach einem Page-Event kann das DOM noch nachladen. Statt Dauer-Observer:
