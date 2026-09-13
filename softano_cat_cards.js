@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v8 (11.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v9 (13.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -89,6 +89,12 @@
      Geprueft wird die GEKUERZTE Fassung — sonst wuerde "Datenträger auf
      Wunsch" im Wert 3 faelschlich als Anfrage gelesen. */
   var ANFRAGE = /(auf Anfrage|on request|κατόπιν αιτήματος)/i;
+
+  /* "ab" vor dem Preis, wenn ein Produkt Varianten hat. Der Grundpreis
+     ist dann der guenstigste Einstieg — ohne den Zusatz liest ihn der
+     Kunde als Festpreis und erlebt beim Umschalten eine Ueberraschung.
+     Serverhero macht es genauso ("ab 370,00 €"). */
+  var AB = { de: "ab", en: "from", el: "από" };
   var ELECTRO   = /^(elektronisch|electronic|ηλεκτρονικά)/i;
   var DELIV_TXT = {
     de: "Digitale Lieferung",
@@ -205,6 +211,17 @@
       }
     }
 
+    /* Preis-Vorsatz bei Produkten mit Varianten */
+    if (data.varianten) {
+      var pv = wrap.querySelector(".grid-product__price-value, .grid-product__price-amount");
+      if (pv && !pv.querySelector(".sof-c-ab")) {
+        var ab = document.createElement("span");
+        ab.className = "sof-c-ab";
+        ab.textContent = (AB[lang()] || AB.en) + " ";
+        pv.insertBefore(ab, pv.firstChild);
+      }
+    }
+
     /* Lieferzeit. Steht das Merkmal am Produkt, gewinnt es; sonst
        faellt die Kachel auf den alten Text zurueck, solange die
        Lieferzeit noch nicht ueberall gepflegt ist. */
@@ -298,6 +315,7 @@
             save:    save,
             electro:  dl ? ELECTRO.test(dl.trim()) : false,
             lieferzeit: val(a, [LZEIT[lg], LZEIT.en]),
+            varianten: !!(p.combinations && p.combinations.length),
             preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
         }
