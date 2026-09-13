@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v8 (10.09.2026)
+   SOFTANO.EU — BERATUNGSKASTEN, FAKTEN-LEISTE & ANSPRECHPARTNER v9 (13.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, eine Zeile mit
    <script src="...softano_trust.js" defer></script>
@@ -245,6 +245,13 @@
      weil der Beratungskasten rechts hoeher ist als der Text. Die
      Leiste fuellt sie. */
   function leiste() {
+    /* Auf Produktseiten gar nicht: Dort hat der Kunde Lieferzeit,
+       Ansprechpartner und Datenblatt bereits gesehen — die Leiste
+       wiederholte sie nur. Sie landete dort, weil der Block "Das könnte
+       Ihnen auch gefallen" dieselbe Klasse .grid__products benutzt wie
+       die Kategorieliste. */
+    if (document.querySelector(".product-details")) return;
+
     var ziel = document.querySelector(".grid__description-inner");
     if (!ziel) {                       /* Kategorie ohne Beschreibung */
       var g = document.querySelector(".grid__products");
