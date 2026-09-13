@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — KATEGORIE-KACHELN v9 (13.09.2026)
+   SOFTANO.EU — KATEGORIE-KACHELN v10 (13.09.2026)
    ---------------------------------------------------------------------
    Einbindung: Website -> Design -> JavaScript-Code, EINE Zeile:
      <script src="https://cdn.jsdelivr.net/gh/Softano/softano-shop@HASH/
@@ -71,6 +71,13 @@
      festen Text "Digitale Lieferung": Der stimmte nur bei Software und
      waere bei Hardware schlicht falsch gewesen. */
   var LZEIT = { de: "Lieferzeit", en: "Delivery time", el: "Χρόνος παράδοσης" };
+
+  /* Angebotsart als eigener Chip. Bei den Abonnements unterscheiden sich
+     Neuanschaffung und Verlaengerung sonst nur im Produktnamen — in der
+     Kachel steht der aber gekuerzt, sodass acht Produkte gleich
+     aussehen. */
+  var ANGEBOT = { de: "Angebotsart", en: "Offer type", el: "Τύπος προσφοράς" };
+  var IST_VERL = /^(Laufzeitverl|Renewal|Ανανέωση)/i;
 
   /* Fuer die Kachel wird der Wert gekuerzt — die vollen Saetze sind
      dort zu lang. Abgeschnitten wird an zwei Stellen: am Trennpunkt
@@ -174,7 +181,15 @@
 
     if (V) V = V.replace(/\s*·\s*/g, " ").trim();
 
-    var chips = data.chips
+    /* Der Angebotsart-Chip steht immer vorn, vor den Merkmals-Chips. */
+    var vorn = "";
+    if (data.angebot) {
+      vorn = '<span class="sof-c-ang ' +
+             (IST_VERL.test(data.angebot) ? "verl" : "neu") + '">' +
+             esc(data.angebot) + "</span>";
+    }
+
+    var chips = vorn + data.chips
       .map(function (c) {
         /* Die Lizenzform bekommt eine eigene Klasse: sie ist das
            Unterscheidungsmerkmal zwischen sonst gleichen Produkten und
@@ -315,6 +330,7 @@
             save:    save,
             electro:  dl ? ELECTRO.test(dl.trim()) : false,
             lieferzeit: val(a, [LZEIT[lg], LZEIT.en]),
+            angebot:    val(a, [ANGEBOT[lg], ANGEBOT.en]),
             varianten: !!(p.combinations && p.combinations.length),
             preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
