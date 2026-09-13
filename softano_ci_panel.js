@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v18 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v19 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -77,7 +77,8 @@
     downgrade: ["Downgrade rights", "Downgrade-Rechte",
                 "Δικαιώματα downgrade"],
     term:      ["Licence term", "Nutzungsdauer", "Διάρκεια χρήσης"],
-    lzeit:     ["Delivery time", "Lieferzeit", "Χρόνος παράδοσης"]
+    lzeit:     ["Delivery time", "Lieferzeit", "Χρόνος παράδοσης"],
+    offer:     ["Offer type", "Angebotsart", "Τύπος προσφοράς"]
   };
 
   /* Alles, was das Panel selbst zeigt ODER bewusst unterdrueckt, wird aus
@@ -85,7 +86,7 @@
      seit v14 keinen Chip mehr gibt — siehe Kopfkommentar Punkt 1. */
   var HIDE_KEYS = ["line", "variant", "condition", "channel", "edition",
                    "quantity", "platform", "language", "model",
-                   "activation", "downgrade", "term"];
+                   "activation", "downgrade", "term", "offer"];
 
   /* ---- Beschriftungen im Facts-Grid ---- */
   var T = {
@@ -211,6 +212,16 @@
         esc(zustand) + "</span>"
       : "";
 
+    /* Angebotsart als eigenes Badge. Bei Abonnements ist der
+       Unterschied zwischen Neuanschaffung und Verlaengerung
+       kaufentscheidend — er darf nicht nur im Produktnamen stehen. */
+    var angebot = attr("offer");
+    var VERL_RE = /^(Laufzeitverl|Renewal|Ανανέωση)/i;
+    var abdg = angebot
+      ? '<span class="sof-bdg ' + (VERL_RE.test(angebot) ? "verl" : "neu") + '">' +
+        esc(angebot) + "</span>"
+      : "";
+
     var kanal = attr("channel");
     var lfchip = kanal
       ? '<span class="sof-bdg ch">' + esc(kanal) + "</span>"
@@ -232,8 +243,8 @@
       (eyebrow ? '<div class="sof-eyebrow">' + esc(eyebrow) + "</div>" : "") +
       (titel   ? '<div class="sof-title">'   + esc(titel)   + "</div>" : "") +
       (tchips  ? '<div class="sof-tchips">'  + tchips  + "</div>" : "") +
-      (badge || lfchip
-        ? '<div class="sof-badges">' + badge + lfchip + "</div>" : "") +
+      (badge || lfchip || abdg
+        ? '<div class="sof-badges">' + badge + abdg + lfchip + "</div>" : "") +
       cert;
 
     var h1  = side.querySelector(".product-details__product-title");
