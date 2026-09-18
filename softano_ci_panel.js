@@ -267,15 +267,24 @@
       .map(function (x) { return "<span>" + esc(x) + "</span>"; })
       .join("");
 
-    var badge = zustand
-      ? '<span class="sof-bdg ' + (isPO ? "pre" : "new") + '">' +
-        esc(zustand) + "</span>"
-      : "";
-
     /* Angebotsart als eigenes Badge. Bei Abonnements ist der
        Unterschied zwischen Neuanschaffung und Verlaengerung
        kaufentscheidend — er darf nicht nur im Produktnamen stehen. */
     var angebot = attr("offer");
+
+    /* Der ZUSTAND wird nur gezeigt, wenn KEINE Angebotsart vorliegt.
+       Begruendung: Die beiden schliessen einander aus. Wo es eine
+       Angebotsart gibt (Abonnements), gibt es keine gebrauchte Ware —
+       das Merkmal traegt dort nur den einen Wert "Neu" und stuende als
+       zweites Badge neben "Neuanschaffung": dasselbe Wort fuer zwei
+       verschiedene Dinge. Wo es Pre-Owned gibt (Microsoft), fehlt die
+       Angebotsart, und der Zustand bleibt sichtbar.
+       Der Zertifikatshinweis haengt weiter unten am Zustand selbst und
+       ist von dieser Bedingung NICHT betroffen. */
+    var badge = (zustand && !angebot)
+      ? '<span class="sof-bdg ' + (isPO ? "pre" : "new") + '">' +
+        esc(zustand) + "</span>"
+      : "";
     var VERL_RE = /^(Laufzeitverl|Renewal|Ανανέωση)/i;
     var abdg = angebot
       ? '<span class="sof-bdg ' + (VERL_RE.test(angebot) ? "verl" : "neu") + '">' +
