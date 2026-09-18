@@ -53,12 +53,18 @@
   /* Anzeigenamen der Merkmale je Sprache. Reihenfolge = Chip-Reihenfolge.
      Mehrere Schreibweisen je Eintrag, weil die Anzeigenamen im Backend
      schon einmal abwichen (siehe Panel v16, griechische Fassung). */
+  /* Rangfolge der Merkmals-Chips: Lizenzform, Edition, Lizenzumfang.
+     Zusammen mit dem Angebotsart-Chip zeigt die Kachel HOECHSTENS ZWEI
+     Chips (MAX_CHIPS) — was nicht mehr hineinpasst, entfaellt. Drei
+     lange Werte passen in einer viertelbreiten Kachel nie nebeneinander;
+     statt einer Sonderregel je Sortiment entscheidet der Rang. */
   var KEYS = {
-    de: [["Edition"], ["Lizenzumfang"], ["Lizenzform", "Licence channel"]],
-    en: [["Edition"], ["Licence quantity"], ["Licence channel"]],
-    el: [["Edition"], ["Εύρος αδειοδότησης", "Ποσότητα άδειας"],
-         ["Κανάλι αδειοδότησης", "Lizenzform"]]
+    de: [["Lizenzform", "Licence channel"], ["Edition"], ["Lizenzumfang"]],
+    en: [["Licence channel"], ["Edition"], ["Licence quantity"]],
+    el: [["Κανάλι αδειοδότησης", "Lizenzform"], ["Edition"],
+         ["Εύρος αδειοδότησης", "Ποσότητα άδειας"]]
   };
+  var MAX_CHIPS = 2;
   var LINE    = { de: "Produktlinie", en: "Product line", el: "Σειρά" };
   var VARIANT = { de: "Variante",     en: "Variant",      el: "Παραλλαγή" };
 
@@ -189,7 +195,8 @@
              esc(data.angebot) + "</span>";
     }
 
-    var chips = vorn + data.chips
+    var rest = data.chips.slice(0, MAX_CHIPS - (vorn ? 1 : 0));
+    var chips = vorn + rest
       .map(function (c) {
         /* Die Lizenzform bekommt eine eigene Klasse: sie ist das
            Unterscheidungsmerkmal zwischen sonst gleichen Produkten und
@@ -309,7 +316,7 @@
                Lizenzumfang dagegen echte Information und bleibt.
                Die Lizenzform ist IMMER dabei: sie ist das Merkmal, das
                sonst gleiche Produkte im Preis trennt. */
-            var isChannel = (k === 2);
+            var isChannel = (k === 0);
             if (!isChannel && inTitle(v, vr)) continue;
             chips.push({ value: v, channel: isChannel });
           }
