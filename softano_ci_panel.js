@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v20 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v21 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -371,6 +371,34 @@
      abfragen. Bleibt erhalten, liest jetzt ueber die neuen Namen. */
   window.sofLizenzform = function () { return attr("channel"); };
 
+
+  /* ---- Anfrage-Block (.sof-anfrage) — ab Veeam, 21.09.2026 ----------------
+     Produkte, deren Dauerlizenz oder Verlaengerung nur auf Anfrage zu
+     haben ist, tragen in der Beschreibung einen Block mit einem Knopf
+     "Angebot anfordern". Der Knopf steht im Text mit href="#" und
+     data-sof-b2b; die echte Adresse wird HIER zur Laufzeit gesetzt —
+     dieselbe Regel wie beim Wechselblock: nie eine feste Adresse im Text.
+     Ziel ist die bestehende B2B-Seite je Sprache (/b2b, /de/b2b, /el/b2b).
+     Produktname und Artikelnummer werden als Parameter angehaengt; ob die
+     B2B-Seite sie auswertet, haengt vom Formular dort ab. */
+  function buildAnfrage() {
+    var knoepfe = document.querySelectorAll(".sof-anfrage a[data-sof-b2b]");
+    if (!knoepfe.length) return;
+    var l = lang();
+    var ziel = (l === "en" ? "" : "/" + l) + "/b2b";
+    var name = (document.querySelector(".product-details__product-title") || {}).textContent || "";
+    var sku = "";
+    var skuEl = document.querySelector(".product-details__product-sku");
+    if (skuEl) sku = (skuEl.textContent.match(/[0-9]{5,}/) || [""])[0];
+    var q = [];
+    if (name.trim()) q.push("produkt=" + encodeURIComponent(name.trim()));
+    if (sku) q.push("sku=" + encodeURIComponent(sku));
+    var href = ziel + (q.length ? "?" + q.join("&") : "");
+    for (var i = 0; i < knoepfe.length; i++) {
+      if (knoepfe[i].getAttribute("href") !== href) knoepfe[i].setAttribute("href", href);
+    }
+  }
+
   /* ---- Kern: einmal scannen. Guard schuetzt Router-Seiten. Nur Sidebar. ---- */
   function scan() {
     if (isBlockedPage()) return;
@@ -378,6 +406,7 @@
     buildHead();
     buildLieferzeit();
     buildSwitch();
+    buildAnfrage();
   }
 
   /* Nach einem Page-Event kann das DOM noch nachladen. Statt Dauer-Observer:
