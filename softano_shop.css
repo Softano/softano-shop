@@ -3185,4 +3185,82 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
   text-decoration: underline !important;
 }
 
+/* ======================================================================
+   (j) ANFRAGE-BLOCK — ab Veeam (21.09.2026)
+
+   Fuer Angebote, die sich nicht in den Warenkorb legen lassen: Dauerlizenz
+   und Verlaengerung bei Veeam. Statt eigener Produkte mit Preis 0 (der in
+   Suchmaschinen und Feeds sichtbar waere) steht der Hinweis direkt beim
+   Abonnement. Die Adresse des Knopfes setzt softano_ci_panel.js (ab v21)
+   zur Laufzeit.
+   ====================================================================== */
+
+.ec-store .sof-pd .sof-anfrage {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 24px 0 !important;
+  padding: 16px 18px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbfc 100%) !important;
+  border: 1px solid #d3e9ef !important;
+  border-left: 3px solid #1E3A8A !important;
+  border-radius: 0 12px 12px 0 !important;
+  box-shadow: 0 1px 8px rgba(30, 58, 138, .05) !important;
+}
+.ec-store .sof-pd .sof-anfrage-tx { flex: 1 1 auto !important; min-width: 0 !important; }
+.ec-store .sof-pd .sof-anfrage b {
+  display: block !important;
+  margin-bottom: 4px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  color: #1E3A8A !important;
+}
+.ec-store .sof-pd .sof-anfrage span {
+  display: block !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  color: #475569 !important;
+}
+.ec-store .sof-pd .sof-anfrage a {
+  flex: 0 0 auto !important;
+  display: inline-block !important;
+  padding: 10px 18px !important;
+  border-radius: 8px !important;
+  background: #1E3A8A !important;
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  transition: background .2s ease !important;
+}
+.ec-store .sof-pd .sof-anfrage a:hover { background: #23B8A6 !important; color: #ffffff !important; }
+@media (max-width: 640px) {
+  .ec-store .sof-pd .sof-anfrage { display: block !important; }
+  .ec-store .sof-pd .sof-anfrage a { margin-top: 12px !important; }
+}
+
+/* ======================================================================
+   (k) AUSRICHTUNG — Panelkopf und Kategoriekachel (22.09.2026)
+
+   Panel: Die Badges bekommen ihren Abstand sonst von der Chip-Zeile
+   darueber (Plattform, Sprachversion). Fehlen diese Merkmale — bei Veeam,
+   teils bei Acronis —, rueckt das Badge direkt an den Titel. Der Abstand
+   gilt deshalb auch fuer den Fall ohne Chips.
+
+   Kachel: Eine lange Produktlinie ("VEEAM BACKUP FOR MICROSOFT 365")
+   bricht auf zwei Zeilen um und schiebt Chips und Preis nach unten. Die
+   Zeile bekommt deshalb immer Platz fuer zwei Zeilen — so stehen die
+   Chips in allen Karten einer Reihe auf derselben Hoehe.
+   ====================================================================== */
+
+.ec-store .sof-panel-head .sof-title + .sof-badges {
+  margin-top: 14px !important;
+}
+
+.ec-store .sof-c-head .sof-c-line {
+  min-height: 2.6em !important;
+}
+
 /* === END · Softano v5.71 =============================================== */
