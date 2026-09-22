@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v21 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v22 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -160,12 +160,19 @@
 
   /* Rohzeilen ausblenden, die das Panel selbst zeigt */
   function hideAttrRows() {
+    /* Die LIEFERZEIT wird zusaetzlich ausgeblendet, wenn eine Angebotsart
+       vorliegt (22.09.2026). Sie steht im Panel direkt unter "Auf Lager";
+       bei Abonnements (Proxmox, Acronis, Veeam) sind die technischen Daten
+       kurz, und die Wiederholung fiel dort auf. Bei Microsoft (keine
+       Angebotsart) bleibt sie stehen. Dieselbe Regel wie beim Zustand. */
+    var keys = HIDE_KEYS.slice();
+    if (attr("offer")) keys.push("lzeit");
     var rows = document.querySelectorAll(".details-product-attribute");
     for (var i = 0; i < rows.length; i++) {
       var t = rows[i].querySelector(".details-product-attribute__title");
       if (!t) continue;
-      for (var k = 0; k < HIDE_KEYS.length; k++) {
-        if (matches(t.textContent, HIDE_KEYS[k])) {
+      for (var k = 0; k < keys.length; k++) {
+        if (matches(t.textContent, keys[k])) {
           rows[i].classList.add("sof-attr");
           break;
         }
