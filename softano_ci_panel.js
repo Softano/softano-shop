@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v23 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v24 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -459,6 +459,11 @@
       var a2 = box.querySelector("[data-sof-po-alt]"); if (a2) a2.remove();
     }
     setz("[data-sof-po-neu]", geld(neu));
+    /* Die Schnittstelle liefert die Adresse in der Grundsprache (ohne
+       Kuerzel), auch wenn wir lang=de anfragen. Das Kuerzel wird deshalb
+       hier gesetzt, sonst landet der Kunde auf der englischen Seite. */
+    link = link.replace(/^(https?:\/\/[^\/]+)\/(?:de|el|en)\//, "$1/");
+    if (lang() !== "en") link = link.replace(/^(https?:\/\/[^\/]+)\//, "$1/" + lang() + "/");
     var a = box.querySelector("[data-sof-po-link]");
     if (a) a.setAttribute("href", link);
     box.setAttribute("data-sof-fertig", "1");
