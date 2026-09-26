@@ -162,6 +162,48 @@
     return null;
   }
 
+
+  /* ---- Verwandte Produkte sortieren (23.09.2026) ------------------------
+     Ecwid speichert die verwandten Produkte aufsteigend nach Artikel-
+     nummer und verwirft die Reihenfolge aus der Importdatei — geprueft an
+     vier Produkten. Die gewuenschte Reihenfolge wird deshalb hier gesetzt:
+     die gebrauchte Fassung zuerst, danach nach Preis aufsteigend.
+     Nur auf Produktseiten; in Kategorien bleibt die Sortierung des Shops. */
+  function sortRelated() {
+    if (!/\/products?\//.test(location.pathname)) return;
+    var wraps = document.querySelectorAll(".grid-product__wrap[data-sof-po]");
+    if (wraps.length < 2) return;
+    var gruppen = [];
+    for (var i = 0; i < wraps.length; i++) {
+      var kachel = wraps[i].closest(".grid-product");
+      if (!kachel || !kachel.parentNode) continue;
+      var p = kachel.parentNode;
+      if (gruppen.indexOf(p) === -1) gruppen.push(p);
+    }
+    for (var g = 0; g < gruppen.length; g++) {
+      var eltern = gruppen[g];
+      var kinder = [];
+      for (var k = 0; k < eltern.children.length; k++) {
+        var c = eltern.children[k];
+        if (c.querySelector && c.querySelector(".grid-product__wrap[data-sof-po]")) kinder.push(c);
+      }
+      if (kinder.length < 2) continue;
+      var schluessel = function (el) {
+        var w = el.querySelector(".grid-product__wrap[data-sof-po]");
+        return [w.getAttribute("data-sof-po") === "1" ? 0 : 1,
+                parseFloat(w.getAttribute("data-sof-preis")) || 0];
+      };
+      var sortiert = kinder.slice().sort(function (a, b) {
+        var x = schluessel(a), y = schluessel(b);
+        return (x[0] - y[0]) || (x[1] - y[1]);
+      });
+      var gleich = true;
+      for (var n = 0; n < kinder.length; n++) if (kinder[n] !== sortiert[n]) { gleich = false; break; }
+      if (gleich) continue;                       /* idempotent */
+      for (var m = 0; m < sortiert.length; m++) eltern.appendChild(sortiert[m]);
+    }
+  }
+
   /* Alle Produkt-IDs der aktuellen Seite einsammeln */
   function idsOnPage() {
     var out = [], seen = {};
@@ -178,6 +220,9 @@
     var wrap = document.querySelector(
       '.grid-product__wrap[data-product-id="' + id + '"]');
     if (!wrap) return;
+    /* Fuer die Sortierung der verwandten Produkte hinterlegt (23.09.2026) */
+    wrap.setAttribute("data-sof-po", data.preOwned ? "1" : "0");
+    wrap.setAttribute("data-sof-preis", String(data.preis || 0));
     var title = wrap.querySelector(".grid-product__title-inner");
     if (!title || title.querySelector(".sof-c-head")) return;
 
@@ -339,9 +384,11 @@
             lieferzeit: val(a, [LZEIT[lg], LZEIT.en]),
             angebot:    val(a, [ANGEBOT[lg], ANGEBOT.en]),
             varianten: !!(p.combinations && p.combinations.length),
+            preis:    p.defaultDisplayedPrice || 0,
             preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
         }
+        sortRelated();
       })
       .catch(function () { /* still: Kacheln bleiben wie von Ecwid geliefert */ })
       .then(function () { running = false; });
