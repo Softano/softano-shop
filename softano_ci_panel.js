@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v22 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v23 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -406,6 +406,65 @@
     }
   }
 
+
+  /* ---- Pre-Owned-Verweis fuellen (.sof-po) — 24.09.2026 -----------------
+     Im Beschreibungstext steht nur die Artikelnummer des gebrauchten
+     Produkts. Preis, Streichpreis, Rabatt, Ersparnis und die Adresse
+     kommen HIER zur Laufzeit dazu — aus derselben Quelle wie die Kachel.
+     Grund: Fest eingetragene Zahlen waren nach der ersten Preisaenderung
+     falsch (30210 nannte 1.099,95/779,95 fuer ein Produkt zu 1.399,95).
+     Der Block bleibt verborgen, wenn etwas fehlt — lieber kein Kasten
+     als ein Kasten mit falschen Zahlen. */
+  var poGeholt = {};
+  function buildPreOwned() {
+    var box = document.querySelector(".sof-po[data-sof-po-sku]");
+    if (!box || box.getAttribute("data-sof-fertig") === "1") return;
+    var sku = box.getAttribute("data-sof-po-sku");
+    if (!sku) return;
+    var tok = null;
+    try { tok = Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch (e) {}
+    if (!tok) return;                               /* spaeterer Durchlauf */
+    if (poGeholt[sku] === "laeuft") return;
+    if (poGeholt[sku]) { fuelle(box, poGeholt[sku]); return; }
+    poGeholt[sku] = "laeuft";
+    fetch("https://app.ecwid.com/api/v3/123703327/products?keyword=" + encodeURIComponent(sku) +
+          "&lang=" + lang() + "&token=" + tok)
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var p = (d.items || []).filter(function (x) { return x.sku === sku; })[0];
+        if (!p) return;
+        poGeholt[sku] = p;
+        fuelle(box, p);
+      })
+      .catch(function () { poGeholt[sku] = null; });
+  }
+  function geld(n) {
+    return n.toLocaleString(lang() === "en" ? "en-GB" : "de-DE",
+      { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20AC";
+  }
+  function fuelle(box, p) {
+    var neu = p.defaultDisplayedPrice || p.price || 0;
+    var alt = p.compareToPrice || 0;
+    var link = p.url || "";
+    if (!neu || !link) return;                      /* unvollstaendig: verborgen lassen */
+    var setz = function (sel, wert) {
+      var e = box.querySelector(sel); if (e) e.textContent = wert;
+    };
+    if (alt > neu) {
+      setz("[data-sof-po-rabatt]", "\u2212" + Math.round((1 - neu / alt) * 100) + "%");
+      setz("[data-sof-po-sparen]", geld(alt - neu).replace(/,00 /, " ") + (lang() === "de" ? " sparen" : ""));
+      setz("[data-sof-po-alt]", geld(alt));
+    } else {
+      var b = box.querySelector(".sof-po-badge"); if (b) b.remove();
+      var a2 = box.querySelector("[data-sof-po-alt]"); if (a2) a2.remove();
+    }
+    setz("[data-sof-po-neu]", geld(neu));
+    var a = box.querySelector("[data-sof-po-link]");
+    if (a) a.setAttribute("href", link);
+    box.setAttribute("data-sof-fertig", "1");
+    box.removeAttribute("hidden");
+  }
+
   /* ---- Kern: einmal scannen. Guard schuetzt Router-Seiten. Nur Sidebar. ---- */
   function scan() {
     if (isBlockedPage()) return;
@@ -414,6 +473,7 @@
     buildLieferzeit();
     buildSwitch();
     buildAnfrage();
+    buildPreOwned();
   }
 
   /* Nach einem Page-Event kann das DOM noch nachladen. Statt Dauer-Observer:
