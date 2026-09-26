@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v24 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v25 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -459,6 +459,10 @@
       var a2 = box.querySelector("[data-sof-po-alt]"); if (a2) a2.remove();
     }
     setz("[data-sof-po-neu]", geld(neu));
+    /* Auf Pre-Owned-Seiten zeigt der Kasten nicht dieselbe Lizenz, sondern
+       das passende naechste Produkt — dort steht sein Name im Titel. */
+    var nameSlot = box.querySelector("[data-sof-po-name]");
+    if (nameSlot) nameSlot.textContent = p.name || "";
     /* Die Schnittstelle liefert die Adresse in der Grundsprache (ohne
        Kuerzel), auch wenn wir lang=de anfragen. Das Kuerzel wird deshalb
        hier gesetzt, sonst landet der Kunde auf der englischen Seite. */
