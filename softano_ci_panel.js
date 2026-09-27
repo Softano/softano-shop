@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v25 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v26 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -474,6 +474,62 @@
     box.removeAttribute("hidden");
   }
 
+
+  /* ---- Preisstaffel fuellen (.sof-staffel) — 24.09.2026 -----------------
+     Im Text stehen nur die Artikelnummern der Pakete mit ihrer Stueckzahl,
+     z. B. data-sof-staffel="30390:1,30391:5,30392:10,30393:50".
+     Preis, Stueckpreis und Ersparnis gegenueber dem Einzelkauf rechnet das
+     Skript aus den Katalogpreisen. Grund: 28 von 42 Staffeln nannten die
+     Preise einer anderen Produktreihe. Das Paket, auf dessen Seite man
+     steht, wird hervorgehoben und bekommt keinen Knopf. */
+  function buildStaffel() {
+    var box = document.querySelector(".sof-staffel[data-sof-staffel]");
+    if (!box || box.getAttribute("data-sof-fertig") === "1") return;
+    var tok = null;
+    try { tok = Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch (e) {}
+    if (!tok) return;
+    box.setAttribute("data-sof-fertig", "1");
+    var paare = box.getAttribute("data-sof-staffel").split(",").map(function (x) {
+      var t = x.split(":"); return { sku: t[0].trim(), menge: parseInt(t[1], 10) || 1 };
+    });
+    var eigen = (document.querySelector(".product-details__product-sku") || {}).textContent || "";
+    var einheit = box.getAttribute("data-sof-einheit") || "";
+    var wort = { de: ["Ersparnis", "sparen", "Zum Paket"], en: ["saving", "saved", "To the pack"],
+                 el: ["όφελος", "όφελος", "Στο πακέτο"] }[lang()] || ["", "", ""];
+    Promise.all(paare.map(function (p) {
+      return fetch("https://app.ecwid.com/api/v3/123703327/products?keyword=" + encodeURIComponent(p.sku) +
+                   "&lang=" + lang() + "&token=" + tok)
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var x = (d.items || []).filter(function (y) { return y.sku === p.sku; })[0];
+          return x ? { sku: p.sku, menge: p.menge, preis: x.defaultDisplayedPrice || x.price || 0, url: x.url || "" } : null;
+        }).catch(function () { return null; });
+    })).then(function (liste) {
+      liste = liste.filter(Boolean);
+      var einzel = liste.filter(function (x) { return x.menge === 1; })[0];
+      var karten = liste.filter(function (x) { return x.menge > 1 && x.preis > 0; });
+      if (!karten.length) return;
+      var html = "";
+      for (var i = 0; i < karten.length; i++) {
+        var k = karten[i];
+        var stueck = k.preis / k.menge;
+        var sparen = einzel ? (einzel.preis * k.menge - k.preis) : 0;
+        var aktiv = eigen.indexOf(k.sku) >= 0;
+        var link = k.url.replace(/^(https?:\/\/[^\/]+)\/(?:de|el|en)\//, "$1/");
+        if (lang() !== "en") link = link.replace(/^(https?:\/\/[^\/]+)\//, "$1/" + lang() + "/");
+        html += '<div class="sof-st-karte' + (aktiv ? " sof-st-aktiv" : "") + '">' +
+          '<div class="sof-st-name">' + k.menge + "er-Pack</div>" +
+          '<div class="sof-st-menge">' + k.menge + " " + esc(einheit) + "</div>" +
+          '<div class="sof-st-preis"><b>' + geld(k.preis) + "</b><i>= " + geld(stueck) + " / " + esc(einheit.replace(/e[rn]$/, "")) + "</i></div>" +
+          (sparen > 0 ? '<div class="sof-st-sparen">' + geld(sparen) + " " + wort[1] + "</div>" : "") +
+          (aktiv ? "" : '<a href="' + link + '">' + wort[2] + "</a>") +
+          "</div>";
+      }
+      box.innerHTML = html;
+      box.removeAttribute("hidden");
+    });
+  }
+
   /* ---- Kern: einmal scannen. Guard schuetzt Router-Seiten. Nur Sidebar. ---- */
   function scan() {
     if (isBlockedPage()) return;
@@ -483,6 +539,7 @@
     buildSwitch();
     buildAnfrage();
     buildPreOwned();
+    buildStaffel();
   }
 
   /* Nach einem Page-Event kann das DOM noch nachladen. Statt Dauer-Observer:
