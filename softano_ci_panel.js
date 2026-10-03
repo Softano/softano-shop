@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v26 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v27 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -493,9 +493,23 @@
       var t = x.split(":"); return { sku: t[0].trim(), menge: parseInt(t[1], 10) || 1 };
     });
     var eigen = (document.querySelector(".product-details__product-sku") || {}).textContent || "";
+    /* v27: Ein- und Mehrzahl kommen BEIDE aus der Beschreibung. Vorher
+       schnitt das Skript die Endung vom Plural ab (/e[rn]$/) — daraus
+       wurde "Benutz", und im Englischen und Griechischen aenderte sich
+       gar nichts ("/ users", "/ χρήστες"). Keine Regel mehr, die auf
+       Wortendungen prueft. Fehlt die neue Angabe, bleibt die Mehrzahl
+       stehen — lieber unscharf als falsch. */
     var einheit = box.getAttribute("data-sof-einheit") || "";
+    var einheit1 = box.getAttribute("data-sof-einheit1") || einheit;
     var wort = { de: ["Ersparnis", "sparen", "Zum Paket"], en: ["saving", "saved", "To the pack"],
                  el: ["όφελος", "όφελος", "Στο πακέτο"] }[lang()] || ["", "", ""];
+    /* v27: "5er-Pack" stand fest im Skript und erschien so auch auf den
+       englischen und griechischen Seiten. */
+    function packname(n) {
+      if (lang() === "en") return n + "-pack";
+      if (lang() === "el") return "Πακέτο " + n;
+      return n + "er-Pack";
+    }
     Promise.all(paare.map(function (p) {
       return fetch("https://app.ecwid.com/api/v3/123703327/products?keyword=" + encodeURIComponent(p.sku) +
                    "&lang=" + lang() + "&token=" + tok)
@@ -518,9 +532,9 @@
         var link = k.url.replace(/^(https?:\/\/[^\/]+)\/(?:de|el|en)\//, "$1/");
         if (lang() !== "en") link = link.replace(/^(https?:\/\/[^\/]+)\//, "$1/" + lang() + "/");
         html += '<div class="sof-st-karte' + (aktiv ? " sof-st-aktiv" : "") + '">' +
-          '<div class="sof-st-name">' + k.menge + "er-Pack</div>" +
-          '<div class="sof-st-menge">' + k.menge + " " + esc(einheit) + "</div>" +
-          '<div class="sof-st-preis"><b>' + geld(k.preis) + "</b><i>= " + geld(stueck) + " / " + esc(einheit.replace(/e[rn]$/, "")) + "</i></div>" +
+          '<div class="sof-st-name">' + esc(packname(k.menge)) + "</div>" +
+          '<div class="sof-st-menge">' + k.menge + " " + esc(k.menge === 1 ? einheit1 : einheit) + "</div>" +
+          '<div class="sof-st-preis"><b>' + geld(k.preis) + "</b><i>= " + geld(stueck) + " / " + esc(einheit1) + "</i></div>" +
           (sparen > 0 ? '<div class="sof-st-sparen">' + geld(sparen) + " " + wort[1] + "</div>" : "") +
           (aktiv ? "" : '<a href="' + link + '">' + wort[2] + "</a>") +
           "</div>";
