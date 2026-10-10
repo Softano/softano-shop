@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v27 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v28 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -475,6 +475,73 @@
   }
 
 
+  /* ---- Paket-Kasten fuellen (.sof-po mit data-sof-po-pos) — 03.10.2026 --
+     Dreizehn Produkte vergleichen sich nicht mit EINER gebrauchten Lizenz,
+     sondern mit einer Zusammenstellung: "Server 16 Core + 4x 2-Core Add-On".
+     Der gewoehnliche Kasten kann nur ein Ziel, deshalb standen dort bis
+     jetzt feste Preise im Text — bei 31005 sogar die eines 16-Kern-Servers
+     auf einer 24-Kern-Seite.
+     Im Text steht nur noch, WAS zusammengerechnet wird; die Zahlen setzt
+     das Skript. data-sof-po-pos="33000:1,33010:4" = Artikelnummer:Stueck.
+     Die Wortteile ("+", "je", "=") bleiben in der Beschreibung, damit jede
+     Sprache ihre eigene Formulierung behaelt.
+     Verglichen wird gegen den EIGENEN Verkaufspreis der Seite, nicht gegen
+     einen Streichpreis — sonst sieht die Ersparnis groesser aus als sie ist. */
+  function buildPaket() {
+    var box = document.querySelector(".sof-po[data-sof-po-pos]");
+    if (!box || box.getAttribute("data-sof-fertig") === "1") return;
+    var tok = null;
+    try { tok = Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch (e) {}
+    if (!tok) return;
+    var roh = (document.querySelector(".product-details__product-sku") || {}).textContent || "";
+    var eigen = (roh.match(/\d{4,6}/) || [])[0];
+    if (!eigen) return;
+    box.setAttribute("data-sof-fertig", "1");
+    var pos = box.getAttribute("data-sof-po-pos").split(",").map(function (x) {
+      var t = x.split(":"); return { sku: t[0].trim(), n: parseInt(t[1], 10) || 1 };
+    });
+    var hol = function (sku) {
+      return fetch("https://app.ecwid.com/api/v3/123703327/products?keyword=" + encodeURIComponent(sku) +
+                   "&lang=" + lang() + "&token=" + tok)
+        .then(function (r) { return r.json(); })
+        .then(function (d) { return (d.items || []).filter(function (y) { return y.sku === sku; })[0] || null; })
+        .catch(function () { return null; });
+    };
+    Promise.all([hol(eigen)].concat(pos.map(function (p) { return hol(p.sku); })))
+      .then(function (liste) {
+        var selbst = liste[0], teile = liste.slice(1);
+        if (!selbst || teile.some(function (x) { return !x; })) return;   /* lieber kein Kasten als ein halber */
+        var summe = 0;
+        for (var i = 0; i < teile.length; i++) {
+          var stk = teile[i].defaultDisplayedPrice || teile[i].price || 0;
+          if (!stk) return;
+          summe += stk * pos[i].n;
+          var slot = box.querySelector("[data-sof-po-p" + i + "]");
+          if (slot) slot.textContent = geld(stk);
+        }
+        var alt = selbst.defaultDisplayedPrice || selbst.price || 0;
+        var setz = function (sel, wert) { var e = box.querySelector(sel); if (e) e.textContent = wert; };
+        setz("[data-sof-po-summe]", geld(summe));
+        setz("[data-sof-po-neu]", geld(summe));
+        if (alt > summe) {
+          setz("[data-sof-po-rabatt]", "−" + Math.round((1 - summe / alt) * 100) + "%");
+          setz("[data-sof-po-sparen]", geld(alt - summe).replace(/,00 /, " ") + (lang() === "de" ? " sparen" : ""));
+          setz("[data-sof-po-alt]", geld(alt));
+        } else {
+          var b = box.querySelector(".sof-po-badge"); if (b) b.remove();
+          var a2 = box.querySelector("[data-sof-po-alt]"); if (a2) a2.remove();
+        }
+        var knoepfe = box.querySelectorAll("[data-sof-po-link]");
+        for (var k = 0; k < knoepfe.length; k++) {
+          var ziel = teile[k]; if (!ziel || !ziel.url) continue;
+          var link = ziel.url.replace(/^(https?:\/\/[^\/]+)\/(?:de|el|en)\//, "$1/");
+          if (lang() !== "en") link = link.replace(/^(https?:\/\/[^\/]+)\//, "$1/" + lang() + "/");
+          knoepfe[k].setAttribute("href", link);
+        }
+        box.removeAttribute("hidden");
+      });
+  }
+
   /* ---- Preisstaffel fuellen (.sof-staffel) — 24.09.2026 -----------------
      Im Text stehen nur die Artikelnummern der Pakete mit ihrer Stueckzahl,
      z. B. data-sof-staffel="30390:1,30391:5,30392:10,30393:50".
@@ -553,6 +620,7 @@
     buildSwitch();
     buildAnfrage();
     buildPreOwned();
+    buildPaket();
     buildStaffel();
   }
 
