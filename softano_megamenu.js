@@ -208,7 +208,10 @@
       host.style.top=Math.round(hr.bottom)+"px";
       host.innerHTML=panelHTML(idx);
       var mega=host.firstChild;
-      if(mega){ mega.style.maxWidth=Math.round(ir.width)+"px"; mega.style.marginLeft="auto"; mega.style.marginRight="auto"; }
+      if(mega){ mega.style.maxWidth=Math.round(ir.width)+"px"; mega.style.marginLeft="auto"; mega.style.marginRight="auto";
+        // Notbremse: Panel nie hoeher als der Platz unter dem Header.
+        // Sonst wird auf flachen Bildschirmen der untere Teil abgeschnitten.
+        mega.style.maxHeight=Math.max(240, window.innerHeight - Math.round(hr.bottom) - 18)+"px"; }
       host.classList.add("sof-show");
       for(var i=0;i<items.length;i++){ items[i].classList.toggle("sof-active", i===idx); }
     }
