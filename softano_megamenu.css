@@ -100,9 +100,9 @@
 .sof-feat:link, .sof-feat:visited, .sof-feat:hover,
 .sof-feat .sof-ft, .sof-feat .sof-fs, .sof-feat .sof-ftag{ color:#fff !important; }
 
-/* ---- Wenig-Spalten-Panels (<=4, z. B. Virtualisierung & Backup): drei gleich breite,
+/* ---- Wenig-Spalten-Panels (<=5, z. B. Virtualisierung & Backup): drei gleich breite,
    gefuellte Anwendungs-Bloecke statt Loecher. Ersetzt das alte space-between. ---- */
-.sof-cols--spread{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:6px 34px; align-content:flex-start; }
+.sof-cols--spread{ display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:6px 34px; align-content:flex-start; }
 /* Hersteller-Gruppen je Anwendung: 2-spaltig, wo Platz ist */
 .sof-vgrps{ display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px 26px; align-content:flex-start; }
 .sof-vgrp{ min-width:0; }
