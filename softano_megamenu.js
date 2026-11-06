@@ -12,7 +12,7 @@
 
   /* ---------- KONFIG ---------- */
   var TREE = [{"en": "Operating Systems & Server Licenses", "de": "Betriebssysteme & Server-Lizenzen", "el": "Λειτουργικά Συστήματα & Άδειες Server", "st": "", "c": [{"en": "Windows", "de": "Windows", "el": "Windows", "st": "", "c": [{"en": "Windows 11", "de": "Windows 11", "el": "Windows 11", "st": ""}, {"en": "Windows 10", "de": "Windows 10", "el": "Windows 10", "st": ""}]}, {"en": "Windows Server", "de": "Windows Server", "el": "Windows Server", "st": "", "c": [{"en": "Windows Server 2025", "de": "Windows Server 2025", "el": "Windows Server 2025", "st": ""}, {"en": "Windows Server 2022", "de": "Windows Server 2022", "el": "Windows Server 2022", "st": ""}, {"en": "Windows Server 2019", "de": "Windows Server 2019", "el": "Windows Server 2019", "st": ""}]}, {"en": "Microsoft SQL Server", "de": "Microsoft SQL Server", "el": "Microsoft SQL Server", "st": "", "c": [{"en": "SQL Server 2025", "de": "SQL Server 2025", "el": "SQL Server 2025", "st": ""}, {"en": "SQL Server 2022", "de": "SQL Server 2022", "el": "SQL Server 2022", "st": ""}, {"en": "SQL Server 2019", "de": "SQL Server 2019", "el": "SQL Server 2019", "st": ""}]}, {"en": "Windows Server Access Licenses CAL", "de": "Windows Server Zugriffslizenzen CAL", "el": "Άδειες πρόσβασης Windows Server CAL", "st": "", "c": [{"en": "Windows Server 2025 CAL", "de": "Windows Server 2025 CAL", "el": "Windows Server 2025 CAL", "st": ""}, {"en": "Windows Server 2022 CAL", "de": "Windows Server 2022 CAL", "el": "Windows Server 2022 CAL", "st": ""}, {"en": "Windows Server 2019 CAL", "de": "Windows Server 2019 CAL", "el": "Windows Server 2019 CAL", "st": ""}]}, {"en": "RDS Access Licenses CAL", "de": "RDS Zugriffslizenzen CAL", "el": "Άδειες πρόσβασης RDS CAL", "st": "", "c": [{"en": "Remote Desktop 2025 CAL", "de": "Remote Desktop 2025 CAL", "el": "Remote Desktop 2025 CAL", "st": ""}, {"en": "Remote Desktop 2022 CAL", "de": "Remote Desktop 2022 CAL", "el": "Remote Desktop 2022 CAL", "st": ""}, {"en": "Remote Desktop 2019 CAL", "de": "Remote Desktop 2019 CAL", "el": "Remote Desktop 2019 CAL", "st": ""}]}, {"en": "SQL Access Licenses CAL", "de": "SQL Zugriffslizenzen CAL", "el": "Άδειες πρόσβασης SQL CAL", "st": "", "c": [{"en": "SQL Server 2025 CAL", "de": "SQL Server 2025 CAL", "el": "SQL Server 2025 CAL", "st": ""}, {"en": "SQL Server 2022 CAL", "de": "SQL Server 2022 CAL", "el": "SQL Server 2022 CAL", "st": ""}, {"en": "SQL Server 2019 CAL", "de": "SQL Server 2019 CAL", "el": "SQL Server 2019 CAL", "st": ""}]}]}, {"en": "Office & Productivity", "de": "Office & Produktivität", "el": "Office & Παραγωγικότητα", "st": "", "c": [{"en": "Office Suites for Windows", "de": "Office Suiten für Windows", "el": "Σουίτες Office για Windows", "st": "", "c": [{"en": "Microsoft Office 2024", "de": "Microsoft Office 2024", "el": "Microsoft Office 2024", "st": ""}, {"en": "Microsoft Office 2021", "de": "Microsoft Office 2021", "el": "Microsoft Office 2021", "st": ""}, {"en": "Microsoft Office 2019", "de": "Microsoft Office 2019", "el": "Microsoft Office 2019", "st": ""}]}, {"en": "Office Suites for Mac", "de": "Office Suiten für Mac", "el": "Σουίτες Office για Mac", "st": "", "c": [{"en": "Microsoft Office 2024 for Mac", "de": "Microsoft Office 2024 für Mac", "el": "Microsoft Office 2024 για Mac", "st": ""}, {"en": "Microsoft Office 2021 for Mac", "de": "Microsoft Office 2021 für Mac", "el": "Microsoft Office 2021 για Mac", "st": ""}, {"en": "Microsoft Office 2019 for Mac", "de": "Microsoft Office 2019 für Mac", "el": "Microsoft Office 2019 για Mac", "st": ""}]}, {"en": "Office Applications", "de": "Office Einzelanwendungen", "el": "Μεμονωμένες εφαρμογές Office", "st": "", "c": [{"en": "Microsoft Word", "de": "Microsoft Word", "el": "Microsoft Word", "st": ""}, {"en": "Microsoft Excel", "de": "Microsoft Excel", "el": "Microsoft Excel", "st": ""}, {"en": "Microsoft Outlook", "de": "Microsoft Outlook", "el": "Microsoft Outlook", "st": ""}, {"en": "Microsoft PowerPoint", "de": "Microsoft PowerPoint", "el": "Microsoft PowerPoint", "st": ""}, {"en": "Microsoft Access", "de": "Microsoft Access", "el": "Microsoft Access", "st": ""}, {"en": "Microsoft Publisher", "de": "Microsoft Publisher", "el": "Microsoft Publisher", "st": ""}, {"en": "Microsoft OneNote", "de": "Microsoft OneNote", "el": "Microsoft OneNote", "st": ""}]}, {"en": "Microsoft Visio", "de": "Microsoft Visio", "el": "Microsoft Visio", "st": "", "c": [{"en": "Microsoft Visio 2024", "de": "Microsoft Visio 2024", "el": "Microsoft Visio 2024", "st": ""}, {"en": "Microsoft Visio 2021", "de": "Microsoft Visio 2021", "el": "Microsoft Visio 2021", "st": ""}, {"en": "Microsoft Visio 2019", "de": "Microsoft Visio 2019", "el": "Microsoft Visio 2019", "st": ""}]}, {"en": "Microsoft Project", "de": "Microsoft Project", "el": "Microsoft Project", "st": "", "c": [{"en": "Microsoft Project 2024", "de": "Microsoft Project 2024", "el": "Microsoft Project 2024", "st": ""}, {"en": "Microsoft Project 2021", "de": "Microsoft Project 2021", "el": "Microsoft Project 2021", "st": ""}, {"en": "Microsoft Project 2019", "de": "Microsoft Project 2019", "el": "Microsoft Project 2019", "st": ""}]}, {"en": "Microsoft Visual Studio", "de": "Microsoft Visual Studio", "el": "Microsoft Visual Studio", "st": "", "c": [{"en": "Microsoft Visual Studio 2026", "de": "Microsoft Visual Studio 2026", "el": "Microsoft Visual Studio 2026", "st": ""}, {"en": "Microsoft Visual Studio 2022", "de": "Microsoft Visual Studio 2022", "el": "Microsoft Visual Studio 2022", "st": ""}, {"en": "Microsoft Visual Studio 2019", "de": "Microsoft Visual Studio 2019", "el": "Microsoft Visual Studio 2019", "st": ""}]}]}, {"en": "Virtualization & Backup", "de": "Virtualisierung & Backup", "el": "Εικονικοποίηση & Backup", "st": "", "c": [{"en": "VMware", "de": "VMware", "el": "VMware", "st": "", "c": [{"en": "vSphere", "de": "vSphere", "el": "vSphere", "st": ""}, {"en": "Cloud Foundation", "de": "Cloud Foundation", "el": "Cloud Foundation", "st": ""}, {"en": "vSAN", "de": "vSAN", "el": "vSAN", "st": ""}]}, {"en": "Proxmox", "de": "Proxmox", "el": "Proxmox", "st": "", "c": [{"en": "Virtual Environment", "de": "Virtual Environment", "el": "Virtual Environment", "st": ""}, {"en": "Backup Server", "de": "Backup Server", "el": "Backup Server", "st": ""}, {"en": "Mail Gateway", "de": "Mail Gateway", "el": "Mail Gateway", "st": ""}]}, {"en": "Acronis", "de": "Acronis", "el": "Acronis", "st": "", "c": [{"en": "Cyber Protect", "de": "Cyber Protect", "el": "Cyber Protect", "st": ""}, {"en": "Cyber Protect Backup", "de": "Cyber Protect Backup", "el": "Cyber Protect Backup", "st": ""}, {"en": "Cloud Storage", "de": "Cloud Storage", "el": "Cloud Storage", "st": ""}, {"en": "True Image", "de": "True Image", "el": "True Image", "st": ""}]}, {"en": "Veeam", "de": "Veeam", "el": "Veeam", "st": "", "c": [{"en": "Data Platform", "de": "Data Platform", "el": "Data Platform", "st": ""}, {"en": "Backup for Microsoft 365", "de": "Backup for Microsoft 365", "el": "Backup for Microsoft 365", "st": ""}]}, {"en": "HPE Aruba", "de": "HPE Aruba", "el": "HPE Aruba", "st": "", "c": [{"en": "Central", "de": "Central", "el": "Central", "st": ""}]}]}, {"en": "Infrastructure & Server Hardware", "de": "Infrastruktur & Server-Hardware", "el": "Υποδομή & Server Hardware", "st": "", "c": [{"en": "Servers", "de": "Server", "el": "Server", "st": "NEU", "c": [{"en": "Rack Servers", "de": "Rack-Server", "el": "Rack Servers", "st": "NEU"}, {"en": "Tower Servers", "de": "Tower-Server", "el": "Tower Servers", "st": "NEU"}, {"en": "Blade Servers & Chassis", "de": "Blade-Server & Chassis", "el": "Blade Servers & Chassis", "st": "NEU"}]}, {"en": "Workstations", "de": "Workstations", "el": "Workstations", "st": "NEU"}, {"en": "Storage", "de": "Storage", "el": "Storage", "st": "NEU", "c": [{"en": "NAS", "de": "NAS", "el": "NAS", "st": "NEU"}, {"en": "SAN", "de": "SAN", "el": "SAN", "st": "NEU"}, {"en": "Tape / Backup", "de": "Tape / Backup", "el": "Tape / Backup", "st": "NEU"}]}, {"en": "Networking", "de": "Netzwerk", "el": "Δικτύωση", "st": "NEU", "c": [{"en": "Switches", "de": "Switches", "el": "Switches", "st": "NEU"}, {"en": "Firewalls", "de": "Firewalls", "el": "Firewalls", "st": "NEU"}, {"en": "Access Points", "de": "Access Points", "el": "Access Points", "st": "NEU"}]}, {"en": "Racks & UPS", "de": "Racks & USV", "el": "Racks & UPS", "st": "NEU"}, {"en": "Microsoft Surface", "de": "Microsoft Surface", "el": "Microsoft Surface", "st": "NEU"}]}];
-  var FEAT = [{"slug": "windows-server-2025-standard-16-core-volume", "img": "https://cdn.jsdelivr.net/gh/Softano/softano-shop@main/topseller-server.png", "en": ["Windows Server 2025 Standard", "Pre-Owned · volume licence"], "de": ["Windows Server 2025 Standard", "Pre-Owned · Volumenlizenz"], "el": ["Windows Server 2025 Standard", "Pre-Owned · άδεια όγκου"]}, {"slug": "office-2024-professional-plus", "img": "https://cdn.jsdelivr.net/gh/Softano/softano-shop@main/topseller-office.png", "en": ["Office 2024 Professional Plus", "Pre-Owned · perpetual licence"], "de": ["Office 2024 Professional Plus", "Pre-Owned · Kauflizenz"], "el": ["Office 2024 Professional Plus", "Pre-Owned · άδεια αγοράς"]}, {"slug": "virtualization-backup", "img": "", "tag": {"de": "LIZENZEN", "en": "LICENCES", "el": "ΑΔΕΙΕΣ"}, "btn": {"de": "Alle ansehen", "en": "View all", "el": "Προβολή όλων"}, "de": ["Virtualisierung & Backup", "Lizenzen von VMware, Veeam, Acronis, Proxmox & HPE Aruba – aus einer Hand"], "en": ["Virtualization & Backup", "Licences from VMware, Veeam, Acronis, Proxmox & HPE Aruba – all in one place"], "el": ["Εικονικοποίηση & Backup", "Άδειες VMware, Veeam, Acronis, Proxmox & HPE Aruba – από μία πηγή"]}, {"slug": "hardware", "img": "", "tag": {"de": "NEU & REFURBISHED", "en": "NEW & REFURBISHED", "el": "ΝΕΟΣ & REFURBISHED"}, "btn": {"de": "Alle ansehen", "en": "View all", "el": "Προβολή όλων"}, "de": ["Server- & Storage-Hardware", "Rack-, Tower- & Blade-Server, Storage, Netzwerk & Workstations – neu und refurbished (A+)"], "en": ["Server & Storage Hardware", "Rack, tower & blade servers, storage, networking & workstations – new and refurbished (A+)"], "el": ["Server & Storage Hardware", "Rack, tower & blade servers, storage, δίκτυο & workstations – νέος και refurbished (A+)"]}];
+  var FEAT = [{"slug": "windows-server-2025-standard-16-core-volume", "en": ["Microsoft Windows Server 2025 Standard 16-Core Volume 64-bit Multilingual Perpetual Licence", ""], "de": ["Microsoft Windows Server 2025 Standard 16-Core Volumen 64Bit Mehrsprachig Dauerlizenz", ""], "el": ["Microsoft Windows Server 2025 Standard 16-Core Volume 64Bit Πολύγλωσσο Μόνιμη Άδεια", ""], "sku": "33000", "lief": {"en": "Delivered same business day", "de": "Lieferung am selben Werktag", "el": "Παράδοση αυθημερόν"}, "bild": true}, {"slug": "office-2024-professional-plus", "en": ["Microsoft Office 2024 Professional Plus", ""], "de": ["Microsoft Office 2024 Professional Plus", ""], "el": ["Microsoft Office 2024 Professional Plus", ""], "sku": "20004", "lief": {"en": "Delivered in 5-15 minutes", "de": "Lieferung in 5-15 Minuten", "el": "Παράδοση σε 5-15 λεπτά"}, "bild": true}, {"sku": "63140", "slug": "acronis-cyber-protect-standard-workstation", "en": ["Acronis Cyber Protect Standard Workstation", ""], "de": ["Acronis Cyber Protect Standard Workstation", ""], "el": ["Acronis Cyber Protect Standard Workstation", ""], "lief": {"en": "Delivered in 1-3 business days", "de": "Lieferung in 1-3 Werktagen", "el": "Παράδοση σε 1-3 εργάσιμες"}, "bild": true}, {"anfrage": true, "tag": {"en": "ON REQUEST", "de": "AUF ANFRAGE", "el": "ΚΑΤΟΠΙΝ ΑΙΤΗΜΑΤΟΣ"}, "btn": {"en": "Send enquiry", "de": "Anfrage stellen", "el": "Υποβολή αιτήματος"}, "en": ["Server hardware built to your spec", "Rack, tower and blade servers, storage, networking and workstations — new or refurbished (A+). Tell us what you need and we will configure it."], "de": ["Server-Hardware nach Ihren Vorgaben", "Rack-, Tower- und Blade-Server, Storage, Netzwerk und Workstations — neu oder refurbished (A+). Sagen Sie uns, was Sie brauchen, wir konfigurieren es."], "el": ["Server hardware σύμφωνα με τις προδιαγραφές σας", "Rack, tower και blade servers, storage, δίκτυο και workstations — καινούρια ή refurbished (A+). Πείτε μας τι χρειάζεστε και το διαμορφώνουμε."]}];
   var I18N = {"btn": {"en": "View offer", "de": "Zum Angebot", "el": "Δείτε προσφορά"}, "tag": {"en": "TOPSELLER", "de": "TOPSELLER", "el": "TOPSELLER"}};
   // Optionale Slug-Korrekturen (falls ein bestehender Link nicht automatisch
   // gefunden wird): { "Exakter EN-Name": "ecwid-slug" }
@@ -106,19 +106,90 @@
     if (href) return '<a class="sof-tile" href="'+href+'">'+body+'</a>';
     return '<span class="sof-tile sof-soon">'+body+'</span>';
   }
+  /* ---- Werbekasten -------------------------------------------------------
+     Produktkaesten tragen eine Artikelnummer. Preis, Streichpreis, Rabatt
+     und Lieferzeit stehen NICHT im Code — sie werden beim ersten Oeffnen
+     des Menues bei Ecwid geholt (siehe preiseHolen) und hier eingesetzt.
+     So bleiben sie richtig, auch wenn du Preise aenderst. */
   function featHTML(i){
     var f=FEAT[i]; if(!f) return "";
-    var txt=f[lang()]||f.en, img=f.img;
-    var tagT=f.tag?(f.tag[lang()]||f.tag.en):tx(I18N.tag), btnT=f.btn?(f.btn[lang()]||f.btn.en):tx(I18N.btn);
-    var L=lang(), href = f.slug ? (location.origin+(L==="en"?"":"/"+L)+"/products/"+f.slug) : "#";
-    var im = img ? '<img class="sof-fimg" src="'+img+'" alt="" style="position:static;transform:none;max-height:178px;max-width:116px;width:auto;flex:0 0 auto;align-self:center;filter:drop-shadow(0 12px 22px rgba(0,10,12,.34));">' : '';
+    var txt=f[lang()]||f.en, img=!!f.bild, L=lang();
+    var tagT=f.tag?(f.tag[L]||f.tag.en):tx(I18N.tag), btnT=f.btn?(f.btn[L]||f.btn.en):tx(I18N.btn);
+    var href = f.anfrage ? (location.origin+(L==="en"?"":"/"+L)+"/b2b?thema=hardware")
+             : f.slug    ? (location.origin+(L==="en"?"":"/"+L)+"/products/"+f.slug) : "#";
+    /* Bildadresse steht NICHT im Code — sie kommt mit der Preisabfrage aus
+       dem Shop. Aenderst du das Produktbild in Ecwid, aendert es sich hier mit. */
+    var im = img ? '<img class="sof-fimg" data-sof-bild="'+esc(f.sku)+'" alt="" src="data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'104\' height=\'150\'%3E%3C/svg%3E">' : '';
+    var mitte = f.sku
+      ? '<div class="sof-fpreis" data-sof-sku="'+esc(f.sku)+'">'
+        +'<span class="sof-fp"></span><s class="sof-fuvp"></s><span class="sof-frab"></span></div>'
+        +(f.lief?'<div class="sof-flief">'+esc(f.lief[L]||f.lief.en)+'</div>':'')
+      : (txt[1] ? '<div class="sof-fs">'+esc(txt[1])+'</div>' : '');
     var textcol = '<div class="sof-ftext" style="max-width:none;flex:1 1 0%;min-width:0;display:flex;flex-direction:column;align-items:flex-start;">'
       +'<div class="sof-ftag">'+esc(tagT)+'</div>'
-      +'<div class="sof-ft">'+esc(txt[0])+'</div>'
-      +'<div class="sof-fs">'+esc(txt[1])+'</div>'
+      +'<div class="sof-ft'+(txt[0].length>46?' sof-ft--lang':'')+'">'+esc(txt[0])+'</div>'
+      +mitte
       +'<span class="sof-fbtn">'+esc(btnT)+'</span></div>';
-    var cst = img ? ' style="flex:0 0 336px;flex-direction:row;align-items:center;gap:16px;padding:22px;min-height:200px;"' : '';
-    return '<a class="sof-feat'+(img?' sof-hasimg':'')+'" href="'+href+'"'+cst+'>'+textcol+im+'</a>';
+    var cst = img ? ' style="flex:0 0 336px;flex-direction:row;align-items:center;gap:14px;padding:20px;min-height:282px;"' : '';
+    return '<a class="sof-feat'+(img?' sof-hasimg':'')+(f.anfrage?' sof-fanfrage':'')+'" href="'+href+'"'+cst+'>'+textcol+im+'</a>';
+  }
+
+  /* ---- Preise holen ------------------------------------------------------
+     Laeuft einmal je Browsersitzung und erst, wenn das Menue zum ersten Mal
+     geoeffnet wird — wer nie ins Menue geht, loest keine Abfrage aus.
+     Das Ergebnis liegt in sessionStorage, damit der naechste Seitenaufruf
+     nichts mehr nachlaedt. Schlaegt die Abfrage fehl, bleiben die Zeilen
+     leer; der Kasten funktioniert weiter. */
+  var preiseLaeuft=false;
+  function preiseEinsetzen(d){
+    for (var sku in d){
+      var p=d[sku];
+      var felder=document.querySelectorAll('.sof-fpreis[data-sof-sku="'+sku+'"]');
+      for (var i=0;i<felder.length;i++){
+        var e=felder[i];
+        e.querySelector(".sof-fp").textContent  = p.preis||"";
+        e.querySelector(".sof-fuvp").textContent= p.uvp||"";
+        e.querySelector(".sof-frab").textContent= p.rabatt||"";
+        if(p.preis) e.classList.add("sof-fpreis--da");
+      }
+      var bi=document.querySelectorAll('.sof-fimg[data-sof-bild="'+sku+'"]');
+      for (var k=0;k<bi.length;k++) if(p.bild){ bi[k].src=p.bild; bi[k].classList.add("sof-fimg--da"); }
+    }
+  }
+  function preiseHolen(){
+    if (preiseLaeuft) return; preiseLaeuft=true;
+    var L=lang(), schl="sof-menupreise-"+L;
+    try { var c=sessionStorage.getItem(schl);
+          if(c){ preiseEinsetzen(JSON.parse(c)); return; } } catch(e){}
+    var skus=[]; for (var i=0;i<FEAT.length;i++) if(FEAT[i].sku) skus.push(FEAT[i].sku);
+    if(!skus.length) return;
+    var tok=null;
+    try { tok=Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch(e){}
+    if(!tok){ preiseLaeuft=false; return; }
+    var daten={}, offen=skus.length;
+    skus.forEach(function(sku){
+      fetch("https://app.ecwid.com/api/v3/123703327/products?keyword="+encodeURIComponent(sku)
+            +"&lang="+L+"&token="+tok)
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var p=(j.items||[]).filter(function(x){ return x.sku===sku; })[0];
+        if(p){
+          var uvp = p.compareToPriceFormatted || "";
+          var rab = p.compareToPriceDiscountPercentFormatted
+                 || (p.compareToPriceDiscountPercent ? "-"+p.compareToPriceDiscountPercent+"%" : "");
+          daten[sku]={ preis: p.defaultDisplayedPriceFormatted || "",
+                       uvp: uvp, rabatt: uvp?rab:"",
+                       bild: p.hdThumbnailUrl || p.imageUrl || p.thumbnailUrl || "" };
+        }
+      })
+      .catch(function(){})
+      .then(function(){
+        if(--offen===0){
+          preiseEinsetzen(daten);
+          try { sessionStorage.setItem(schl, JSON.stringify(daten)); } catch(e){}
+        }
+      });
+    });
   }
   function hasKids(top){ return (top.c||[]).some(function(c){return c.c&&c.c.length;}); }
   function panelHTML(idx){
@@ -201,6 +272,7 @@
       if(!desk()) return;
       if(idx===openIdx && host.firstChild) return;
       openIdx=idx;
+      preiseHolen();
       // Panel-Breite an Header-Container ausrichten + fix unter den Header setzen
       var inner=document.querySelector(".ins-header__inner")||document.querySelector(".ins-header__wrap")||headerTile;
       var ir=inner.getBoundingClientRect();
