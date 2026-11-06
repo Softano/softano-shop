@@ -140,7 +140,7 @@
      Das Ergebnis liegt in sessionStorage, damit der naechste Seitenaufruf
      nichts mehr nachlaedt. Schlaegt die Abfrage fehl, bleiben die Zeilen
      leer; der Kasten funktioniert weiter. */
-  var preiseLaeuft=false;
+  var PREISE=null, preiseLaeuft=false;
   function preiseEinsetzen(d){
     for (var sku in d){
       var p=d[sku];
@@ -157,10 +157,14 @@
     }
   }
   function preiseHolen(){
-    if (preiseLaeuft) return; preiseLaeuft=true;
+    /* Die Kaesten werden bei jedem Oeffnen neu aufgebaut, deshalb muss hier
+       jedes Mal eingesetzt werden. Geholt wird dagegen nur einmal. */
+    if (PREISE){ preiseEinsetzen(PREISE); return; }
+    if (preiseLaeuft) return;
     var L=lang(), schl="sof-menupreise-"+L;
     try { var c=sessionStorage.getItem(schl);
-          if(c){ preiseEinsetzen(JSON.parse(c)); return; } } catch(e){}
+          if(c){ PREISE=JSON.parse(c); preiseEinsetzen(PREISE); return; } } catch(e){}
+    preiseLaeuft=true;
     var skus=[]; for (var i=0;i<FEAT.length;i++) if(FEAT[i].sku) skus.push(FEAT[i].sku);
     if(!skus.length) return;
     var tok=null;
@@ -185,6 +189,7 @@
       .catch(function(){})
       .then(function(){
         if(--offen===0){
+          PREISE=daten; preiseLaeuft=false;
           preiseEinsetzen(daten);
           try { sessionStorage.setItem(schl, JSON.stringify(daten)); } catch(e){}
         }
@@ -272,13 +277,13 @@
       if(!desk()) return;
       if(idx===openIdx && host.firstChild) return;
       openIdx=idx;
-      preiseHolen();
       // Panel-Breite an Header-Container ausrichten + fix unter den Header setzen
       var inner=document.querySelector(".ins-header__inner")||document.querySelector(".ins-header__wrap")||headerTile;
       var ir=inner.getBoundingClientRect();
       var hr=headerTile.getBoundingClientRect();
       host.style.top=Math.round(hr.bottom)+"px";
       host.innerHTML=panelHTML(idx);
+      preiseHolen();              // nach dem Aufbau, damit die Felder da sind
       var mega=host.firstChild;
       if(mega){ mega.style.maxWidth=Math.round(ir.width)+"px"; mega.style.marginLeft="auto"; mega.style.marginRight="auto";
         // Notbremse: Panel nie hoeher als der Platz unter dem Header.
