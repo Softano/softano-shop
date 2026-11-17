@@ -197,12 +197,55 @@
     });
   }
   function hasKids(top){ return (top.c||[]).some(function(c){return c.c&&c.c.length;}); }
+
+  /* ---------- Markenleiste ---------------------------------------------
+     Je Hauptmenue eine Leiste mit den Herstellerlogos, optional einem Satz
+     und rechts dem Partnerabzeichen. Die Logos liegen im Repo unter /logos.
+     Reihenfolge entspricht TREE: 0 Betriebssysteme, 1 Office,
+     2 Virtualisierung, 3 Infrastruktur (dort bewusst keine Leiste). */
+  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@f8a5265/logos/";
+  var MSTEXT = {
+    de:"Microsoft-Lizenzen f\u00fcr Unternehmen \u00b7 Pre-Owned mit Lizenz-/L\u00f6schungszertifikat \u00b7 Lieferung am selben Werktag",
+    en:"Microsoft licences for business \u00b7 Pre-Owned with licence/deletion certificate \u00b7 delivered the same business day",
+    el:"\u0386\u03b4\u03b5\u03b9\u03b5\u03c2 Microsoft \u03b3\u03b9\u03b1 \u03b5\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 \u00b7 Pre-Owned \u03bc\u03b5 \u03c0\u03b9\u03c3\u03c4\u03bf\u03c0\u03bf\u03b9\u03b7\u03c4\u03b9\u03ba\u03cc \u03ac\u03b4\u03b5\u03b9\u03b1\u03c2/\u03b4\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae\u03c2 \u00b7 \u03c0\u03b1\u03c1\u03ac\u03b4\u03bf\u03c3\u03b7 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03b5\u03c1\u03b3\u03ac\u03c3\u03b9\u03bc\u03b7"
+  };
+  /* [Dateiname, Anzeigehoehe in px, Name des Herstellers im Menuebaum] */
+  var MARKEN = [
+    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",52] },
+    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",52] },
+    { logos:[["logo_vmware",26,"VMware"],["logo_proxmox",38,"Proxmox"],["logo_acronis",24,"Acronis"],
+             ["logo_veeam",24,"Veeam"],["logo_hpe_aruba",26,"HPE Aruba"]] },
+    null
+  ];
+  function markenHTML(idx){
+    var m=MARKEN[idx]; if(!m) return "";
+    var top=TREE[idx], L=lang();
+    var teile = m.logos.map(function(e){
+      var datei=e[0], hoehe=e[1], marke=e[2];
+      var bild='<img src="'+LOGOBASIS+datei+'.webp" alt="'+esc(marke||"")+'" loading="lazy" style="height:'+hoehe+'px">';
+      if(!marke) return '<span class="sof-mlogo">'+bild+'</span>';
+      var knoten=null;
+      for (var i=0;i<top.c.length;i++) if(top.c[i].en===marke) knoten=top.c[i];
+      var ziel=knoten?hrefFor(knoten):null;
+      return ziel ? '<a class="sof-mlogo" href="'+ziel+'">'+bild+'</a>'
+                  : '<span class="sof-mlogo">'+bild+'</span>';
+    }).join("");
+    if(m.text) teile += '<span class="sof-mtext">'+esc(m.text[L]||m.text.en)+'</span>';
+    if(m.partner) teile += '<span class="sof-mpartner"><img src="'+LOGOBASIS+m.partner[0]
+      +'.webp" alt="Microsoft Solutions Partner" loading="lazy" style="height:'+m.partner[1]+'px"></span>';
+    return '<div class="sof-marken">'+teile+'</div>';
+  }
+
   function panelHTML(idx){
     var top=TREE[idx]; if(!top||!top.c) return "";
     var body = hasKids(top)
       ? '<div class="sof-cols'+(top.c.length<=5?' sof-cols--spread':'')+'">'+top.c.map(colHTML).join("")+'</div>'
       : '<div class="sof-tiles">'+top.c.map(tileHTML).join("")+'</div>';
-    return '<div class="sof-mega">'+body+featHTML(idx)+'</div>';
+    var leiste=markenHTML(idx);
+    return leiste
+      ? '<div class="sof-mega sof-mega--marken">'+leiste
+        +'<div class="sof-mbody">'+body+featHTML(idx)+'</div></div>'
+      : '<div class="sof-mega">'+body+featHTML(idx)+'</div>';
   }
 
   /* ---------- Aufbau & Verdrahtung ---------- */
