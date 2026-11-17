@@ -181,3 +181,29 @@
   flex:0 0 auto; align-self:center; object-fit:contain; border-radius:8px;
   opacity:0; transition:opacity .25s ease; }
 .sof-feat .sof-fimg[data-sof-bild].sof-fimg--da{ opacity:1; filter:drop-shadow(0 12px 22px rgba(0,10,12,.34)); }
+
+/* ---- Markenleiste am Kopf des Panels (17.11.2026) ----------------------
+   Herstellerlogos links, Aussage in der Mitte, Partnerabzeichen rechts.
+   Logo und Abzeichen liegen in einer gemeinsamen hellen Schiene, damit der
+   Eigenrahmen des Abzeichens nicht wie ein Versehen wirkt. */
+.sof-mega--marken{ flex-direction:column; gap:0; }
+.sof-mbody{ display:flex; gap:30px; }
+.sof-marken{
+  display:flex; align-items:center; gap:26px; flex-wrap:nowrap;
+  background:#f6fafb; border:1px solid var(--sof-line,#e8eef0); border-radius:11px;
+  padding:11px 16px; margin:0 0 20px; }
+.sof-mlogo{ flex:0 0 auto; display:block; text-decoration:none; border-radius:6px;
+  transition:transform .14s ease, opacity .14s ease; }
+a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
+.sof-marken img{ display:block; width:auto; }
+.sof-mtext{ flex:1 1 auto; min-width:0; font-size:12.5px; line-height:1.35;
+  color:#7d9196; font-weight:400; }
+.sof-mpartner{ flex:0 0 auto; margin-left:auto; display:block; }
+
+/* Eng wird es zuerst beim Satz — der verschwindet als Erstes, nie ein Logo. */
+@media (max-width:1300px){ .sof-mtext{ display:none; } }
+@media (max-width:1100px){ .sof-marken{ gap:18px; padding:9px 12px; } }
+
+/* ==========================================================
+   END · Softano Mega-Menu v3 (17.11.2026)
+   ========================================================== */
