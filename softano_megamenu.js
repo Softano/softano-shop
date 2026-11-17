@@ -19,6 +19,7 @@
   var SLUG_OVERRIDE = {"Windows Server Access Licenses CAL": "access-licenses-cal", "RDS Access Licenses CAL": "access-licenses-cal", "SQL Access Licenses CAL": "access-licenses-cal"};
   var DESK_MIN = 921;         // ab dieser Breite Mega-Menu aktiv
   var CLOSE_DELAY = 140;      // ms Puffer beim Wechsel Top-Punkt -> Panel
+  var OPEN_DELAY  = 120;      // ms, bis ein Panel beim Drueberwandern aufgeht
   /* ---------------------------- */
 
   function lang(){
@@ -320,7 +321,8 @@
       }
     }
 
-    var openIdx=-1, timer=null;
+    var openIdx=-1, timer=null, oeffner=null;
+    var perTaste=false;          // wurde das Panel mit der Tastatur geoeffnet?
     function open(idx){
       if(!desk()) return;
       if(idx===openIdx && host.firstChild) return;
@@ -339,26 +341,102 @@
         mega.style.maxHeight=Math.max(240, window.innerHeight - Math.round(hr.bottom) - 18)+"px"; }
       host.classList.add("sof-show");
       for(var i=0;i<items.length;i++){ items[i].classList.toggle("sof-active", i===idx); }
+      for(var k=0;k<taster.length;k++) taster[k].setAttribute("aria-expanded", k===idx?"true":"false");
     }
     function close(){
-      openIdx=-1; host.classList.remove("sof-show"); host.innerHTML="";
+      openIdx=-1; perTaste=false; cancelOpen();
+      host.classList.remove("sof-show"); host.innerHTML="";
       for(var i=0;i<items.length;i++){ items[i].classList.remove("sof-active"); }
+      for(var k=0;k<taster.length;k++) taster[k].setAttribute("aria-expanded","false");
     }
     function schedClose(){ clearTimeout(timer); timer=setTimeout(close, CLOSE_DELAY); }
     function cancelClose(){ clearTimeout(timer); }
 
+    /* Oeffnungsverzoegerung: wer nur quer ueber die Menueleiste faehrt,
+       soll nicht drei Panels aufblitzen sehen. Ist schon eines offen,
+       wird ohne Verzoegerung gewechselt — sonst wirkt es traege. */
+    function schedOpen(idx){
+      clearTimeout(oeffner);
+      if (openIdx>=0){ open(idx); return; }
+      oeffner=setTimeout(function(){ open(idx); }, OPEN_DELAY);
+    }
+    function cancelOpen(){ clearTimeout(oeffner); }
+
     // Top-Punkte (Reihenfolge = TREE-Reihenfolge)
-    var items=[];
+    var items=[], taster=[];
     for (var i=0;i<topLinks.length && i<TREE.length;i++){
       var li = topLinks[i].closest(".ins-header__menu-link") || topLinks[i].parentNode;
-      items.push(li);
-      (function(idx){
-        li.addEventListener("mouseenter", function(){ cancelClose(); open(idx); });
-        li.addEventListener("mouseleave", schedClose);
-      })(i);
+      items.push(li); taster.push(topLinks[i]);
+      topLinks[i].setAttribute("aria-haspopup","true");
+      topLinks[i].setAttribute("aria-expanded","false");
+      (function(idx, a){
+        li.addEventListener("mouseenter", function(){ cancelClose(); schedOpen(idx); });
+        li.addEventListener("mouseleave", function(){ cancelOpen(); schedClose(); });
+        a.addEventListener("keydown", function(e){ topTaste(e, idx, a); });
+      })(i, topLinks[i]);
     }
     host.addEventListener("mouseenter", cancelClose);
     host.addEventListener("mouseleave", schedClose);
+
+    /* ---- Tastaturbedienung ------------------------------------------------
+       Enter oder Leertaste klappt das Panel auf und setzt den Schreibmarker
+       auf den ersten Link darin. Pfeil runter/hoch wandert durch die Liste,
+       Pfeil links/rechts durch die Menuepunkte, Esc schliesst und springt
+       zum Menuepunkt zurueck. Mit der Maus aendert sich nichts. */
+    function panelLinks(){
+      return host.firstChild ? [].slice.call(host.querySelectorAll('a[href]')) : [];
+    }
+    function zumPanel(){
+      var l=panelLinks(); if(l.length) l[0].focus();
+    }
+    function zumTaster(idx){
+      if(taster[idx]) taster[idx].focus();
+    }
+    function topTaste(e, idx, a){
+      if(!desk()) return;
+      var k=e.key;
+      if(k==="Enter" || k===" " || k==="Spacebar" || k==="ArrowDown" || k==="Down"){
+        e.preventDefault();
+        if(openIdx===idx && host.firstChild){ close(); return; }
+        cancelOpen(); cancelClose(); perTaste=true; open(idx);
+        setTimeout(zumPanel, 0);
+        return;
+      }
+      if(k==="ArrowRight" || k==="Right" || k==="ArrowLeft" || k==="Left"){
+        var vor=(k==="ArrowRight"||k==="Right") ? 1 : -1;
+        var ziel=(idx+vor+taster.length)%taster.length;
+        e.preventDefault();
+        if(openIdx>=0){ perTaste=true; open(ziel); }
+        zumTaster(ziel);
+        return;
+      }
+      if(k==="Escape" || k==="Esc"){ if(openIdx>=0){ e.preventDefault(); close(); } }
+    }
+    host.addEventListener("keydown", function(e){
+      var k=e.key;
+      if(k==="Escape" || k==="Esc"){
+        e.preventDefault(); var zurueck=openIdx; close();
+        if(zurueck>=0) zumTaster(zurueck);
+        return;
+      }
+      if(k==="ArrowDown" || k==="Down" || k==="ArrowUp" || k==="Up"){
+        var l=panelLinks(); if(!l.length) return;
+        var jetzt=l.indexOf(document.activeElement);
+        if(jetzt<0) return;
+        e.preventDefault();
+        var vor=(k==="ArrowDown"||k==="Down") ? 1 : -1;
+        l[(jetzt+vor+l.length)%l.length].focus();
+      }
+    });
+    /* Wandert der Schreibmarker aus Menuepunkten und Panel heraus
+       (etwa mit der Tabulatortaste), schliesst das Panel. */
+    document.addEventListener("focusin", function(e){
+      if(openIdx<0 || !perTaste) return;
+      var z=e.target;
+      if(host.contains(z)) return;
+      for(var i=0;i<items.length;i++) if(items[i].contains(z)) return;
+      close();
+    });
     document.addEventListener("keydown", function(e){ if(e.key==="Escape") close(); });
     window.addEventListener("resize", function(){ if(!desk()) close(); });
 
