@@ -203,16 +203,17 @@
      und rechts dem Partnerabzeichen. Die Logos liegen im Repo unter /logos.
      Reihenfolge entspricht TREE: 0 Betriebssysteme, 1 Office,
      2 Virtualisierung, 3 Infrastruktur (dort bewusst keine Leiste). */
-  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@f8a5265/logos/";
+  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@cca780b/logos/";
+  /* *Sternchen* hebt eine Stelle hervor — siehe markenHTML. */
   var MSTEXT = {
-    de:"Microsoft-Lizenzen f\u00fcr Unternehmen \u00b7 Pre-Owned mit Lizenz-/L\u00f6schungszertifikat \u00b7 Lieferung am selben Werktag",
-    en:"Microsoft licences for business \u00b7 Pre-Owned with licence/deletion certificate \u00b7 delivered the same business day",
-    el:"\u0386\u03b4\u03b5\u03b9\u03b5\u03c2 Microsoft \u03b3\u03b9\u03b1 \u03b5\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 \u00b7 Pre-Owned \u03bc\u03b5 \u03c0\u03b9\u03c3\u03c4\u03bf\u03c0\u03bf\u03b9\u03b7\u03c4\u03b9\u03ba\u03cc \u03ac\u03b4\u03b5\u03b9\u03b1\u03c2/\u03b4\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae\u03c2 \u00b7 \u03c0\u03b1\u03c1\u03ac\u03b4\u03bf\u03c3\u03b7 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03b5\u03c1\u03b3\u03ac\u03c3\u03b9\u03bc\u03b7"
+    de:"*Neu und Pre-Owned* \u00b7 Microsoft-Lizenzen f\u00fcr Unternehmen \u00b7 *Lieferung am selben Werktag*",
+    en:"*New and Pre-Owned* \u00b7 Microsoft licences for business \u00b7 *delivered the same business day*",
+    el:"*\u039d\u03ad\u03b5\u03c2 \u03ba\u03b1\u03b9 Pre-Owned* \u00b7 \u03ac\u03b4\u03b5\u03b9\u03b5\u03c2 Microsoft \u03b3\u03b9\u03b1 \u03b5\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 \u00b7 *\u03c0\u03b1\u03c1\u03ac\u03b4\u03bf\u03c3\u03b7 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03b5\u03c1\u03b3\u03ac\u03c3\u03b9\u03bc\u03b7*"
   };
   /* [Dateiname, Anzeigehoehe in px, Name des Herstellers im Menuebaum] */
   var MARKEN = [
-    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",52] },
-    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",52] },
+    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",62] },
+    { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",62] },
     { logos:[["logo_vmware",26,"VMware"],["logo_proxmox",38,"Proxmox"],["logo_acronis",24,"Acronis"],
              ["logo_veeam",24,"Veeam"],["logo_hpe_aruba",26,"HPE Aruba"]] },
     null
@@ -230,7 +231,11 @@
       return ziel ? '<a class="sof-mlogo" href="'+ziel+'">'+bild+'</a>'
                   : '<span class="sof-mlogo">'+bild+'</span>';
     }).join("");
-    if(m.text) teile += '<span class="sof-mtext">'+esc(m.text[L]||m.text.en)+'</span>';
+    if(m.text){
+      var roh=esc(m.text[L]||m.text.en);
+      roh=roh.replace(/\*([^*]+)\*/g,'<b class="sof-mstark">$1</b>');
+      teile += '<span class="sof-mtext">'+roh+'</span>';
+    }
     if(m.partner) teile += '<span class="sof-mpartner"><img src="'+LOGOBASIS+m.partner[0]
       +'.webp" alt="Microsoft Solutions Partner" loading="lazy" style="height:'+m.partner[1]+'px"></span>';
     return '<div class="sof-marken">'+teile+'</div>';
