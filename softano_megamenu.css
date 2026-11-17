@@ -170,6 +170,64 @@
 .sof-flief:empty::before{ content:none; }
 .sof-fanfrage .sof-fs{ font-size:12.5px; line-height:1.45; }
 
+
+/* ==========================================================
+   (u) Feinschliff: Tiefe und Kopfband — 17.11.2026
+   Vier gestufte Schatten statt einem. Direkt unter dem Panel
+   ist der Schatten klein und dunkel, weiter weg gross und
+   blass — so faellt Licht in der Wirklichkeit.
+   ========================================================== */
+:root{
+  --sof-panel-sh:
+    0 1px 2px rgba(16,40,50,.04),
+    0 4px 9px -3px rgba(16,40,50,.05),
+    0 14px 28px -8px rgba(16,40,50,.08),
+    0 38px 70px -22px rgba(30,58,138,.20);
+}
+
+/* Markenleiste als buendiges Kopfband. Das Panel gibt dafuer
+   seine Polsterung ab; Band und Rumpf tragen sie selbst.
+   (Kein negativer Aussenabstand — der wuerde im scrollbaren
+   Panel eine waagerechte Bildlaufleiste erzeugen.) */
+.sof-mega.sof-mega--marken{ padding:0; }
+.sof-mega--marken .sof-marken{
+  margin:0; border:0; border-radius:0;
+  border-bottom:1px solid #e6eef0;
+  background:linear-gradient(180deg,#f8fbfc,#f2f8f9);
+  box-shadow:inset 0 1px 0 #fff;
+  padding:13px 30px; }
+.sof-mega--marken .sof-mbody{ padding:22px 30px 26px; }
+
+@media (min-width:921px) and (max-height:900px){
+  .sof-mega--marken .sof-marken{ padding:10px 30px; }
+  .sof-mega--marken .sof-mbody{ padding:16px 30px 18px; }
+}
+@media (min-width:921px) and (max-height:780px){
+  .sof-mega--marken .sof-marken{ padding:8px 26px; }
+  .sof-mega--marken .sof-mbody{ padding:12px 26px 14px; }
+}
+@media (max-width:1100px){
+  .sof-mega--marken .sof-marken{ padding:10px 22px; }
+  .sof-mega--marken .sof-mbody{ padding:18px 22px 20px; }
+}
+
+/* Kacheln ruhen leicht erhoben statt flach auf der Flaeche. */
+.sof-tile{ border-color:#eef3f4;
+  box-shadow:0 1px 2px rgba(16,40,50,.05), 0 3px 8px -3px rgba(16,40,50,.07); }
+
+/* Topseller bekommt einen eigenen Schatten und innen eine
+   duenne Lichtkante, damit er sich vom Weiss loest. */
+.sof-feat{
+  box-shadow:0 2px 4px rgba(10,40,45,.10), 0 14px 30px -10px rgba(10,60,65,.34);
+  outline:1px solid rgba(255,255,255,.14); outline-offset:-1px; }
+
+/* Tastaturbedienung: wer mit der Maus klickt, sieht nichts;
+   wer mit der Tastatur wandert, sieht klar, wo er steht. */
+.sof-mega a:focus-visible,
+.ins-header__menu-link-title:focus-visible{
+  outline:2px solid var(--sof-teal,#23B8A6); outline-offset:2px; border-radius:6px; }
+.sof-feat:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+
 /* ==========================================================
    END · Softano Mega-Menu v2 (06.11.2026)
    ========================================================== */
@@ -204,6 +262,64 @@ a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
 /* Eng wird es zuerst beim Satz — der verschwindet als Erstes, nie ein Logo. */
 @media (max-width:1300px){ .sof-mtext{ display:none; } }
 @media (max-width:1100px){ .sof-marken{ gap:18px; padding:9px 12px; } }
+
+
+/* ==========================================================
+   (u) Feinschliff: Tiefe und Kopfband — 17.11.2026
+   Vier gestufte Schatten statt einem. Direkt unter dem Panel
+   ist der Schatten klein und dunkel, weiter weg gross und
+   blass — so faellt Licht in der Wirklichkeit.
+   ========================================================== */
+:root{
+  --sof-panel-sh:
+    0 1px 2px rgba(16,40,50,.04),
+    0 4px 9px -3px rgba(16,40,50,.05),
+    0 14px 28px -8px rgba(16,40,50,.08),
+    0 38px 70px -22px rgba(30,58,138,.20);
+}
+
+/* Markenleiste als buendiges Kopfband. Das Panel gibt dafuer
+   seine Polsterung ab; Band und Rumpf tragen sie selbst.
+   (Kein negativer Aussenabstand — der wuerde im scrollbaren
+   Panel eine waagerechte Bildlaufleiste erzeugen.) */
+.sof-mega.sof-mega--marken{ padding:0; }
+.sof-mega--marken .sof-marken{
+  margin:0; border:0; border-radius:0;
+  border-bottom:1px solid #e6eef0;
+  background:linear-gradient(180deg,#f8fbfc,#f2f8f9);
+  box-shadow:inset 0 1px 0 #fff;
+  padding:13px 30px; }
+.sof-mega--marken .sof-mbody{ padding:22px 30px 26px; }
+
+@media (min-width:921px) and (max-height:900px){
+  .sof-mega--marken .sof-marken{ padding:10px 30px; }
+  .sof-mega--marken .sof-mbody{ padding:16px 30px 18px; }
+}
+@media (min-width:921px) and (max-height:780px){
+  .sof-mega--marken .sof-marken{ padding:8px 26px; }
+  .sof-mega--marken .sof-mbody{ padding:12px 26px 14px; }
+}
+@media (max-width:1100px){
+  .sof-mega--marken .sof-marken{ padding:10px 22px; }
+  .sof-mega--marken .sof-mbody{ padding:18px 22px 20px; }
+}
+
+/* Kacheln ruhen leicht erhoben statt flach auf der Flaeche. */
+.sof-tile{ border-color:#eef3f4;
+  box-shadow:0 1px 2px rgba(16,40,50,.05), 0 3px 8px -3px rgba(16,40,50,.07); }
+
+/* Topseller bekommt einen eigenen Schatten und innen eine
+   duenne Lichtkante, damit er sich vom Weiss loest. */
+.sof-feat{
+  box-shadow:0 2px 4px rgba(10,40,45,.10), 0 14px 30px -10px rgba(10,60,65,.34);
+  outline:1px solid rgba(255,255,255,.14); outline-offset:-1px; }
+
+/* Tastaturbedienung: wer mit der Maus klickt, sieht nichts;
+   wer mit der Tastatur wandert, sieht klar, wo er steht. */
+.sof-mega a:focus-visible,
+.ins-header__menu-link-title:focus-visible{
+  outline:2px solid var(--sof-teal,#23B8A6); outline-offset:2px; border-radius:6px; }
+.sof-feat:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
 
 /* ==========================================================
    END · Softano Mega-Menu v3 (17.11.2026)
