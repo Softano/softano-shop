@@ -196,8 +196,9 @@
   transition:transform .14s ease, opacity .14s ease; }
 a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
 .sof-marken img{ display:block; width:auto; }
-.sof-mtext{ flex:1 1 auto; min-width:0; font-size:12.5px; line-height:1.35;
-  color:#7d9196; font-weight:400; }
+.sof-mtext{ flex:1 1 auto; min-width:0; font-size:13px; line-height:1.4;
+  color:#5e767b; font-weight:400; letter-spacing:.002em; }
+.sof-mstark{ font-weight:600; color:var(--sof-navy,#1e3a8a); }
 .sof-mpartner{ flex:0 0 auto; margin-left:auto; display:block; }
 
 /* Eng wird es zuerst beim Satz — der verschwindet als Erstes, nie ein Logo. */
