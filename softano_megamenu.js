@@ -211,12 +211,20 @@
     en:"*New and Pre-Owned* \u00b7 Microsoft licences for business \u00b7 *delivered the same business day*",
     el:"*\u039d\u03ad\u03b5\u03c2 \u03ba\u03b1\u03b9 Pre-Owned* \u00b7 \u03ac\u03b4\u03b5\u03b9\u03b5\u03c2 Microsoft \u03b3\u03b9\u03b1 \u03b5\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 \u00b7 *\u03c0\u03b1\u03c1\u03ac\u03b4\u03bf\u03c3\u03b7 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03b5\u03c1\u03b3\u03ac\u03c3\u03b9\u03bc\u03b7*"
   };
+  /* Virtualisierung & Backup: ausschliesslich neu, keine Lieferzusage
+     (die gilt dort nicht), dafuer der Partnerstatus. */
+  var VTEXT = {
+    de:"*Ausschlie\u00dflich neue Lizenzen* f\u00fcr Unternehmen \u00b7 *Autorisierter Partner*",
+    en:"*New licences only* for business \u00b7 *Authorised partner*",
+    el:"*\u039c\u03cc\u03bd\u03bf \u03bd\u03ad\u03b5\u03c2 \u03ac\u03b4\u03b5\u03b9\u03b5\u03c2* \u03b3\u03b9\u03b1 \u03b5\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 \u00b7 *\u0395\u03be\u03bf\u03c5\u03c3\u03b9\u03bf\u03b4\u03bf\u03c4\u03b7\u03bc\u03ad\u03bd\u03bf\u03c2 \u03c3\u03c5\u03bd\u03b5\u03c1\u03b3\u03ac\u03c4\u03b7\u03c2*"
+  };
+
   /* [Dateiname, Anzeigehoehe in px, Name des Herstellers im Menuebaum] */
   var MARKEN = [
     { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",62] },
     { logos:[["logo_microsoft",30,null]], text:MSTEXT, partner:["partner_microsoft",62] },
     { logos:[["logo_vmware",26,"VMware"],["logo_proxmox",38,"Proxmox"],["logo_acronis",24,"Acronis"],
-             ["logo_veeam",24,"Veeam"],["logo_hpe_aruba",26,"HPE Aruba"]] },
+             ["logo_veeam",24,"Veeam"],["logo_hpe_aruba",26,"HPE Aruba"]], text:VTEXT },
     null
   ];
   function markenHTML(idx){
