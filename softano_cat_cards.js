@@ -413,8 +413,63 @@
     return t === "PRODUCT";
   }
 
+  /* ------------------------------------------------------------------
+     Bildunterschriften der Kategoriekacheln (19.11.2026)
+
+     Durch das CSS (v5.78, Abschnitt t) stehen die Kacheln in einer Zeile
+     und teilen sich die Breite. Bei sechs oder sieben Kacheln bleiben je
+     rund 125 bis 135 px, und lange Namen wie "Office Einzelanwendungen"
+     passen bei 13 px nicht mehr hinein - sie wurden mit "..." abgeschnitten.
+
+     Hier wird je Reihe die groesste Schriftgroesse gesucht, bei der auch
+     der laengste Name noch vollstaendig in eine Zeile passt, und ALLE
+     Titel der Reihe darauf gesetzt. Die Reihe bleibt dadurch einheitlich,
+     nichts wird abgeschnitten, und die Kategorienamen bleiben unberuehrt.
+     Auf Seiten mit kurzen Namen bleibt es bei 13 px.
+     ------------------------------------------------------------------ */
+  var TITEL_MAX = 13, TITEL_MIN = 9;
+
+  function setzen(el, px) {
+    el.style.setProperty("font-size", px + "px", "important");
+  }
+
+  function titelEinpassen() {
+    var reihen = document.querySelectorAll(".grid__categories");
+    for (var r = 0; r < reihen.length; r++) {
+      var titel = reihen[r].querySelectorAll(".grid-category__title-inner");
+      if (!titel.length) continue;
+      var px = TITEL_MAX, i, j;
+      for (; px >= TITEL_MIN; px--) {
+        var passt = true;
+        /* "important" ist noetig: im CSS steht font-size mit !important,
+           ein einfacher Inline-Wert wuerde davon ueberstimmt. */
+        for (i = 0; i < titel.length; i++) setzen(titel[i], px);
+        for (i = 0; i < titel.length; i++) {
+          /* 1 px Spielraum gegen Rundungen im Browser */
+          if (titel[i].scrollWidth > titel[i].clientWidth + 1) { passt = false; break; }
+        }
+        if (passt) break;
+      }
+      if (px < TITEL_MIN) px = TITEL_MIN;
+      for (j = 0; j < titel.length; j++) setzen(titel[j], px);
+    }
+  }
+
+  var titelTimer = null;
+  function titelSpaeter() {
+    clearTimeout(titelTimer);
+    titelTimer = setTimeout(titelEinpassen, 120);
+  }
+  window.addEventListener("resize", titelSpaeter);
+
   function burst(page) {
     if (page && page.type) seitenTyp = page.type;
+    /* Die Kachelreihe gibt es auf jeder Seite mit Unterkategorien, also
+       auch dort, wo der Rest dieses Skripts nicht laeuft. Deshalb vor
+       der Abbruchpruefung, und mehrfach, weil Ecwid nachlaedt. */
+    titelSpaeter();
+    setTimeout(titelEinpassen, 900);
+    setTimeout(titelEinpassen, 2200);
     if (isBlockedPage()) return;
     var tries = 0;
     (function step() {
