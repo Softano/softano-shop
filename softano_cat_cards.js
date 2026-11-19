@@ -168,9 +168,17 @@
      nummer und verwirft die Reihenfolge aus der Importdatei — geprueft an
      vier Produkten. Die gewuenschte Reihenfolge wird deshalb hier gesetzt:
      die gebrauchte Fassung zuerst, danach nach Preis aufsteigend.
-     Nur auf Produktseiten; in Kategorien bleibt die Sortierung des Shops. */
+     Nur auf Produktseiten; in Kategorien bleibt die Sortierung des Shops.
+
+     Korrektur 19.11.2026: Die Pruefung lief frueher ueber die Adresse
+     (/products/...). In diesem Shop liegen Kategorien und Produkte aber
+     unter derselben Adresse - /products/windows-11 ist eine Kategorie,
+     /products/windows-server-2025-standard-16-core ein Produkt. Dadurch
+     wurden auch Kategorien umsortiert und die im Shop eingestellte
+     Reihenfolge im Browser wieder ueberschrieben. Jetzt entscheidet der
+     Seitentyp, den Ecwid selbst meldet. */
   function sortRelated() {
-    if (!/\/products?\//.test(location.pathname)) return;
+    if (!istProduktseite()) return;
     var wraps = document.querySelectorAll(".grid-product__wrap[data-sof-po]");
     if (wraps.length < 2) return;
     var gruppen = [];
@@ -396,7 +404,17 @@
 
   /* Nach einem Seitenwechsel laedt Ecwid die Kacheln nach. Statt eines
      Dauerbeobachters ein paar getaktete Versuche, dann Stopp. */
-  function burst() {
+  /* Seitentyp von Ecwid merken. Beim ersten Aufruf ohne Seitenobjekt
+     greifen wir auf Ecwid.currentPage zurueck. */
+  var seitenTyp = "";
+  function istProduktseite() {
+    var t = (window.Ecwid && Ecwid.currentPage && Ecwid.currentPage.type) ||
+            seitenTyp || "";
+    return t === "PRODUCT";
+  }
+
+  function burst(page) {
+    if (page && page.type) seitenTyp = page.type;
     if (isBlockedPage()) return;
     var tries = 0;
     (function step() {
