@@ -427,10 +427,29 @@
      nichts wird abgeschnitten, und die Kategorienamen bleiben unberuehrt.
      Auf Seiten mit kurzen Namen bleibt es bei 13 px.
      ------------------------------------------------------------------ */
-  var TITEL_MAX = 13, TITEL_MIN = 9;
+  var TITEL_MAX = 13, TITEL_MIN = 10;
 
   function setzen(el, px) {
     el.style.setProperty("font-size", px + "px", "important");
+  }
+
+  /* Rueckfallebene: Reicht selbst TITEL_MIN nicht, wird NICHT weiter
+     verkleinert - das griechische "Windows Server - Adeies Prosvasis (CAL)"
+     braeuchte 6 px und wuerde die ganze Reihe unlesbar machen. Stattdessen
+     duerfen die Titel dieser Reihe zweizeilig werden, und alle bekommen
+     dieselbe Hoehe, damit die Reihe trotzdem ruhig bleibt. */
+  function umbruchErlauben(titel, px) {
+    for (var i = 0; i < titel.length; i++) {
+      titel[i].style.setProperty("white-space", "normal", "important");
+      titel[i].style.setProperty("min-height", Math.round(px * 1.4 * 2) + "px", "important");
+    }
+  }
+
+  function umbruchZuruecknehmen(titel) {
+    for (var i = 0; i < titel.length; i++) {
+      titel[i].style.removeProperty("white-space");
+      titel[i].style.removeProperty("min-height");
+    }
   }
 
   function titelEinpassen() {
@@ -438,9 +457,10 @@
     for (var r = 0; r < reihen.length; r++) {
       var titel = reihen[r].querySelectorAll(".grid-category__title-inner");
       if (!titel.length) continue;
-      var px = TITEL_MAX, i, j;
+      var px = TITEL_MAX, i, j, passt = false;
+      umbruchZuruecknehmen(titel);
       for (; px >= TITEL_MIN; px--) {
-        var passt = true;
+        passt = true;
         /* "important" ist noetig: im CSS steht font-size mit !important,
            ein einfacher Inline-Wert wuerde davon ueberstimmt. */
         for (i = 0; i < titel.length; i++) setzen(titel[i], px);
@@ -450,8 +470,9 @@
         }
         if (passt) break;
       }
-      if (px < TITEL_MIN) px = TITEL_MIN;
+      if (!passt) px = TITEL_MIN;
       for (j = 0; j < titel.length; j++) setzen(titel[j], px);
+      if (!passt) umbruchErlauben(titel, px);
     }
   }
 
