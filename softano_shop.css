@@ -1,12 +1,13 @@
 /* ==========================================================
-   SOFTANO Custom CSS · v5.72
+   SOFTANO Custom CSS · v5.78
    Stand: 19. November 2026
    --------------------------------------------------------
    Aufbau: v5.2 BASIS · v5.3 bis v5.23 Nachtraege ·
    v5.32 (Panel & Datenblatt) · v5.42 (Kategoriekacheln) ·
    v5.59 (Preiszeile, Beratung, Ansprechpartner) ·
    v5.71 (Lieferzeit, Angebotsart, Produktbeschreibung) ·
-   v5.72 (Kategoriekacheln einzeilig)
+   v5.73 bis v5.77 (Pre-Owned-Verweis, griechischer Blocksatz) ·
+   v5.78 (Kategoriekacheln einzeilig)
    ========================================================== */
 
 
@@ -3265,14 +3266,340 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
 }
 
 /* ======================================================================
-   (v) Kategoriekacheln – eine Zeile, einzeiliger Titel
-   Ziel: alle Unterkategorien stehen in EINER Zeile, der Titel darunter
-   ebenfalls einzeilig, alle Kacheln gleich hoch.
-   Ecwid bricht die Kacheln sonst auf mehrere Zeilen um und laesst den
-   Titel zweizeilig werden - dadurch wirkt die Reihe unruhig.
-   ========================================================================= */
+   (l) PRE-OWNED-VERWEIS — Platzhalter-Fassung (24.09.2026)
 
-/* (a) eine Zeile, Kacheln teilen sich die Breite gleichmaessig */
+   Loest die 49 Kaesten je Sprache ab, in denen Preis, Streichpreis,
+   Rabatt und Ersparnis fest im Text standen. Sie waren nach der ersten
+   Preisaenderung falsch: Auf 30210 stand 1.099,95/779,95, das Zielprodukt
+   kostete 1.399,95. Jetzt steht im Text nur die Artikelnummer des
+   gebrauchten Produkts; Preis, Streichpreis, Rabatt, Ersparnis und die
+   Adresse setzt softano_ci_panel.js (ab v23) zur Laufzeit aus derselben
+   Quelle, aus der die Kachel ihre Zahlen nimmt.
+   Der Block bleibt verborgen (hidden), bis das Skript ihn gefuellt hat —
+   ein halb gefuellter Kasten ist schlimmer als keiner.
+   Die Auswahl kommt OHNE .sof-pd aus: Die Microsoft-Beschreibungen
+   stammen aus dem alten Generator und haben diesen Rahmen nicht, sie
+   arbeiten durchgehend mit Inline-Styles.
+   ====================================================================== */
+
+.ec-store .sof-po {
+  display: flex !important;
+  gap: 15px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  margin: 0 0 22px !important;
+  padding: 16px 18px !important;
+  border: 1.5px solid #23B8A6 !important;
+  border-radius: 14px !important;
+  background: #e7f6f9 !important;
+  box-shadow: 0 2px 10px rgba(35,184,166,.16), 0 8px 24px rgba(35,184,166,.10) !important;
+}
+.ec-store .sof-po[hidden] { display: none !important; }
+.ec-store .sof-po-badge {
+  flex-shrink: 0 !important;
+  width: 74px !important; height: 74px !important;
+  background: #1E3A8A !important;
+  border-radius: 12px !important;
+  display: flex !important; flex-direction: column !important;
+  align-items: center !important; justify-content: center !important;
+  color: #fff !important; text-align: center !important;
+}
+.ec-store .sof-po-badge b { font-size: 22px !important; font-weight: 700 !important; line-height: 1 !important; }
+.ec-store .sof-po-badge i { font-size: 11px !important; font-weight: 600 !important; font-style: normal !important; opacity: .85 !important; margin-top: 3px !important; }
+.ec-store .sof-po-tx { flex: 1 1 230px !important; min-width: 230px !important; }
+/* 03.10.: nur noch DIREKTE Kinder. Vorher traf die Regel auch das
+   <span style="white-space:nowrap;"> mit der Rechtsquelle im Fliesstext —
+   die stand dadurch auf einer eigenen Zeile. Ausserdem brauchen die
+   Paket-Kaesten <b> und <span> im Satz fuer die Preis-Platzhalter. */
+.ec-store .sof-po-tx > b { display: block !important; font-size: 15px !important; font-weight: 700 !important; color: #0F2933 !important; margin-bottom: 4px !important; }
+.ec-store .sof-po-tx > span { display: block !important; font-size: 13px !important; line-height: 1.5 !important; color: #0F2933 !important; margin-bottom: 7px !important; }
+/* Zahlen, die das Skript in den Satz setzt */
+.ec-store .sof-po-tx span b,
+.ec-store .sof-po-tx span strong { font-weight: 700 !important; color: #0F2933 !important; }
+/* Paket-Kasten: zwei Knoepfe nebeneinander statt einem */
+.ec-store .sof-po-knoepfe { flex-shrink: 0 !important; display: flex !important; gap: 8px !important; flex-wrap: wrap !important; }
+.ec-store .sof-po-knoepfe a {
+  display: inline-flex !important; align-items: center !important; gap: 6px !important;
+  background: #23B8A6 !important; color: #fff !important;
+  font-size: 13px !important; font-weight: 600 !important;
+  padding: 9px 14px !important; border-radius: 9px !important;
+  text-decoration: none !important; white-space: nowrap !important;
+}
+.ec-store .sof-po-knoepfe a:hover { background: #1E3A8A !important; color: #fff !important; }
+.ec-store .sof-po-preis { display: flex !important; align-items: baseline !important; gap: 9px !important; }
+.ec-store .sof-po-preis s { font-size: 14px !important; color: #64748b !important; }
+.ec-store .sof-po-preis em { font-size: 20px !important; font-weight: 700 !important; font-style: normal !important; color: #0f7d70 !important; }
+.ec-store .sof-po > a {
+  flex-shrink: 0 !important;
+  display: inline-flex !important; align-items: center !important; gap: 7px !important;
+  background: #23B8A6 !important; color: #fff !important;
+  font-size: 14px !important; font-weight: 600 !important;
+  padding: 11px 18px !important; border-radius: 10px !important;
+  text-decoration: none !important; white-space: nowrap !important;
+}
+.ec-store .sof-po > a:hover { background: #1E3A8A !important; color: #fff !important; }
+
+/* ======================================================================
+   (m) PREISSTAFFEL — Platzhalter-Fassung (24.09.2026)
+
+   Loest die fest eingetragenen Paketpreise in den Zugriffslizenzen ab.
+   28 der 42 Staffeln nannten fremde Preise: In den Beschreibungen der
+   2019er und 2022er RDS-CALs stand die Staffel der 2025er (329,95 /
+   639,95 / 3.049,95). Das war von Anfang an falsch, nicht erst
+   veraltet. Der Text traegt jetzt nur noch die Artikelnummern der
+   Pakete mit ihrer Stueckzahl; Preis, Stueckpreis und Ersparnis rechnet
+   softano_ci_panel.js (ab v26) zur Laufzeit.
+   ====================================================================== */
+
+.ec-store .sof-staffel { display: flex !important; gap: 12px !important; flex-wrap: wrap !important; }
+.ec-store .sof-staffel[hidden] { display: none !important; }
+.ec-store .sof-staffel .sof-st-karte {
+  flex: 1 1 180px !important; min-width: 180px !important;
+  background: #fff !important; border: 1px solid #e2e8ee !important;
+  border-radius: 12px !important; padding: 14px 16px !important;
+  display: flex !important; flex-direction: column !important; gap: 6px !important;
+}
+.ec-store .sof-staffel .sof-st-karte.sof-st-aktiv { border-color: #23B8A6 !important; box-shadow: 0 0 0 1px #23B8A6 inset !important; }
+.ec-store .sof-staffel .sof-st-name { font-size: 14px !important; font-weight: 700 !important; color: #1E3A8A !important; }
+.ec-store .sof-staffel .sof-st-menge { font-size: 12px !important; color: #5f6368 !important; }
+.ec-store .sof-staffel .sof-st-preis { display: flex !important; align-items: baseline !important; gap: 7px !important; margin-top: 2px !important; }
+.ec-store .sof-staffel .sof-st-preis b { font-size: 18px !important; font-weight: 700 !important; color: #0F2933 !important; }
+.ec-store .sof-staffel .sof-st-preis i { font-size: 12px !important; font-style: normal !important; color: #5f6368 !important; }
+.ec-store .sof-staffel .sof-st-sparen { font-size: 12px !important; font-weight: 700 !important; color: #0f7d70 !important; }
+.ec-store .sof-staffel .sof-st-karte > a {
+  margin-top: auto !important; display: inline-flex !important;
+  align-items: center !important; justify-content: center !important; gap: 6px !important;
+  background: #23B8A6 !important; color: #fff !important;
+  font-size: 13px !important; font-weight: 600 !important;
+  padding: 8px 12px !important; border-radius: 8px !important; text-decoration: none !important;
+}
+.ec-store .sof-staffel .sof-st-karte > a:hover { background: #1E3A8A !important; color: #fff !important; }
+
+/* === END · Softano v5.71 =============================================== */
+
+
+/* ======================================================================
+   (n) GRIECHISCH — KEIN BLOCKSATZ IM FLIESSTEXT
+
+   Blocksatz braucht Silbentrennung, sonst reisst er Loecher zwischen die
+   Woerter. Die Browser bringen Trennmuster fuer Deutsch und Englisch mit,
+   fuer Griechisch in aller Regel nicht. Auf griechischen Seiten steht der
+   Fliesstext deshalb linksbuendig — ruhiger Wortabstand schlaegt eine
+   buendige rechte Kante mit Luecken.
+
+   Die Regel greift auch auf den Microsoft-Beschreibungen, die ihren
+   Blocksatz als Inline-Stil tragen; !important schlaegt den Inline-Wert.
+
+   Gewaehlt ist :lang(el) und nicht html:lang(el). Damit zaehlt die
+   Sprache des Elements selbst — also sowohl die Seitensprache als auch
+   das lang-Attribut am Beschreibungsrahmen.
+   ====================================================================== */
+
+.ec-store .sof-p:lang(el),
+.ec-store .sof-faq details > div:lang(el),
+.ec-store .sof-k i:lang(el),
+.ec-store [style*="text-align:justify"]:lang(el) {
+  text-align: left !important;
+}
+
+
+/* ======================================================================
+   (o) FAQ — NUMMERN UND AUFKLAPP-ZUSTAND
+
+   Die Fragen bekommen eine laufende Nummer aus einem CSS-Zaehler. Der
+   Text der Beschreibungen bleibt dadurch unberuehrt: keine Importdatei,
+   die Nummern erscheinen auf allen Produkten gleichzeitig. Sie zeigen
+   ausserdem auf einen Blick, wie viele Antworten hier stehen — bei acht
+   Fragen ist das ein Argument, kein Zierrat.
+
+   Der offene Zustand war bisher nur am gedrehten Pfeil zu erkennen.
+   Jetzt tragen die offene Frage und ihre Antwort denselben hellen Grund
+   und eine teale Kante links.
+   ====================================================================== */
+
+.ec-store .sof-pd .sof-faq {
+  counter-reset: sof-faq !important;
+}
+
+.ec-store .sof-pd .sof-faq details {
+  position: relative !important;
+  counter-increment: sof-faq !important;
+  transition: background .18s ease !important;
+}
+
+/* teale Kante links, nur im offenen Zustand */
+.ec-store .sof-pd .sof-faq details::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important; top: 0 !important; bottom: 0 !important;
+  width: 3px !important;
+  background: #23B8A6 !important;
+  opacity: 0 !important;
+  transition: opacity .18s ease !important;
+}
+
+.ec-store .sof-pd .sof-faq details[open]::before { opacity: 1 !important; }
+.ec-store .sof-pd .sof-faq details[open] { background: #f7fcfd !important; }
+
+/* Platz fuer die Nummer */
+.ec-store .sof-pd .sof-faq summary {
+  padding-left: 56px !important;
+}
+
+.ec-store .sof-pd .sof-faq summary::before {
+  content: counter(sof-faq) !important;
+  position: absolute !important;
+  left: 18px !important;
+  top: 12px !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: #eef2fb !important;
+  color: #1E3A8A !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 24px !important;
+  text-align: center !important;
+  transition: background .18s ease, color .18s ease !important;
+}
+
+.ec-store .sof-pd .sof-faq details[open] summary::before {
+  background: #23B8A6 !important;
+  color: #ffffff !important;
+}
+
+@media (hover: hover) {
+  .ec-store .sof-pd .sof-faq summary:hover::before { background: #e2e8f5 !important; }
+  .ec-store .sof-pd .sof-faq details[open] summary:hover::before { background: #23B8A6 !important; }
+}
+
+.ec-store .sof-pd .sof-faq details > div {
+  padding-left: 56px !important;
+}
+
+@media (max-width: 560px) {
+  .ec-store .sof-pd .sof-faq summary { padding-left: 48px !important; }
+  .ec-store .sof-pd .sof-faq summary::before { left: 14px !important; }
+  .ec-store .sof-pd .sof-faq details > div { padding-left: 48px !important; }
+}
+
+
+/* === END · Softano v5.73 ============================================== */
+
+/* ==========================================================
+   ███████████████  v5.74  ███████████████
+   (p) Klassentabelle — zweispaltig mit Fliesstext.
+   Die normale Vergleichstabelle zentriert ihre Zellen und
+   verbietet den Umbruch, weil dort nur Haken stehen. Eine
+   Tabelle mit Modelllisten braucht das Gegenteil.
+   Hoehere Spezifitaet als .sof-vgl td, gewinnt also
+   unabhaengig von der Position in der Datei.
+   ========================================================== */
+
+.ec-store .sof-pd .sof-vgl.sof-vgl-text {
+  min-width: 0 !important;
+}
+.ec-store .sof-pd .sof-vgl.sof-vgl-text thead th {
+  text-align: left !important;
+}
+.ec-store .sof-pd .sof-vgl.sof-vgl-text tbody th {
+  white-space: nowrap !important;
+  color: #1E3A8A !important;
+  font-weight: 600 !important;
+  vertical-align: top !important;
+}
+.ec-store .sof-pd .sof-vgl.sof-vgl-text td {
+  text-align: left !important;
+  white-space: normal !important;
+  line-height: 1.55 !important;
+  vertical-align: top !important;
+}
+
+@media (max-width: 560px) {
+  .ec-store .sof-pd .sof-vgl.sof-vgl-text { font-size: 12.5px !important; }
+  .ec-store .sof-pd .sof-vgl.sof-vgl-text tbody th,
+  .ec-store .sof-pd .sof-vgl.sof-vgl-text td { padding: 9px 10px !important; }
+}
+
+/* ==========================================================
+   END · Softano v5.74
+   ========================================================== */
+
+/* ==========================================================
+   ███████████████  v5.75  ███████████████
+   (q) Blocksatz auch fuer die Textbloecke, die ihn bisher
+       nicht hatten: Kacheltexte, Lizenzierungskasten und
+       Hinweiskasten. Bisher galt er nur fuer .sof-p und die
+       FAQ-Antworten, deshalb endeten die Kacheln ausgefranst.
+       Griechisch bleibt wie beschlossen linksbuendig — die
+       Regel dafuer steht weiter unten.
+   ========================================================== */
+
+.ec-store .sof-pd .sof-k i,
+.ec-store .sof-pd .sof-liz > div > span,
+.ec-store .sof-pd .sof-note > span,
+.ec-store .sof-pd .sof-anfrage-tx > span {
+  text-align: justify !important;
+  hyphens: auto !important;
+  -webkit-hyphens: auto !important;
+  /* Trennung erst ab sechs Buchstaben, mindestens drei vor und
+     drei nach dem Strich — verhindert Trennungen wie "ein-e". */
+  hyphenate-limit-chars: 6 3 3 !important;
+  -webkit-hyphenate-limit-before: 3 !important;
+  -webkit-hyphenate-limit-after: 3 !important;
+}
+
+/* Griechisch: linksbuendig, wie in v5.73 fuer die uebrigen
+   Textbloecke festgelegt. Gilt auch fuer die neuen Selektoren. */
+.ec-store .sof-pd .sof-k i:lang(el),
+.ec-store .sof-pd .sof-liz > div > span:lang(el),
+.ec-store .sof-pd .sof-note > span:lang(el),
+.ec-store .sof-pd .sof-anfrage-tx > span:lang(el) {
+  text-align: left !important;
+}
+
+/* ==========================================================
+   END · Softano v5.75
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   (r) Griechisch im Blocksatz – nur bei Texten mit weichen
+       Trennstrichen (Markierung .sof-tr am Wurzelelement).
+       Ohne diese Markierung bleibt Griechisch linksbündig.
+   ---------------------------------------------------------- */
+.ec-store .sof-pd.sof-tr .sof-k i:lang(el),
+.ec-store .sof-pd.sof-tr .sof-liz > div > span:lang(el),
+.ec-store .sof-pd.sof-tr .sof-note > span:lang(el),
+.ec-store .sof-pd.sof-tr .sof-anfrage-tx > span:lang(el) {
+  text-align: justify !important;
+}
+
+/* ----------------------------------------------------------
+   (s) Nachtrag zu (r): In (r) fehlten der Einleitungsabsatz
+       .sof-p und die FAQ-Antworten .sof-faq details > div.
+       Dort wurde getrennt, aber nicht im Blocksatz gesetzt.
+   ---------------------------------------------------------- */
+.ec-store .sof-pd.sof-tr .sof-p:lang(el),
+.ec-store .sof-pd.sof-tr .sof-faq details > div:lang(el),
+.ec-store .sof-pd.sof-tr [style*="text-align:justify"]:lang(el) {
+  text-align: justify !important;
+}
+
+/* ==========================================================
+   (t) KATEGORIEKACHELN – EINE ZEILE, EINZEILIGER TITEL   [v5.78]
+
+   Ecwid bricht die Unterkategorie-Kacheln auf mehrere Zeilen um,
+   sobald sie nebeneinander nicht mehr passen, und laesst den Titel
+   darunter zweizeilig werden. Dadurch stehen die Kacheln einer
+   Kategorie unterschiedlich hoch und die Reihe wirkt unruhig.
+   Hier teilen sich alle Kacheln die Breite gleichmaessig und bleiben
+   in EINER Zeile; der Titel bleibt einzeilig.
+
+   Betrifft nur grid-category (die Unterkategorie-Kacheln). Die
+   Produktkacheln grid-product aus (c) und v5.42 bleiben unberuehrt.
+   ========================================================== */
+
+/* (t1) eine Zeile, Kacheln teilen sich die Breite gleichmaessig */
 .ec-store .grid__categories {
   flex-wrap: nowrap !important;
 }
@@ -3283,11 +3610,12 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
   max-width: none !important;
 }
 
-/* (b) Titel einzeilig, gleiche Hoehe fuer alle */
+/* (t2) Titel einzeilig, dadurch alle Kacheln gleich hoch.
+        13 px, damit auch lange Namen wie "Microsoft PowerPoint" bei
+        sieben Kacheln nebeneinander noch in eine Zeile passen. */
 .ec-store .grid__categories .grid-category__title {
   height: auto !important;
   padding-bottom: 0 !important;
-  /* seitliche Polsterung weg - bei schmalen Kacheln zaehlt jedes Pixel */
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
@@ -3296,14 +3624,12 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  /* 13 px, damit auch lange Namen wie "Microsoft PowerPoint" bei sieben
-     Kacheln nebeneinander noch in eine Zeile passen */
   font-size: 13px !important;
   line-height: 1.4 !important;
 }
 
-/* (c) schmale Bildschirme: eine Zeile bleibt, wird aber seitlich scrollbar,
-       damit die Kacheln nicht winzig werden */
+/* (t3) schmale Bildschirme: die eine Zeile bleibt, wird aber seitlich
+        wischbar – sonst wuerden die Kacheln winzig. */
 @media (max-width: 900px) {
   .ec-store .grid__categories {
     overflow-x: auto !important;
@@ -3322,4 +3648,6 @@ html:lang(el) .ec-store div:has(> .details-product-attribute)::before {
 }
 
 
-/* === END · Softano v5.72 =============================================== */
+/* ==========================================================
+   END · Softano v5.78
+   ========================================================== */
