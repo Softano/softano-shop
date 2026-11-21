@@ -1,5 +1,5 @@
 /* =====================================================================
-   SOFTANO.EU — CI-PANEL v28 (Custom-App-Variante, hydration-safe)
+   SOFTANO.EU — CI-PANEL v29 (Custom-App-Variante, hydration-safe)
    ---------------------------------------------------------------------
    Auslieferung ueber Custom App #2 (custom-app-123703327-2) mit Scope
    customize_storefront. KEIN DOM-Eingriff ausserhalb der Sidebar.
@@ -78,7 +78,11 @@
                 "Δικαιώματα downgrade"],
     term:      ["Licence term", "Nutzungsdauer", "Διάρκεια χρήσης"],
     lzeit:     ["Delivery time", "Lieferzeit", "Χρόνος παράδοσης"],
-    offer:     ["Offer type", "Angebotsart", "Τύπος προσφοράς"]
+    offer:     ["Offer type", "Angebotsart", "Τύπος προσφοράς"],
+    /* v29: Auszeichnung am Kaufpunkt. Der Text steht im Merkmalswert,
+       nicht hier - so kann er je Produkt und je Sprache im Ecwid
+       gesetzt werden, ohne dass dieses Skript angefasst wird. */
+    tipp:      ["Recommendation", "Empfehlung", "Πρόταση"]
   };
 
   /* Alles, was das Panel selbst zeigt ODER bewusst unterdrueckt, wird aus
@@ -86,7 +90,7 @@
      seit v14 keinen Chip mehr gibt — siehe Kopfkommentar Punkt 1. */
   var HIDE_KEYS = ["line", "variant", "condition", "channel", "edition",
                    "quantity", "platform", "language", "model",
-                   "activation", "downgrade", "term", "offer"];
+                   "activation", "downgrade", "term", "offer", "tipp"];
 
   /* ---- Beschriftungen im Facts-Grid ---- */
   var T = {
@@ -303,6 +307,13 @@
       ? '<span class="sof-bdg ch">' + esc(kanal) + "</span>"
       : "";
 
+    /* v29: Auszeichnung steht an erster Stelle der Reihe, direkt ueber
+       dem Kaufbereich - dort, wo der Kunde sich entscheidet. */
+    var tipp = attr("tipp");
+    var tbdg = tipp
+      ? '<span class="sof-bdg tipp">' + esc(tipp) + "</span>"
+      : "";
+
     /* v14: Zertifikat-Hinweis, ausschliesslich bei Pre-Owned */
     var cert = isPO
       ? '<div class="sof-cert"><span class="sof-cert-ic" aria-hidden="true">' +
@@ -319,8 +330,8 @@
       (eyebrow ? '<div class="sof-eyebrow">' + esc(eyebrow) + "</div>" : "") +
       (titel   ? '<div class="sof-title">'   + esc(titel)   + "</div>" : "") +
       (tchips  ? '<div class="sof-tchips">'  + tchips  + "</div>" : "") +
-      (badge || lfchip || abdg
-        ? '<div class="sof-badges">' + badge + abdg + lfchip + "</div>" : "") +
+      (badge || lfchip || abdg || tbdg
+        ? '<div class="sof-badges">' + tbdg + badge + abdg + lfchip + "</div>" : "") +
       cert;
 
     var h1  = side.querySelector(".product-details__product-title");
