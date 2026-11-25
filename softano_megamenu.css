@@ -310,23 +310,29 @@ a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
    Schaltflaeche wieder je eine Zeile brauchen.
    WER HIER SCHRAUBT: Kartenbreite und Bildgroesse haengen zusammen. Wird
    das Bild groesser, muss die Karte mitwachsen, sonst bricht der Text. */
-.sof-feat{ flex:0 0 420px; }
+.sof-feat{ flex:0 0 460px; }
 .sof-feat.sof-hasimg{ flex-direction:row; align-items:center; gap:16px;
   padding:20px; padding-bottom:20px; min-height:282px; }
 .sof-feat.sof-hasimg .sof-ftext{ flex:1 1 0; max-width:none; min-width:0; }
 .sof-feat .sof-fimg[data-sof-bild]{
-  width:200px; height:200px; max-width:200px; max-height:200px; }
-@media (max-width:1300px){
-  .sof-feat{ flex:0 0 360px; }
-  .sof-feat .sof-fimg[data-sof-bild]{ width:165px; height:165px; max-width:165px; max-height:165px; }
+  width:190px; height:190px; max-width:190px; max-height:190px; }
+
+/* Unterhalb von 1800px wird es eng: dort muessen SECHS Unterkategorien
+   (Betriebssysteme, Infrastruktur) neben die Karte passen UND die
+   Lieferzeile einzeilig bleiben. Beides geht nur mit schmalerer Karte
+   und kleinerem Bild. Die Werte sind ausgemessen, nicht geschaetzt —
+   bei 380/130 passt es ab 1366px aufwaerts, bei 400/165 bricht die
+   Spaltenreihe, bei 380/160 bricht die Lieferzeile. */
+@media (max-width:1800px){
+  .sof-feat{ flex:0 0 380px; }
+  .sof-feat .sof-fimg[data-sof-bild]{ width:130px; height:130px; max-width:130px; max-height:130px; }
 }
 
 /* Die breitere Angebotskarte nimmt den Spalten 84px. Damit fuenf
    Unterkategorien weiterhin in EINER Reihe stehen, ruecken sie enger
    zusammen — 38px Abstand waren fuer vier Spalten gedacht. */
-.sof-cols{ gap:8px 24px; }
-.sof-col{ min-width:140px; }
-@media (max-width:1300px){ .sof-cols{ gap:6px 18px; } }
+.sof-cols{ gap:8px 18px; }
+.sof-col{ min-width:125px; }
 
 /* Office Einzelanwendungen standen zweispaltig und belegten rund 300px.
    Mit der breiteren Angebotskarte reichte der Platz dann nicht mehr fuer
@@ -338,4 +344,12 @@ a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
 }
 .sof-col:has(> ul > li:nth-child(6)):not(:has(> ul > li:nth-child(7))) > ul{
   columns: 1;
+}
+
+/* Dieser Block steht bewusst GANZ AM ENDE. Eine Regel ohne Medienabfrage,
+   die weiter unten in der Datei steht, schlaegt sonst die Medienabfrage —
+   gleiche Spezifitaet, Reihenfolge entscheidet. */
+@media (max-width:1800px){
+  .sof-cols{ gap:8px 14px; }
+  .sof-col{ min-width:120px; }
 }
