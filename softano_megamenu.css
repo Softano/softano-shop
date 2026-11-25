@@ -82,7 +82,7 @@
   padding:9px 17px; border-radius:9px; position:relative; z-index:3; transition:.18s; }
 .sof-feat:hover .sof-fbtn{ background:var(--sof-mint); color:#0d2e2a; }
 .sof-hasimg{ padding-bottom:118px; }
-.sof-fimg{ position:absolute; right:8px; bottom:8px; max-width:62%; max-height:116px; z-index:1;
+.sof-fimg{ position:absolute; right:6px; bottom:6px; max-width:76%; max-height:148px; z-index:1;
   filter:drop-shadow(0 10px 18px rgba(0,0,0,.35)); }
 .sof-ftext{ position:relative; z-index:2; max-width:80%; }
 
@@ -276,3 +276,27 @@ a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
 /* ==========================================================
    END · Softano Mega-Menu v3 (17.11.2026)
    ========================================================== */
+
+/* ---- Logoreihe unter den Unterkategorien (25.11.2026) ----------------
+   Loest das einzelne Partner-Badge ab, das oben rechts in der Kopfleiste
+   sass. Die Reihe sitzt unter den Spalten, gleichmaessig verteilt, und
+   bleibt optisch ruhig: feine Trennlinie darueber, kein Rahmen, keine
+   Flaeche. Bei Virtualisierung stehen hier die Herstellerlogos.
+   Die Badges haben unterschiedliche Seitenverhaeltnisse — deshalb wird
+   die HOEHE vorgegeben und die Breite laeuft mit. */
+.sof-links{ flex:1; min-width:0; display:flex; flex-direction:column; gap:16px; }
+.sof-preihe{
+  display:flex; align-items:center; justify-content:space-around;
+  flex-wrap:wrap; gap:14px 26px;
+  margin-top:auto; padding-top:14px;
+  border-top:1px solid rgba(15,41,51,.08);
+}
+.sof-plogo{ flex:0 0 auto; display:block; line-height:0; }
+.sof-preihe img{ display:block; width:auto; }
+@media (max-width:1100px){
+  .sof-preihe{ gap:10px 18px; padding-top:10px; }
+  .sof-preihe img{ max-height:44px; }
+}
+@media (max-width:860px){
+  .sof-preihe img{ max-height:36px; }
+}
