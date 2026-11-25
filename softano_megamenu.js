@@ -250,9 +250,9 @@
      WER EIN BADGE TAUSCHT: auf dasselbe Verhaeltnis achten, sonst wirkt
      die Reihe unruhig — und LOGOBASIS auf den neuen Commit setzen. */
   var MSPARTNER = [
-    ["partner_busapps",     90, "Microsoft Solutions Partner \u2014 Business Applications & Certified Software"],
-    ["partner_ai_business", 90, "Microsoft Solutions Partner \u2014 AI Business Solutions"],
-    ["partner_ms_cloud",    90, "Microsoft Solutions Partner \u2014 Microsoft Cloud"]
+    ["partner_busapps",     130, "Microsoft Solutions Partner \u2014 Business Applications & Certified Software"],
+    ["partner_ai_business", 130, "Microsoft Solutions Partner \u2014 AI Business Solutions"],
+    ["partner_ms_cloud",    130, "Microsoft Solutions Partner \u2014 Microsoft Cloud"]
   ];
   var REIHE = [
     MSPARTNER,
