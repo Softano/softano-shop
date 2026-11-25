@@ -683,25 +683,47 @@
    Im Text steht nur noch ein Platzhalter, der die SKU nennt und die
    zuletzt bekannte Zahl als sichtbaren Rueckfallwert enthaelt:
 
-     <span data-sof-preis="20004">249,95 €</span>
-     <span data-sof-summe="20300,20310,20320">359,85 €</span>
-     <span data-sof-diff="20300,20310|20004">109,90 €</span>
+     <span data-sofp-sku="20004">249,95 €</span>
+     <span data-sofp-summe="20300,20310,20320">359,85 €</span>
+     <span data-sofp-diff="20300,20310|20004">109,90 €</span>
 
    Dieses Skript liest die SKUs, holt die heutigen Preise ueber die
    oeffentliche Produkt-API und schreibt die Betraege neu. Kommt die
    Abfrage nicht durch — kein Token, kein Netz, SKU unbekannt — bleibt
    der Rueckfallwert stehen. Der Kunde sieht nie eine leere Stelle.
 
-   PFLEGEHINWEIS
-   Der Rueckfallwert im Text sollte beim naechsten groesseren Umbau
-   mitgezogen werden, sonst veraltet er still. Er ist nur die zweite
-   Reihe, nicht die Wahrheit.
+   ZWEI STOLPERSTEINE, DIE HIER ABSICHTLICH GELOEST SIND
+
+   1. NAMENSRAUM. Die Produktkacheln tragen bereits ein Attribut
+      data-sof-preis, dort steht aber ein PREIS drin, keine SKU
+      (siehe softano_cat_cards.js). Deshalb heissen die Platzhalter hier
+      data-sofp-* und werden zusaetzlich nur INNERHALB von .sof-empf
+      gesucht. Beide Mechaniken koennen sich so nicht begegnen.
+      NICHT auf data-sof-* zurueckbenennen.
+
+   2. MEHRWERTSTEUER. Der Shop rechnet mit Bruttopreisen und
+      automatischer Steuerermittlung; Ecwid zeigt dem Besucher je nach
+      Standort einen anderen Betrag als den eingetragenen. Die API
+      liefert immer den eingetragenen Bruttopreis. Ohne Korrektur stuende
+      im Kasten 159,95 €, waehrend die Seite daneben 128,99 € zeigt.
+      Deshalb wird aus dem aktuellen Produkt ein Faktor gebildet
+      (angezeigter Preis geteilt durch eingetragenen Preis) und auf alle
+      Betraege im Kasten angewendet. Laesst sich der Faktor nicht sicher
+      bestimmen, bleibt er 1 und es wird brutto gezeigt.
    ===================================================================== */
 (function () {
   var STORE = "123703327";
   var APP   = "custom-app-123703327-2";
-  var MERKMALE = "[data-sof-preis],[data-sof-summe],[data-sof-diff]";
-  var preise = {};   /* sku -> Promise<Zahl|null>, einmal pro Seitenaufruf */
+  /* Nur im Empfehlungskasten suchen — siehe Stolperstein 1 */
+  var MERKMALE = ".sof-empf [data-sofp-sku], .sof-empf [data-sofp-summe], " +
+                 ".sof-empf [data-sofp-diff]";
+  var PREIS_ORTE = [".product-details__product-price .ec-price-item",
+                    ".product-details__product-price",
+                    ".product-details-module__price .ec-price-item",
+                    ".ec-price-item"];
+  var preise = {};        /* sku -> Promise<Zahl|null> */
+  var seitenProdukt = null;   /* productId der laufenden Seite */
+  var faktorCache = null;     /* Promise<Zahl> */
 
   function sprache() {
     try { if (Ecwid.getStorefrontLang) return Ecwid.getStorefrontLang(); } catch (e) {}
@@ -711,27 +733,39 @@
     return "en";
   }
 
-  /* Betrag so schreiben wie im Rueckfallwert: de/el mit Komma, en mit Punkt */
   function geld(v, lg) {
     var ort = lg === "en" ? "en-GB" : (lg === "el" ? "el-GR" : "de-DE");
     try {
       return new Intl.NumberFormat(ort, { minimumFractionDigits: 2,
                                           maximumFractionDigits: 2 }).format(v) + " €";
-    } catch (e) {
-      return v.toFixed(2) + " €";
+    } catch (e) { return v.toFixed(2) + " €"; }
+  }
+
+  /* "1.234,56 €" oder "1,234.56 €" -> 1234.56 */
+  function zahl(txt) {
+    if (!txt) return null;
+    var s = String(txt).replace(/[^\d.,]/g, "");
+    if (!s) return null;
+    var k = s.lastIndexOf(","), pkt = s.lastIndexOf(".");
+    var tr = Math.max(k, pkt);
+    if (tr > -1 && s.length - tr - 1 === 2) {
+      s = s.slice(0, tr).replace(/[.,]/g, "") + "." + s.slice(tr + 1);
+    } else {
+      s = s.replace(/[.,]/g, "");
     }
+    var v = parseFloat(s);
+    return isFinite(v) ? v : null;
   }
 
   function token() {
     try { return Ecwid.getAppPublicToken(APP) || null; } catch (e) { return null; }
   }
 
-  function hole(sku, tok) {
-    if (preise[sku]) return preise[sku];
-    var u = "https://app.ecwid.com/api/v3/" + STORE + "/products?sku=" +
-            encodeURIComponent(sku) +
+  function holeNach(feld, wert, tok) {
+    var u = "https://app.ecwid.com/api/v3/" + STORE + "/products?" + feld + "=" +
+            encodeURIComponent(wert) +
             "&responseFields=items(sku,price,defaultDisplayedPrice)&token=" + tok;
-    preise[sku] = fetch(u)
+    return fetch(u)
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         var it = d && d.items && d.items[0];
@@ -740,7 +774,53 @@
         return (typeof p === "number") ? p : (typeof it.price === "number" ? it.price : null);
       })
       .catch(function () { return null; });
+  }
+
+  function hole(sku, tok) {
+    if (!preise[sku]) preise[sku] = holeNach("sku", sku, tok);
     return preise[sku];
+  }
+
+  /* Das strukturierte Datenblatt der Seite nennt SKU und den Preis, den
+     dieser Besucher sieht — zuverlaessiger als jede CSS-Auswahl. */
+  function seitenDaten() {
+    var s = document.querySelectorAll('script[type="application/ld+json"]');
+    for (var i = 0; i < s.length; i++) {
+      try {
+        var j = JSON.parse(s[i].textContent);
+        if (!j || j["@type"] !== "Product" || !j.sku) continue;
+        var o = j.offers, pr = null;
+        if (o) pr = parseFloat(o.price != null ? o.price : (o[0] && o[0].price));
+        if (isFinite(pr) && pr > 0) return { sku: String(j.sku), gezeigt: pr };
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  /* Stolperstein 2: Verhaeltnis zwischen angezeigtem und eingetragenem Preis */
+  function faktor(tok) {
+    if (faktorCache) return faktorCache;
+    faktorCache = (function () {
+      var d = seitenDaten();
+      var gezeigt = d ? d.gezeigt : null;
+      if (gezeigt === null) {
+        for (var i = 0; i < PREIS_ORTE.length && gezeigt === null; i++) {
+          var e = document.querySelector(PREIS_ORTE[i]);
+          if (e) gezeigt = zahl(e.textContent);
+        }
+      }
+      if (!gezeigt) return Promise.resolve(1);
+      var brutto = d ? hole(d.sku, tok)
+                     : (seitenProdukt ? holeNach("productId", seitenProdukt, tok)
+                                      : Promise.resolve(null));
+      return brutto.then(function (b) {
+        if (typeof b !== "number" || b <= 0) return 1;
+        var f = gezeigt / b;
+        /* nur plausible Steuerunterschiede zulassen */
+        return (f > 0.3 && f < 1.6) ? f : 1;
+      });
+    })();
+    return faktorCache;
   }
 
   function listeSumme(liste, tok) {
@@ -765,12 +845,12 @@
 
     for (var i = 0; i < el.length; i++) {
       (function (n) {
-        if (n.getAttribute("data-sof-fertig") === "1") return;
-        n.setAttribute("data-sof-fertig", "1");
+        if (n.getAttribute("data-sofp-fertig") === "1") return;
+        n.setAttribute("data-sofp-fertig", "1");
 
-        var einzel = n.getAttribute("data-sof-preis");
-        var summe  = n.getAttribute("data-sof-summe");
-        var diff   = n.getAttribute("data-sof-diff");
+        var einzel = n.getAttribute("data-sofp-sku");
+        var summe  = n.getAttribute("data-sofp-summe");
+        var diff   = n.getAttribute("data-sofp-diff");
         var p;
 
         if (einzel) {
@@ -787,9 +867,10 @@
                 });
         } else { return; }
 
-        p.then(function (wert) {
+        Promise.all([p, faktor(tok)]).then(function (w) {
+          var wert = w[0], f = w[1];
           if (typeof wert !== "number" || !isFinite(wert)) return;  /* Rueckfallwert behalten */
-          var neu = geld(wert, lg);
+          var neu = geld(wert * f, lg);
           if (n.textContent !== neu) n.textContent = neu;
         }).catch(function () {});
       })(el[i]);
@@ -805,9 +886,15 @@
     })();
   }
 
+  function neueSeite(page) {
+    preise = {}; faktorCache = null;
+    seitenProdukt = (page && page.productId) || null;
+    schub();
+  }
+
   function anmelden() {
-    if (Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(function () { preise = {}; schub(); });
-    if (Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(function () { preise = {}; schub(); });
+    if (Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(neueSeite);
+    if (Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(neueSeite);
     schub();
   }
   function start() {
