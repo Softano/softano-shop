@@ -9,10 +9,21 @@
       ("Dauerlizenz") stand wortgleich in der Chip-Leiste unter der
       Beschreibung, nur wenige Zentimeter darunter — zwei fast gleiche
       Chip-Reihen sahen nach einem Darstellungsfehler aus. Das Merkmal
-      bleibt in HIDE_KEYS, wird also weiterhin aus der Rohliste
-      ausgeblendet: die Angabe steht bereits zweimal im
-      Beschreibungstext, eine dritte Stelle waere zu viel.
       Uebrig im Panel: Plattform und Sprachversion.
+      NACHTRAG 25.11.2026: Der Chip bleibt weg, aber "model" ist aus
+      HIDE_KEYS ENTFERNT - das Merkmal erscheint jetzt wieder im
+      Datenblatt. Grund: Nachdem "MPN" aus dem Datenblatt genommen
+      wurde, blieben ueberall UNGERADE Merkmalszahlen (212 Produkte
+      mit 9, 57 mit 5, 6 mit 3), und die zweispaltige Tabelle liess
+      den letzten Eintrag allein in seiner Zeile stehen. Lizenzmodell
+      ist das einzige verborgene Merkmal, das bei ALLEN 275 Produkten
+      gepflegt und dreisprachig uebersetzt ist, und das einzige, das
+      in keinem Kasten und keinem Chip daneben steht. Damit sind alle
+      275 Produkte gerade: 9->10, 5->6, 3->4. Dass der Wert bei 251
+      Produkten auch im Beschreibungstext vorkommt, ist bewusst in
+      Kauf genommen - Prosa im Lesefluss gegen Tabelle zum
+      Ueberfliegen. Plattform und Nutzungsdauer waeren schlechter:
+      die stehen als Chip bzw. Kastenzeile auf DEMSELBEN Bildschirm.
    2. ZERTIFIKAT-HINWEIS bei Pre-Owned. Direkt unter den Badges,
       oberhalb des Preises. Erscheint nur, wenn das Merkmal "Zustand"
       auf Pre-Owned/Refurbished steht — bei Neuware gar nicht.
@@ -86,10 +97,14 @@
   };
 
   /* Alles, was das Panel selbst zeigt ODER bewusst unterdrueckt, wird aus
-     der Rohliste entfernt. "model" steht hier weiterhin drin, obwohl es
-     seit v14 keinen Chip mehr gibt — siehe Kopfkommentar Punkt 1. */
+     der Rohliste entfernt.
+     "model" (Lizenzmodell) ist seit 25.11.2026 NICHT mehr hier drin und
+     erscheint deshalb wieder im Datenblatt — siehe Kopfkommentar Punkt 1.
+     WARNUNG: Wer es wieder hier eintraegt, macht die Merkmalszahl bei
+     allen 275 Produkten wieder ungerade und zerreisst die letzte
+     Tabellenzeile. Vorher die Zahlen pruefen. */
   var HIDE_KEYS = ["line", "variant", "condition", "channel", "edition",
-                   "quantity", "platform", "language", "model",
+                   "quantity", "platform", "language",
                    "activation", "downgrade", "term", "offer", "tipp"];
 
   /* ---- Beschriftungen im Facts-Grid ---- */
