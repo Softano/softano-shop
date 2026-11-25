@@ -131,8 +131,12 @@
       +'<div class="sof-ft'+(txt[0].length>46?' sof-ft--lang':'')+'">'+esc(txt[0])+'</div>'
       +mitte
       +'<span class="sof-fbtn">'+esc(btnT)+'</span></div>';
-    var cst = img ? ' style="flex:0 0 336px;flex-direction:row;align-items:center;gap:14px;padding:20px;min-height:282px;"' : '';
-    return '<a class="sof-feat'+(img?' sof-hasimg':'')+(f.anfrage?' sof-fanfrage':'')+'" href="'+href+'"'+cst+'>'+textcol+im+'</a>';
+    /* Die Masse der Karte standen bis 25.11. als Inline-Stil hier im Code.
+       Ein Inline-Stil schlaegt jede Regel aus der Stildatei, deshalb liess
+       sich die Karte von dort aus nicht mehr anpassen. Jetzt steht alles
+       in softano_megamenu.css unter .sof-feat / .sof-feat.sof-hasimg.
+       NICHT wieder als Inline-Stil setzen. */
+    return '<a class="sof-feat'+(img?' sof-hasimg':'')+(f.anfrage?' sof-fanfrage':'')+'" href="'+href+'">'+textcol+im+'</a>';
   }
 
   /* ---- Preise holen ------------------------------------------------------
@@ -241,7 +245,7 @@
      [Dateiname, Hoehe in px, Alternativtext] */
   var PARTNERLOGOS = ["partner_microsoft","partner_ai_business","partner_ms_cloud"];
   var MSPARTNER = PARTNERLOGOS.map(function(d){
-    return [d, 66, "Microsoft Solutions Partner"];
+    return [d, 90, "Microsoft Solutions Partner"];
   });
   var REIHE = [
     MSPARTNER,
@@ -252,9 +256,18 @@
   ];
   function reiheHTML(idx){
     var r=REIHE[idx]; if(!r||!r.length) return "";
+    var top=TREE[idx];
     return '<div class="sof-preihe">'+r.map(function(e){
-      return '<span class="sof-plogo"><img src="'+LOGOBASIS+e[0]+'.webp" alt="'+esc(e[2]||"")
-           +'" loading="lazy" style="height:'+e[1]+'px"></span>';
+      var bild='<img src="'+LOGOBASIS+e[0]+'.webp" alt="'+esc(e[2]||"")
+             +'" loading="lazy" style="height:'+e[1]+'px">';
+      /* Herstellerlogos fuehren in ihre Unterkategorie — der dritte Eintrag
+         ist der englische Name im Menuebaum. Die Partner-Badges tragen
+         keinen solchen Namen und bleiben deshalb ohne Verweis. */
+      var knoten=null;
+      if(top && top.c) for (var i=0;i<top.c.length;i++) if(top.c[i].en===e[2]) knoten=top.c[i];
+      var ziel=knoten?hrefFor(knoten):null;
+      return ziel ? '<a class="sof-plogo" href="'+ziel+'">'+bild+'</a>'
+                  : '<span class="sof-plogo">'+bild+'</span>';
     }).join("")+'</div>';
   }
   function markenHTML(idx){
