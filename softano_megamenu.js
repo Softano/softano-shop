@@ -211,7 +211,7 @@
      und rechts dem Partnerabzeichen. Die Logos liegen im Repo unter /logos.
      Reihenfolge entspricht TREE: 0 Betriebssysteme, 1 Office,
      2 Virtualisierung, 3 Infrastruktur (dort bewusst keine Leiste). */
-  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@c29d496/logos/";
+  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@2d5b3a1/logos/";
   /* *Sternchen* hebt eine Stelle hervor — siehe markenHTML. */
   var MSTEXT = {
     de:"*Neu und Pre-Owned* \u00b7 Microsoft-Lizenzen f\u00fcr Unternehmen & Privatkunden \u00b7 *Lieferung am selben Werktag*",
