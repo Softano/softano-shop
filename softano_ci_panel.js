@@ -667,3 +667,157 @@
   if (document.body) boot();
   else document.addEventListener("DOMContentLoaded", boot);
 })();
+
+/* =====================================================================
+   SOFTANO.EU — LEBENDE PREISE IN DEN EMPFEHLUNGSKAESTEN   (25.11.2026)
+   ---------------------------------------------------------------------
+   WARUM ES DAS GIBT
+   In den Empfehlungskaesten ("Unsere Empfehlung", "Die ganze Suite statt
+   Einzellizenzen") stehen drei Arten von Betraegen: der Preis des
+   empfohlenen Produkts, die Summe mehrerer Einzellizenzen und die
+   Differenz zwischen beiden. Diese Zahlen standen frueher fest im
+   Beschreibungstext. Nach jeder Preisaenderung im Backend waren sie
+   falsch — am 25.11. waren es 243 veraltete Betraege auf einmal.
+
+   WIE ES ARBEITET
+   Im Text steht nur noch ein Platzhalter, der die SKU nennt und die
+   zuletzt bekannte Zahl als sichtbaren Rueckfallwert enthaelt:
+
+     <span data-sof-preis="20004">249,95 €</span>
+     <span data-sof-summe="20300,20310,20320">359,85 €</span>
+     <span data-sof-diff="20300,20310|20004">109,90 €</span>
+
+   Dieses Skript liest die SKUs, holt die heutigen Preise ueber die
+   oeffentliche Produkt-API und schreibt die Betraege neu. Kommt die
+   Abfrage nicht durch — kein Token, kein Netz, SKU unbekannt — bleibt
+   der Rueckfallwert stehen. Der Kunde sieht nie eine leere Stelle.
+
+   PFLEGEHINWEIS
+   Der Rueckfallwert im Text sollte beim naechsten groesseren Umbau
+   mitgezogen werden, sonst veraltet er still. Er ist nur die zweite
+   Reihe, nicht die Wahrheit.
+   ===================================================================== */
+(function () {
+  var STORE = "123703327";
+  var APP   = "custom-app-123703327-2";
+  var MERKMALE = "[data-sof-preis],[data-sof-summe],[data-sof-diff]";
+  var preise = {};   /* sku -> Promise<Zahl|null>, einmal pro Seitenaufruf */
+
+  function sprache() {
+    try { if (Ecwid.getStorefrontLang) return Ecwid.getStorefrontLang(); } catch (e) {}
+    var p = location.pathname;
+    if (/^\/de(\/|$)/.test(p)) return "de";
+    if (/^\/el(\/|$)/.test(p)) return "el";
+    return "en";
+  }
+
+  /* Betrag so schreiben wie im Rueckfallwert: de/el mit Komma, en mit Punkt */
+  function geld(v, lg) {
+    var ort = lg === "en" ? "en-GB" : (lg === "el" ? "el-GR" : "de-DE");
+    try {
+      return new Intl.NumberFormat(ort, { minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2 }).format(v) + " €";
+    } catch (e) {
+      return v.toFixed(2) + " €";
+    }
+  }
+
+  function token() {
+    try { return Ecwid.getAppPublicToken(APP) || null; } catch (e) { return null; }
+  }
+
+  function hole(sku, tok) {
+    if (preise[sku]) return preise[sku];
+    var u = "https://app.ecwid.com/api/v3/" + STORE + "/products?sku=" +
+            encodeURIComponent(sku) +
+            "&responseFields=items(sku,price,defaultDisplayedPrice)&token=" + tok;
+    preise[sku] = fetch(u)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var it = d && d.items && d.items[0];
+        if (!it) return null;
+        var p = it.defaultDisplayedPrice;
+        return (typeof p === "number") ? p : (typeof it.price === "number" ? it.price : null);
+      })
+      .catch(function () { return null; });
+    return preise[sku];
+  }
+
+  function listeSumme(liste, tok) {
+    var skus = String(liste).split(",").filter(Boolean);
+    return Promise.all(skus.map(function (s) { return hole(s.trim(), tok); }))
+      .then(function (w) {
+        var su = 0;
+        for (var i = 0; i < w.length; i++) {
+          if (typeof w[i] !== "number") return null;   /* eine Luecke => gar nichts schreiben */
+          su += w[i];
+        }
+        return su;
+      });
+  }
+
+  function fuellen() {
+    var el = document.querySelectorAll(MERKMALE);
+    if (!el.length) return;
+    var tok = token();
+    if (!tok) return;                       /* Rueckfallwerte bleiben stehen */
+    var lg = sprache();
+
+    for (var i = 0; i < el.length; i++) {
+      (function (n) {
+        if (n.getAttribute("data-sof-fertig") === "1") return;
+        n.setAttribute("data-sof-fertig", "1");
+
+        var einzel = n.getAttribute("data-sof-preis");
+        var summe  = n.getAttribute("data-sof-summe");
+        var diff   = n.getAttribute("data-sof-diff");
+        var p;
+
+        if (einzel) {
+          p = hole(einzel.trim(), tok);
+        } else if (summe) {
+          p = listeSumme(summe, tok);
+        } else if (diff) {
+          var teile = String(diff).split("|");
+          if (teile.length !== 2) return;
+          p = Promise.all([listeSumme(teile[0], tok), listeSumme(teile[1], tok)])
+                .then(function (w) {
+                  if (typeof w[0] !== "number" || typeof w[1] !== "number") return null;
+                  return Math.abs(w[0] - w[1]);
+                });
+        } else { return; }
+
+        p.then(function (wert) {
+          if (typeof wert !== "number" || !isFinite(wert)) return;  /* Rueckfallwert behalten */
+          var neu = geld(wert, lg);
+          if (n.textContent !== neu) n.textContent = neu;
+        }).catch(function () {});
+      })(el[i]);
+    }
+  }
+
+  /* Die Beschreibung wird nachgeladen, deshalb mehrfach nachsehen. */
+  function schub() {
+    var n = 0;
+    (function schritt() {
+      fuellen();
+      if (++n < 25) setTimeout(schritt, 200);
+    })();
+  }
+
+  function anmelden() {
+    if (Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(function () { preise = {}; schub(); });
+    if (Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(function () { preise = {}; schub(); });
+    schub();
+  }
+  function start() {
+    if (window.Ecwid && Ecwid.OnAPILoaded) { Ecwid.OnAPILoaded.add(anmelden); return; }
+    var n = 0;
+    (function warten() {
+      if (window.Ecwid && Ecwid.OnAPILoaded) { Ecwid.OnAPILoaded.add(anmelden); return; }
+      if (n++ < 100) setTimeout(warten, 100);
+    })();
+  }
+  if (document.body) start();
+  else document.addEventListener("DOMContentLoaded", start);
+})();
