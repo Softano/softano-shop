@@ -300,3 +300,42 @@ a.sof-mlogo:hover{ transform:translateY(-1px); opacity:.78; }
 @media (max-width:860px){
   .sof-preihe img{ max-height:36px; }
 }
+
+/* ---- Angebotskarte: Bild gross genug, um das Produkt zu erkennen (25.11.2026)
+   Das Bild hing bei 104 x 150 px fest, obwohl der Shop 800 x 800 liefert —
+   es war also nur klein gehalten, nicht knapp. Bei der Breite von 336px
+   blieb daneben kein Platz: der Titel brach auf vier Zeilen, die
+   Schaltflaeche auf zwei. Deshalb ist die Karte jetzt breiter statt die
+   Spalten enger. 420/200 ist der Punkt, an dem Titel, Preiszeile und
+   Schaltflaeche wieder je eine Zeile brauchen.
+   WER HIER SCHRAUBT: Kartenbreite und Bildgroesse haengen zusammen. Wird
+   das Bild groesser, muss die Karte mitwachsen, sonst bricht der Text. */
+.sof-feat{ flex:0 0 420px; }
+.sof-feat.sof-hasimg{ flex-direction:row; align-items:center; gap:16px;
+  padding:20px; padding-bottom:20px; min-height:282px; }
+.sof-feat.sof-hasimg .sof-ftext{ flex:1 1 0; max-width:none; min-width:0; }
+.sof-feat .sof-fimg[data-sof-bild]{
+  width:200px; height:200px; max-width:200px; max-height:200px; }
+@media (max-width:1300px){
+  .sof-feat{ flex:0 0 360px; }
+  .sof-feat .sof-fimg[data-sof-bild]{ width:165px; height:165px; max-width:165px; max-height:165px; }
+}
+
+/* Die breitere Angebotskarte nimmt den Spalten 84px. Damit fuenf
+   Unterkategorien weiterhin in EINER Reihe stehen, ruecken sie enger
+   zusammen — 38px Abstand waren fuer vier Spalten gedacht. */
+.sof-cols{ gap:8px 24px; }
+.sof-col{ min-width:140px; }
+@media (max-width:1300px){ .sof-cols{ gap:6px 18px; } }
+
+/* Office Einzelanwendungen standen zweispaltig und belegten rund 300px.
+   Mit der breiteren Angebotskarte reichte der Platz dann nicht mehr fuer
+   fuenf Unterkategorien in einer Reihe — Microsoft Project rutschte nach
+   unten. Erst ab SIEBEN Eintraegen lohnt der Umbruch; bei sechs steht die
+   Liste jetzt einspaltig und alle fuenf Spalten passen nebeneinander. */
+.sof-col:has(> ul > li:nth-child(6)):not(:has(> ul > li:nth-child(7))){
+  min-width: 150px !important;
+}
+.sof-col:has(> ul > li:nth-child(6)):not(:has(> ul > li:nth-child(7))) > ul{
+  columns: 1;
+}
