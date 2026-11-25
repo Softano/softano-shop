@@ -211,7 +211,7 @@
      und rechts dem Partnerabzeichen. Die Logos liegen im Repo unter /logos.
      Reihenfolge entspricht TREE: 0 Betriebssysteme, 1 Office,
      2 Virtualisierung, 3 Infrastruktur (dort bewusst keine Leiste). */
-  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@c29d496/logos/";
+  var LOGOBASIS = "https://cdn.jsdelivr.net/gh/Softano/softano-shop@2d5b3a1/logos/";
   /* *Sternchen* hebt eine Stelle hervor — siehe markenHTML. */
   var MSTEXT = {
     de:"*Neu und Pre-Owned* \u00b7 Microsoft-Lizenzen f\u00fcr Unternehmen & Privatkunden \u00b7 *Lieferung am selben Werktag*",
@@ -243,16 +243,16 @@
      Bei Virtualisierung stehen aus demselben Grund die Herstellerlogos
      hier statt zusammengedraengt in der Kopfleiste.
      [Dateiname, Hoehe in px, Alternativtext] */
-  /* Die Badges tragen unterschiedlich viele Textzeilen und haben deshalb
-     unterschiedliche Seitenverhaeltnisse. Bei gleicher Hoehe wirkt das
-     Azure-Badge gedrungen, weil sein Microsoft-Schriftzug dann kleiner
-     ist als bei den anderen. Die Hoehen sind so gewaehlt, dass der WEISSE
-     KOPFTEIL bei allen dreien gleich gross erscheint — das ist es, was
-     das Auge vergleicht. */
+  /* Alle drei Badges haben dasselbe Seitenverhaeltnis (rund 1,45) und
+     denselben Aufbau, deshalb reicht eine gemeinsame Hoehe. Das frueher
+     hier gefuehrte Azure-Badge war quadratisch und fiel aus der Reihe;
+     es wurde durch Business Applications ersetzt.
+     WER EIN BADGE TAUSCHT: auf dasselbe Verhaeltnis achten, sonst wirkt
+     die Reihe unruhig — und LOGOBASIS auf den neuen Commit setzen. */
   var MSPARTNER = [
-    ["partner_microsoft",   110, "Microsoft Solutions Partner \u2014 Infrastructure Azure"],
-    ["partner_ai_business",  90, "Microsoft Solutions Partner \u2014 AI Business Solutions"],
-    ["partner_ms_cloud",     90, "Microsoft Solutions Partner \u2014 Microsoft Cloud"]
+    ["partner_busapps",     90, "Microsoft Solutions Partner \u2014 Business Applications & Certified Software"],
+    ["partner_ai_business", 90, "Microsoft Solutions Partner \u2014 AI Business Solutions"],
+    ["partner_ms_cloud",    90, "Microsoft Solutions Partner \u2014 Microsoft Cloud"]
   ];
   var REIHE = [
     MSPARTNER,
