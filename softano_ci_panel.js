@@ -179,13 +179,21 @@
 
   /* Rohzeilen ausblenden, die das Panel selbst zeigt */
   function hideAttrRows() {
-    /* Die LIEFERZEIT wird zusaetzlich ausgeblendet, wenn eine Angebotsart
-       vorliegt (22.09.2026). Sie steht im Panel direkt unter "Auf Lager";
-       bei Abonnements (Proxmox, Acronis, Veeam) sind die technischen Daten
-       kurz, und die Wiederholung fiel dort auf. Bei Microsoft (keine
-       Angebotsart) bleibt sie stehen. Dieselbe Regel wie beim Zustand. */
+    /* LIEFERZEIT: steht bei JEDEM Produkt im Datenblatt.
+       Historie: Am 22.09.2026 wurde sie bei Produkten mit Angebotsart
+       (Proxmox, Acronis, Veeam, Aruba) ausgeblendet, weil die technischen
+       Daten dort kurz waren und die Wiederholung zum Panel auffiel.
+       Am 25.11.2026 zurueckgenommen: Seit "Lizenzmodell" wieder im
+       Datenblatt steht, sind diese 57 Datenblaetter nicht mehr kurz, und
+       die Ausblendung machte ihre Merkmalszahl ungerade (5) - die
+       zweispaltige Tabelle liess die letzte Zeile halb stehen. Ohne sie
+       haben ALLE 275 Produkte eine gerade Zahl (212x10, 57x6, 6x4) und
+       werden gleich behandelt. Die Doppelung zum Panel besteht bei den
+       212 Microsoft-Produkten ohnehin seit immer und ist dort gewollt:
+       siehe Kommentar bei ANFRAGE oben.
+       WARNUNG: Wer hier wieder nach Angebotsart ausblendet, macht 57
+       Produkte wieder ungerade. Vorher die Zahlen pruefen. */
     var keys = HIDE_KEYS.slice();
-    if (attr("offer")) keys.push("lzeit");
     var rows = document.querySelectorAll(".details-product-attribute");
     for (var i = 0; i < rows.length; i++) {
       var t = rows[i].querySelector(".details-product-attribute__title");
