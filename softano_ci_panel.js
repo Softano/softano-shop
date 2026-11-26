@@ -931,3 +931,186 @@
   if (document.body) start();
   else document.addEventListener("DOMContentLoaded", start);
 })();
+
+/* ===================================================================
+   SOFTANO.EU — CSP-VERGLEICHSANGABE AUF DEN OFFICE-SEITEN  (26.11.2026)
+
+   Warum dieser Block existiert
+   ----------------------------
+   Bei Visio und Project steht die teure Vergleichsstufe schon als
+   Streichpreis: die Streichpreise treffen Microsofts offizielle
+   deutsche Listenpreise auf den Euro (Visio Standard 479, Visio
+   Professional 889, Project Standard 929, Project Professional 1659).
+   Fuer Office LTSC gibt es keinen oeffentlichen Microsoft-Euro-Preis,
+   weil das Produkt nicht an Endkunden verkauft wird. Deshalb lagen die
+   Office-Streichpreise 110 bis 250 EUR UNTER dem, was eine neue
+   CSP-Lizenz am Markt kostet — das Gebrauchtangebot sah schlechter aus
+   als es ist. Dieser Block nennt den echten Neupreis, ohne den
+   Streichpreis anzutasten.
+
+   STOLPERSTEIN — bitte lesen, bevor jemand hier etwas aendert
+   -----------------------------------------------------------
+   Die Betraege unten sind FESTE NETTOPREISE aus einer externen Quelle.
+   Sie duerfen NICHT durch faktor() laufen, die die Mehrwertsteuer des
+   Besuchers herausrechnet. Diese Funktion gilt ausschliesslich fuer
+   Softanos EIGENE Preise, die Ecwid je Besucherstandort anpasst. Ein
+   Fremdpreis ist eine Konstante und wird unveraendert ausgegeben,
+   ausdruecklich als "ohne MwSt." gekennzeichnet.
+
+   Es ist KEIN Streichpreis, sondern eine gekennzeichnete Marktangabe
+   mit Datum und dem Hinweis, dass es kein Angebot von Softano ist.
+
+   Quellen zu den Betraegen (Stand 26.11.2026, netto)
+   --------------------------------------------------
+   Office LTSC Standard 2024          DG7GMGF0PN5D-0002
+     526,00 EUR  softwarehandel.eu
+     473,10 EUR  enespa-software.de (562,99 brutto / 1,19)
+   Office LTSC Professional Plus 2024 DG7GMGF0PN5F-0002
+     719,00 EUR  softwarehandel.eu
+     645,71 EUR  enespa-software.de (768,39 brutto / 1,19)
+   Office LTSC Standard for Mac 2024  DG7GMGF0PN5C-0001
+     kein eigener Haendlerpreis gefunden; Microsoft fuehrt die
+     Mac-Fassung zum selben Preis wie die Windows-Fassung, darum 526,00.
+   Angesetzt ist jeweils der NIEDRIGERE der gefundenen Preise, damit die
+   Angabe im Zweifel zu vorsichtig und nicht zu hoch ist.
+
+   WARTUNG: Die Angabe traegt ein Datum. Halbjaehrlich nachpruefen und
+   STAND zusammen mit den Betraegen aktualisieren. Eine zwei Jahre alte
+   Marktangabe nuetzt niemandem.
+   =================================================================== */
+(function () {
+  "use strict";
+
+  var STAND = { de: "26.11.2026", en: "26 November 2026", el: "26.11.2026" };
+
+  /* SKU -> Nettobetrag in Euro. Nur Produkte mit belegtem Preis. */
+  var CSP = {
+    "20002": 473.10,   /* Office 2024 Standard          */
+    "20004": 645.71,   /* Office 2024 Professional Plus */
+    "20101": 473.10    /* Office 2024 Standard for Mac  */
+  };
+
+  var TEXT = {
+    de: { titel: "Neu als CSP-Dauerlizenz: ab ",
+          suffix: " ohne MwSt.",
+          fuss: "Marktpreis bei deutschen Fachhändlern, Stand @. " +
+                "Unverbindliche Vergleichsangabe, kein Angebot von Softano." },
+    en: { titel: "New as a CSP perpetual licence: from ",
+          suffix: " excl. VAT",
+          fuss: "Market price at German specialist resellers, as at @. " +
+                "Non-binding comparison, not an offer from Softano." },
+    el: { titel: "Νέα ως μόνιμη " +
+                 "άδεια CSP: από ",
+          suffix: " χωρίς ΦΠΑ",
+          fuss: "Τιμή αγοράς σε " +
+                "γερμανικούς " +
+                "εξειδικευμένους " +
+                "μεταπωλητές, " +
+                "στοιχεία @. " +
+                "Μη δεσμευτική " +
+                "σύγκριση, δεν " +
+                "αποτελεί προσφορά " +
+                "της Softano." }
+  };
+
+  function lang() {
+    var p = location.pathname;
+    if (/^\/de(\/|$)/.test(p)) return "de";
+    if (/^\/el(\/|$)/.test(p)) return "el";
+    var h = (document.documentElement.lang || "").toLowerCase();
+    if (h.indexOf("de") === 0) return "de";
+    if (h.indexOf("el") === 0) return "el";
+    return "en";
+  }
+
+  function geld(v, lg) {
+    var ort = lg === "en" ? "en-GB" : (lg === "el" ? "el-GR" : "de-DE");
+    try {
+      return new Intl.NumberFormat(ort, { minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2 }).format(v) + " €";
+    } catch (e) { return v.toFixed(2) + " €"; }
+  }
+
+  /* Artikelnummer aus dem strukturierten Datenblatt der Seite. */
+  function sku() {
+    var s = document.querySelectorAll('script[type="application/ld+json"]');
+    for (var i = 0; i < s.length; i++) {
+      try {
+        var j = JSON.parse(s[i].textContent);
+        if (j && j["@type"] === "Product" && j.sku) return String(j.sku);
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  function kasten(betrag, lg) {
+    var t = TEXT[lg] || TEXT.en;
+    var d = document.createElement("div");
+    d.className = "sof-cspv";
+    d.setAttribute("style",
+      "border:1.5px solid #D6E4EC;border-radius:14px;background:#F7FBFD;" +
+      "padding:14px 18px;margin:0 0 22px;font-family:Roboto,Arial,sans-serif;");
+    d.innerHTML =
+      '<div style="display:flex;gap:12px;align-items:flex-start;">' +
+        '<span style="flex-shrink:0;margin-top:1px;">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" ' +
+               'stroke="#4A6B7C" stroke-width="1.7" aria-hidden="true">' +
+            '<circle cx="12" cy="12" r="9"></circle>' +
+            '<path d="M12 11v5" stroke-linecap="round"></path>' +
+            '<path d="M12 7.6v.9" stroke-linecap="round"></path>' +
+          '</svg></span>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:15px;font-weight:700;color:#0F2933;">' +
+            esc(t.titel) + geld(betrag, lg) + esc(t.suffix) + '</div>' +
+          '<div style="font-size:12.5px;color:#5B6B73;line-height:1.55;margin-top:5px;">' +
+            esc(t.fuss.replace("@", STAND[lg] || STAND.en)) + '</div>' +
+        '</div>' +
+      '</div>';
+    return d;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function setzen() {
+    var s = sku();
+    if (!s || !CSP[s]) return false;
+    if (document.querySelector(".sof-cspv")) return true;   /* schon da */
+    var anker = document.querySelector(".sof-gebraucht");
+    if (!anker || !anker.parentNode) return false;
+    anker.parentNode.insertBefore(kasten(CSP[s], lang()), anker);
+    return true;
+  }
+
+  /* Die Beschreibung wird nachgeladen — wie beim Preisblock nachsehen. */
+  function schub() {
+    var n = 0;
+    (function schritt() {
+      if (setzen()) return;
+      if (++n < 25) setTimeout(schritt, 200);
+    })();
+  }
+
+  function neueSeite() {
+    var alt = document.querySelector(".sof-cspv");
+    if (alt && alt.parentNode) alt.parentNode.removeChild(alt);
+    schub();
+  }
+
+  function anmelden() {
+    if (Ecwid.OnPageLoaded) Ecwid.OnPageLoaded.add(neueSeite);
+    if (Ecwid.OnPageSwitch) Ecwid.OnPageSwitch.add(neueSeite);
+    schub();
+  }
+  function start() {
+    if (window.Ecwid && Ecwid.OnAPILoaded) { Ecwid.OnAPILoaded.add(anmelden); return; }
+    var n = 0;
+    (function warten() {
+      if (window.Ecwid && Ecwid.OnAPILoaded) { Ecwid.OnAPILoaded.add(anmelden); return; }
+      if (n++ < 100) setTimeout(warten, 100);
+    })();
+  }
+  if (document.body) start();
+  else document.addEventListener("DOMContentLoaded", start);
+})();
