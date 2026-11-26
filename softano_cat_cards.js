@@ -119,6 +119,21 @@
      auf der Produktseite, damit Kategorie und Produkt dasselbe sagen. */
   var COND      = { de: "Zustand", en: "Condition", el: "Κατάσταση" };
   var PRE_OWNED = /^(pre-?owned|refurbished)/i;
+
+  /* ---- Zwillingserkennung (26.11.2026) ----------------------------------
+     Zwilling heisst: gleiche Produktlinie und gleiche Variante wie das
+     Produkt, dessen Seite gerade offen ist. Die Werte kommen aus derselben
+     Abfrage und derselben Sprache wie die der Kacheln, deshalb genuegt ein
+     Vergleich nach Kleinschreibung und zusammengezogenen Leerzeichen. */
+  function norm(s) {
+    return String(s || "").replace(/\s*·\s*/g, " ")
+                          .replace(/\s+/g, " ").trim().toLowerCase();
+  }
+  var eigen = null;                 /* { id, linie, variante } */
+  function eigenProduktId() {
+    var p = window.Ecwid && Ecwid.currentPage;
+    return (p && p.type === "PRODUCT" && p.productId) ? String(p.productId) : "";
+  }
   var CERT_TXT  = {
     de: "Inkl. Löschzertifikat",
     en: "Incl. deletion certificate",
@@ -170,6 +185,14 @@
      die gebrauchte Fassung zuerst, danach nach Preis aufsteigend.
      Nur auf Produktseiten; in Kategorien bleibt die Sortierung des Shops.
 
+     Korrektur 26.11.2026: "gebraucht zuerst, dann Preis" stellte das
+     billigste gebrauchte Produkt nach vorn, nicht das passende. Auf der
+     Seite von Office 2024 Professional Plus CSP stand damit Office 2024
+     Standard gebraucht (229,95) vor Office 2024 Professional Plus
+     gebraucht (249,95) - der eigentliche Preisvergleich rutschte auf
+     Platz zwei. Jetzt entscheidet zuerst, ob Produktlinie und Variante
+     mit dem geoeffneten Produkt uebereinstimmen.
+
      Korrektur 19.11.2026: Die Pruefung lief frueher ueber die Adresse
      (/products/...). In diesem Shop liegen Kategorien und Produkte aber
      unter derselben Adresse - /products/windows-11 ist eine Kategorie,
@@ -196,9 +219,32 @@
         if (c.querySelector && c.querySelector(".grid-product__wrap[data-sof-po]")) kinder.push(c);
       }
       if (kinder.length < 2) continue;
+      /* Rangfolge (26.11.2026)
+         0  der gebrauchte Zwilling: gleiche Produktlinie, gleiche
+            Variante, Zustand gebraucht
+         1  alle uebrigen gebrauchten
+         2  alle neuen
+         Innerhalb eines Rangs nach Preis aufsteigend.
+
+         Rang 0 hebt den Zwilling nur INNERHALB des gebrauchten Blocks
+         nach vorn. Seiten ohne gebrauchten Zwilling behalten deshalb
+         genau die Reihenfolge von vorher. Das teurere Gegenstueck wird
+         absichtlich NICHT vorgezogen: auf der Seite einer gebrauchten
+         Volumenlizenz fuer 88 Euro stand sonst als erste Empfehlung der
+         CSP-Artikel fuer 12.800 Euro. Der Vergleich soll von der teuren
+         Seite zur guenstigen wirken, nicht umgekehrt.
+
+         Ohne Angaben zum eigenen Produkt - etwa wenn die Abfrage
+         fehlschlaegt - bleibt es bei "gebraucht zuerst, dann Preis". */
+      var e = (eigen && eigen.id === eigenProduktId() &&
+               eigen.linie && eigen.variante) ? eigen : null;
       var schluessel = function (el) {
         var w = el.querySelector(".grid-product__wrap[data-sof-po]");
-        return [w.getAttribute("data-sof-po") === "1" ? 0 : 1,
+        var po = w.getAttribute("data-sof-po") === "1";
+        var zwilling = !!e && po &&
+                       w.getAttribute("data-sof-linie") === e.linie &&
+                       w.getAttribute("data-sof-variante") === e.variante;
+        return [zwilling ? 0 : (po ? 1 : 2),
                 parseFloat(w.getAttribute("data-sof-preis")) || 0];
       };
       var sortiert = kinder.slice().sort(function (a, b) {
@@ -231,6 +277,9 @@
     /* Fuer die Sortierung der verwandten Produkte hinterlegt (23.09.2026) */
     wrap.setAttribute("data-sof-po", data.preOwned ? "1" : "0");
     wrap.setAttribute("data-sof-preis", String(data.preis || 0));
+    /* Fuer die Zwillingserkennung in sortRelated (26.11.2026) */
+    wrap.setAttribute("data-sof-linie", norm(data.line));
+    wrap.setAttribute("data-sof-variante", norm(data.variant));
     var title = wrap.querySelector(".grid-product__title-inner");
     if (!title || title.querySelector(".sof-c-head")) return;
 
@@ -344,8 +393,15 @@
 
     running = true;
     var lg = lang();
+    /* Das Produkt der offenen Seite wird mitabgefragt, damit die
+       Sortierung weiss, welche Linie und Variante der Zwilling haben
+       muss. Es hat keine Kachel, paint() laeuft dafuer ins Leere. */
+    var eigenId = eigenProduktId();
+    var abfrage = ids.slice();
+    if (eigenId && abfrage.indexOf(eigenId) === -1) abfrage.push(eigenId);
+
     var url = "https://app.ecwid.com/api/v3/" + STORE + "/products?productId=" +
-              ids.join(",") + "&lang=" + lg + "&limit=100&token=" + token;
+              abfrage.join(",") + "&lang=" + lg + "&limit=100&token=" + token;
 
     fetch(url)
       .then(function (r) { return r.json(); })
@@ -395,6 +451,12 @@
             preis:    p.defaultDisplayedPrice || 0,
             preOwned: cd ? PRE_OWNED.test(cd.trim()) : false
           });
+
+          if (eigenId && String(p.id) === eigenId) {
+            eigen = { id: eigenId,
+                      linie:    norm(val(a, [LINE[lg],    LINE.en])),
+                      variante: norm(val(a, [VARIANT[lg], VARIANT.en])) };
+          }
         }
         sortRelated();
       })
