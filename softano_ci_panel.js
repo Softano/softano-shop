@@ -472,13 +472,83 @@
       })
       .catch(function () { poGeholt[sku] = null; });
   }
+  function ort(lg) { return lg === "en" ? "en-GB" : (lg === "el" ? "el-GR" : "de-DE"); }
   function geld(n) {
-    return n.toLocaleString(lang() === "en" ? "en-GB" : "de-DE",
+    return n.toLocaleString(ort(lang()),
       { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20AC";
   }
+  /* Runde Betraege ohne ",00" — frueher wurden die Nachkommastellen mit
+     .replace(/,00 /," ") entfernt, was nur im deutschen Zahlenformat griff:
+     im Englischen stand deshalb "330.00 EUR" statt "330 EUR". */
+  function geldKnapp(n) {
+    var ganz = Math.abs(n - Math.round(n)) < 0.005;
+    return n.toLocaleString(ort(lang()),
+      { minimumFractionDigits: ganz ? 0 : 2, maximumFractionDigits: ganz ? 0 : 2 }) + " \u20AC";
+  }
+  /* Das Wort zur Ersparnis stand frueher nur auf Deutsch da; Englisch und
+     Griechisch zeigten eine nackte Zahl. */
+  function sparText(betrag) {
+    var lg = lang(), g = geldKnapp(betrag);
+    if (lg === "de") return g + " sparen";
+    if (lg === "el") return "\u0395\u03be\u03bf\u03b9\u03ba\u03bf\u03bd\u03cc\u03bc\u03b7\u03c3\u03b7 " + g;
+    return "Save " + g;
+  }
+
+  /* ---- Steuerfaktor fuer den Verweiskasten --------------------------------
+     STOLPERSTEIN, am 26.11.2026 gefunden: Die Schnittstelle liefert den
+     EINGETRAGENEN Bruttopreis (mit 24 % griechischer MwSt.), die Seite zeigt
+     dem Besucher aber seinen eigenen Preis. Auf der CSP-Seite stand deshalb
+     ein durchgestrichener Streichpreis von 579,95 EUR unter einem Seitenpreis
+     von 619,31 EUR — der Streichpreis war NIEDRIGER als der aktuelle Preis.
+     Dieselbe Falle wie bei den Empfehlungskaesten; dort loest sie faktor().
+     Hier wird derselbe Weg gegangen: angezeigter Preis dieser Seite geteilt
+     durch ihren eingetragenen Bruttopreis. Nur plausible Werte werden
+     genommen, sonst 1 — lieber unveraendert als falsch gerechnet. */
+  var poFaktor = null;
+  function seitePreisSku() {
+    var sc = document.querySelectorAll('script[type="application/ld+json"]');
+    for (var i = 0; i < sc.length; i++) {
+      try {
+        var j = JSON.parse(sc[i].textContent);
+        if (!j || j["@type"] !== "Product" || !j.sku) continue;
+        var o = j.offers, pr = null;
+        if (o) pr = parseFloat(o.price != null ? o.price : (o[0] && o[0].price));
+        if (isFinite(pr) && pr > 0) return { sku: String(j.sku), gezeigt: pr };
+      } catch (e) {}
+    }
+    return null;
+  }
+  function faktorPo(tok) {
+    if (poFaktor) return poFaktor;
+    var d = seitePreisSku();
+    if (!d || !tok) { poFaktor = Promise.resolve({ f: 1, gezeigt: null }); return poFaktor; }
+    poFaktor = fetch("https://app.ecwid.com/api/v3/123703327/products?keyword=" +
+                     encodeURIComponent(d.sku) + "&token=" + tok)
+      .then(function (r) { return r.json(); })
+      .then(function (x) {
+        var q = (x.items || []).filter(function (y) { return y.sku === d.sku; })[0];
+        var brutto = q && (q.defaultDisplayedPrice || q.price);
+        if (!brutto) return { f: 1, gezeigt: d.gezeigt };
+        var f = d.gezeigt / brutto;
+        return { f: (f > 0.3 && f < 1.6) ? f : 1, gezeigt: d.gezeigt };
+      })
+      .catch(function () { return { f: 1, gezeigt: d.gezeigt }; });
+    return poFaktor;
+  }
+
   function fuelle(box, p) {
-    var neu = p.defaultDisplayedPrice || p.price || 0;
-    var alt = p.compareToPrice || 0;
+    var tok = null;
+    try { tok = Ecwid.getAppPublicToken("custom-app-123703327-2"); } catch (e) {}
+    faktorPo(tok).then(function (fd) { fuelleMit(box, p, fd); });
+  }
+  function fuelleMit(box, p, fd) {
+    var f = fd.f;
+    /* Preis des Gebrauchtprodukts, auf die Sicht DIESES Besuchers umgerechnet */
+    var neu = (p.defaultDisplayedPrice || p.price || 0) * f;
+    /* Bezugsgroesse ist der Preis DIESER Seite, nicht der Streichpreis des
+       anderen Produkts: Der Kunde steht hier und vergleicht mit dem, was er
+       hier zahlen wuerde. Fehlt der Seitenpreis, bleibt der alte Weg. */
+    var alt = fd.gezeigt || ((p.compareToPrice || 0) * f);
     var link = p.url || "";
     if (!neu || !link) return;                      /* unvollstaendig: verborgen lassen */
     var setz = function (sel, wert) {
@@ -486,7 +556,7 @@
     };
     if (alt > neu) {
       setz("[data-sof-po-rabatt]", "\u2212" + Math.round((1 - neu / alt) * 100) + "%");
-      setz("[data-sof-po-sparen]", geld(alt - neu).replace(/,00 /, " ") + (lang() === "de" ? " sparen" : ""));
+      setz("[data-sof-po-sparen]", sparText(alt - neu));
       setz("[data-sof-po-alt]", geld(alt));
     } else {
       var b = box.querySelector(".sof-po-badge"); if (b) b.remove();
