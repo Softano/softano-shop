@@ -545,10 +545,22 @@
     var f = fd.f;
     /* Preis des Gebrauchtprodukts, auf die Sicht DIESES Besuchers umgerechnet */
     var neu = (p.defaultDisplayedPrice || p.price || 0) * f;
-    /* Bezugsgroesse ist der Preis DIESER Seite, nicht der Streichpreis des
-       anderen Produkts: Der Kunde steht hier und vergleicht mit dem, was er
-       hier zahlen wuerde. Fehlt der Seitenpreis, bleibt der alte Weg. */
-    var alt = fd.gezeigt || ((p.compareToPrice || 0) * f);
+    /* Bezugsgroesse: Der Kasten hat ZWEI Rollen, und sie brauchen
+       verschiedene Vergleiche.
+       a) Gleiche Software, guenstigere Lizenzform (CSP/OEM -> Pre-Owned,
+          64+18 Seiten). Dort ist der Preis DIESER Seite die richtige
+          Bezugsgroesse: der Kunde vergleicht mit dem, was er hier zahlen
+          wuerde.
+       b) Ergaenzungsprodukt (18 Pre-Owned-Seiten, z. B. eine CAL fuer
+          55,60 EUR verweist auf die Basislizenz fuer 411,21 EUR). Dort ist
+          das Ziel TEURER, und der Seitenpreis sagt nichts. Gezeigt wird
+          dann der eigene Streichpreis des Zielprodukts.
+       Unterschieden wird am Preis selbst, nicht an einer Markierung im
+       Text - so braucht keine der 101 Beschreibungen angefasst zu werden.
+       (26.11.2026: Fall b war in der ersten Fassung uebersehen worden und
+       verlor auf diesen 18 Seiten das Rabattabzeichen.) */
+    var alt = (fd.gezeigt && fd.gezeigt > neu) ? fd.gezeigt
+                                               : ((p.compareToPrice || 0) * f);
     var link = p.url || "";
     if (!neu || !link) return;                      /* unvollstaendig: verborgen lassen */
     var setz = function (sel, wert) {
