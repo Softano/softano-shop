@@ -130,9 +130,17 @@
                           .replace(/\s+/g, " ").trim().toLowerCase();
   }
   var eigen = null;                 /* { id, linie, variante } */
+
+  /* Die Produkt-ID der offenen Seite. Ecwid.currentPage gibt es auf
+     dieser Storefront-Fassung nicht - am Shop geprueft, es ist dort
+     null. Die Angabe kommt deshalb aus derselben Rueckmeldung, aus der
+     auch der Seitentyp stammt (siehe burst), und Ecwid.currentPage
+     bleibt nur als Rueckfall stehen. */
   function eigenProduktId() {
+    if (!istProduktseite()) return "";
     var p = window.Ecwid && Ecwid.currentPage;
-    return (p && p.type === "PRODUCT" && p.productId) ? String(p.productId) : "";
+    var id = (p && p.productId) || seitenProduktId || "";
+    return id ? String(id) : "";
   }
   var CERT_TXT  = {
     de: "Inkl. Löschzertifikat",
@@ -469,6 +477,7 @@
   /* Seitentyp von Ecwid merken. Beim ersten Aufruf ohne Seitenobjekt
      greifen wir auf Ecwid.currentPage zurueck. */
   var seitenTyp = "";
+  var seitenProduktId = "";
   function istProduktseite() {
     var t = (window.Ecwid && Ecwid.currentPage && Ecwid.currentPage.type) ||
             seitenTyp || "";
@@ -546,7 +555,14 @@
   window.addEventListener("resize", titelSpaeter);
 
   function burst(page) {
-    if (page && page.type) seitenTyp = page.type;
+    if (page && page.type) {
+      seitenTyp = page.type;
+      /* Fuer die Zwillingserkennung in sortRelated. Auf einer Seite, die
+         kein Produkt ist, wird die Angabe geleert, damit kein alter Wert
+         stehenbleibt. */
+      seitenProduktId = (page.type === "PRODUCT" && page.productId)
+                        ? String(page.productId) : "";
+    }
     /* Die Kachelreihe gibt es auf jeder Seite mit Unterkategorien, also
        auch dort, wo der Rest dieses Skripts nicht laeuft. Deshalb vor
        der Abbruchpruefung, und mehrfach, weil Ecwid nachlaedt. */
