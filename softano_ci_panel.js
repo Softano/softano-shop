@@ -983,24 +983,31 @@
 
   var STAND = { de: "26.11.2026", en: "26 November 2026", el: "26.11.2026" };
 
-  /* SKU -> Nettobetrag in Euro. Nur Produkte mit belegtem Preis. */
+  /* SKU -> GERUNDETER Nettobetrag in Euro.
+     Bewusst gerundet und mit "rund" im Text: Der genaue Wert entsteht
+     erst durch Herausrechnen der deutschen Mehrwertsteuer aus einem
+     Bruttopreis und sieht mit Nachkommastellen nach Scheingenauigkeit
+     aus. Gerundet wird an den unteren Rand der gefundenen Spanne,
+     damit die Angabe im Zweifel zu vorsichtig ist.
+       20002/20101  belegt 473,10 bis 526,00  ->  475
+       20004        belegt 645,71 bis 719,00  ->  650              */
   var CSP = {
-    "20002": 473.10,   /* Office 2024 Standard          */
-    "20004": 645.71,   /* Office 2024 Professional Plus */
-    "20101": 473.10    /* Office 2024 Standard for Mac  */
+    "20002": 475,   /* Office 2024 Standard          */
+    "20004": 650,   /* Office 2024 Professional Plus */
+    "20101": 475    /* Office 2024 Standard for Mac  */
   };
 
   var TEXT = {
-    de: { titel: "Neu als CSP-Dauerlizenz: ab ",
+    de: { titel: "Neu als CSP-Dauerlizenz: rund ",
           suffix: " ohne MwSt.",
           fuss: "Marktpreis bei deutschen Fachhändlern, Stand @. " +
                 "Unverbindliche Vergleichsangabe, kein Angebot von Softano." },
-    en: { titel: "New as a CSP perpetual licence: from ",
+    en: { titel: "New as a CSP perpetual licence: around ",
           suffix: " excl. VAT",
           fuss: "Market price at German specialist resellers, as at @. " +
                 "Non-binding comparison, not an offer from Softano." },
     el: { titel: "Νέα ως μόνιμη " +
-                 "άδεια CSP: από ",
+                 "άδεια CSP: περίπου ",
           suffix: " χωρίς ΦΠΑ",
           fuss: "Τιμή αγοράς σε " +
                 "γερμανικούς " +
@@ -1023,12 +1030,14 @@
     return "en";
   }
 
+  /* Ohne Nachkommastellen: der Betrag ist gerundet, ",00" wuerde eine
+     Genauigkeit vortaeuschen, die die Angabe nicht hat. */
   function geld(v, lg) {
     var ort = lg === "en" ? "en-GB" : (lg === "el" ? "el-GR" : "de-DE");
     try {
-      return new Intl.NumberFormat(ort, { minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2 }).format(v) + " €";
-    } catch (e) { return v.toFixed(2) + " €"; }
+      return new Intl.NumberFormat(ort, { minimumFractionDigits: 0,
+                                          maximumFractionDigits: 0 }).format(v) + " €";
+    } catch (e) { return String(Math.round(v)) + " €"; }
   }
 
   /* Artikelnummer aus dem strukturierten Datenblatt der Seite. */
